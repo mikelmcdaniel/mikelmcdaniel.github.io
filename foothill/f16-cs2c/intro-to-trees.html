@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<title>Introduction to Trees</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+
+<h2>Introduction to Trees</h2>
+<h3>Genearal Graphs</h3>
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/11/World_population_%28UN%29.svg" alt="Human population increasing over time in various parts of the world.">
+<p>You might've seen graphs before, like a graph of human population over time. Graphs in computer science are not those graphs. In computer science, a graph is a collection of nodes and edges from one node to another. A doubly linked list is an example of a graph: there are nodes with edges that link each previous node to/from the next node. Graphs aren't limited like a doubly linked list though, any node can contain edges to any other nodes. <a href="https://en.wikipedia.org/wiki/Graph_theory">Wikpedia pages</a> are an example: each page can be thought of as a node and each link to another page is an edge.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/67/Rock-paper-scissors.svg">
+<h3>General Trees</h3>
+<p>Trees are graphs with one extra constraint: there can't be any cycles between nodes. The nodes that an edge point to are also often called "children", so if node A has an edge to node B, then B is A's child. Consider the graph of what-beats-what in <a href="https://en.wikipedia.org/wiki/Rock-paper-scissors">rock-paper-scissors</a>:  Rock, paper, and scissors are nodes. Rock beats scissors, so there's an edge from rock to scissors and so on. Unfortunately for us, this isn't a tree because there's a cycle. I can find a node in the graph and follow edges until I end up back to the same node again. However, if I remove any of those edges, like the edge from paper to rock, now I'd have a tree. A more interesting example of a tree would be an <a href="https://en.wikipedia.org/wiki/Phylogenetic_tree">evolutionary tree</a> like <a href="http://www.nature.com/scitable/content/ne0000/ne0000/ne0000/ne0000/15828920/f3_allanmax.jpg">Nature Education's evolutionary tree of finches</a>: <img src="http://www.nature.com/scitable/content/ne0000/ne0000/ne0000/ne0000/15828920/f3_allanmax.jpg"></p>
+<h3>Binary Trees</h3>
+<!-- https://en.wikipedia.org/wiki/Two-child_policy -->
+<p>Binary trees are trees with one extra constraint: each node must have 0, 1, or 2 edges. Usually, one child is called the "left child" and the other child being the "right child".</p>
+<h3><a href="https://en.wikipedia.org/wiki/Binary_search_tree">Binary Search Trees</a></h3>
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Binary_search_tree.svg">
+<p>Binary search trees are binary trees with one extra constraint: all nodes in the left sub-tree (all children and grand-children and so on) must all be less than the parent and similarly, all nodes in right sub-tree must be greater than the parent. This means that if you're searching for a node in a binary search tree, then you can start at the root (top) of the tree and check that value agains the value you're searching for. If it's equal, then you've found the node. If the value you're looking for is greater, then go to the right child and search. If the value you're looking for is less, then go the left child and search and so on until you find the node.</p>
+<p>Binary search trees have one fatal flaw: ther's nothing to prevent the tree from being unbalanced. Imagine if I started with an empty tree, then inserted 0, then 1, then 2, then 3, and so on. Since each new node is greather than all the other nodes in the binary search tree, I'd have to insert each as far right as possible. Every node in the binary search tree would exactly one right child, except for the last node, and no node would have a left child. If I tried to search for something, I'd have to look at every node, just like in a linked list.</p>
+<h3><a href="https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree">Balanced Binary Search Trees</a></h3>
+<p>Balanced binary search trees are binary search trees with one extra constraint: the height of any left and right sub-tree can't differ by more than one. In other words, if I look at any node in the tree, there are about as many nodes in the left sub-tree as there are in the right sub-tree. So, now if I try to search for something in a balanced binary search tree, whenever I go left or right, I can 'get rid' of half of the nodes that are left. It's similar to binary search: every time I look at an element and compare it to the value I'm searching for, I know that there are about half of the nodes that I no longer have to look at.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/06/AVLtreef.svg">
+<p>Just like with Binary Search, searching in a Balanced Binary Search Tree is O(log(N)). Let's prove it! Imagine you had a balanced binary search tree with N elements. The first/top layer only has 1 node with 2 children. The next layer has 2 nodes, each with 2 children. The number of nodes in each layer away from the root keeps doubling until we get to the last layer. Since big-O is all about the worst case, let's pretend that the last layer is full. If there are H layers (which is the same as saying "if the tree has height, H"), then there are pow(2, 0) + pow(2, 1) + pow(2, 2) + ... + pow(2, H) == pow(2, H + 1) - 1 nodes in the tree. If the tree has N nodes, then that would mean that N == pow(2, H + 1) - 1, which means that H == log(N + 1) - 1. When we're looking for a node, we start at the root and either decide that we've found the node or go to the left or right sub-tree in O(1) time. In the worst case, we have to do this H times (once for each layer). So, searching in a balanced binary search tree is O(H) == O(log(N + 1) - 1) == O(log(N)).</p>
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

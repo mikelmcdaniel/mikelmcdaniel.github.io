@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<title>std::vector</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Vectors (a.k.a. Dynamic_Array)</h2>
+<h3>Why it's useful</h3>
+<p>The <a href="http://en.cppreference.com/w/cpp/container/vector">std::vector</a>/dynamic array data type is like a regular array that will change size when it needs to. Think about what you might use an array for. Usually, it's just a place to store some data. For example, you might have a vector of students in a class. Maybe some students drop the class and others add it later. You'd like to be able to easily keep track of all the students, but with an array, it's hard. What you create an array that's big enough to fit N students? That's ok, as long as you have N or fewer students. What do yu do when you run out of room? What if you only have N / 4 students? It would be nice to only use as much space as you need. You could create a new array and copy all the students each time a new student is added, but that's slow (takes O(N) each time a student is added).</p>
+<p>This is where a vector comes in. Internally, it allocates an array and keeps track of how many things are in it (<code><a href="http://en.cppreference.com/w/cpp/container/vector/size">std::vector::size</a></code>), as well as how much room it has (<code><a href="http://en.cppreference.com/w/cpp/container/vector/capacity">std::vector::capacity</a></code>). It also has convenient methods like <code><a href="http://en.cppreference.com/w/cpp/container/vector/push_back">push_back</a></code> for putting a new element at the end of the array and so on.</p>
+<h3>Layout in memory</h3>
+<p>In many ways <code>std::vector</code> is just a wrapper around an array. In C++11, you can even call the <code><a href="http://en.cppreference.com/w/cpp/container/vector/data">std::vector::data()</a></code> method to get a pointer to the underlying data. Behind the scenes, each element that's push_back'ed into the array is stored sequentially with the 0th element at position <code>x</code> (where <code>x == (void *)myvector.data()</code>), the 1st element at position <code>x + sizeof(T)</code> (where <code>T</code> is the type of <code>myvector</code>'s elements.), and the nth element at position <code>x + n * sizeof(T)</code></p>
+<h3>Big-O of std::find(myvector.begin(), myvector.end(), x)</h3>
+<p>In the <em>worst case</em>, to find an element, <code>x</code> in a vector, you have to look at every element in <code>myvector</code> in sequence, so if there are n elements, you may have to look at all n of them, so std::find(...) is O(n).</p>
+<h3>Big-O of std::vector::push_back</h3>
+<p>In the worst case, <code>myvector.push_back(x)</code> forces myvector to resize in order to make room for the new element, x. When that resize happens, a new array is allocated, all the old data is copied to the new array, then the old array is deleted. This means that if you start with a vector that has n elements and push_back a single element, then you might have to copy n things, so push_back is O(n). However, it's also true that most of the time we don't have to copy anything and inserting is order 1.</p>
+<h3>Amortized big-O of std::vector::push_back</h3>
+<!-- https://en.wikipedia.org/wiki/Amortized_analysis#Dynamic_Array -->
+<p>Even though <code>push_back</code> is O(n) (where there are n elements in the vector), it turns out that to start with an empty vector and call push_back n times is also O(n). Therefore, the <em>amortized</em> big-O of <code>push_back</code> is O(n) / n == O(n / n) == O(1).</p>
+<p>Here's an informal proof: Consider the number of operations that happen after inserting n elements (calling <code>push_back</code> n times on a vector that started with enough space for 1 element like <code>vector<int32_t> myvector(1);</code>)...</p>
+<table border="1">
+  <tr>
+    <th>Elements inserted ("n")</th>
+    <th>Resizes happened</th>
+    <th>Elements copied (due to resizes)</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>3 to 4</td>
+    <td>2</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>5 to 8</td>
+    <td>3</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>9 to 16</td>
+    <td>4</td>
+    <td>15</td>
+  </tr>
+  <tr>
+    <td>17 to 32</td>
+    <td>5</td>
+    <td>31</td>
+  </tr>
+  <tr>
+    <td>33 to 64</td>
+    <td>6</td>
+    <td>63</td>
+  </tr>
+</table>
+<p>After inserting n elements, we had to copy between 2n - 3 and n - 1 elements. Since a constant multiplier and a constant addition are ignored in big-O this is the same as saying after inserting n elements, we copy O(n) of elements.
+</p>
+<h4>Can we do better?</h4>
+<p>This all assumes that whenever the vector runs out of capacity, we create a new array that's twice as big, copy elements to the new array, then delete the old array. What if we wanted to use less memory or have the program run faster? Can we improve the big-O of run time? Can we improve the big-O of memory used?</p>
+<p>Let's try. First, let's consider the big-O of run time. Right now, it looks like the Amortized big-O is dominated by the number of copies we have to make. However, even if we did zero copies, every function call to <code>vector::push_back</code> is at least O(1). Every piece of code that runs is at least O(1) because it takes <strong>some</strong> amount of time to run. Since we have to call <code>vector::push_back</code> N times to append N elements, which is O(1 + 1 + ... + 1 + 1) = O(N). Woah! No matter what you do, you can't do better than O(1) amortaized run time!</p>
+<p>What about the big-O of the amount of memory used? At any point in the algorithm, we have to have enough capacity for the N elements we have already inserted. That alone means that we have to use at least O(N) memory. When we double the capacity for the new arraya before copying the elements over, we have an O(N) size old array and an O(2 * N) = O(N) size new array for a total of... O(N).</p>
+<p>To summarize, you can't do better than O(N) run time and O(N) memory. If we use the strategy where we double the capacity each time we run out of capacity, we have O(N) run time and O(N) memory, which is optimal in terms of big-O. Fun fact: Instead of doubling each time we can multiply the current capacity by any constant and still have the same big-O. It's best practice to double the size of the array because that's the convention.</p>
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

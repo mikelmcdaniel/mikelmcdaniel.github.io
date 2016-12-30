@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<title>Splay Trees</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/Splay_tree">Splay Trees</a></h2>
+<h3>General Idea</h3>
+<p>Splay Trees are a type of Balanced Binary Search Tree that move the last accessed element to the root of the tree. Searching, inserting, and removing all happen in exactly the same way as with Binary Search Trees, except that the node is <em>splayed</em> after (or in the case of removing before) that operation is done. A splay operation moves a node from wherever it is to the root of the tree by performing a bunch of <a href="https://en.wikipedia.org/wiki/Tree_rotation">tree rotations</a> like the ones used in AVL trees.</p>
+
+<h3>Splaying</h3>
+<p></p>
+
+<h3>Searching</h3>
+<p>Search it like any Binary Search Tree, then splay the node you were searching for.</p>
+
+<h3>Inserting</h3>
+<p>Insert the node like any Binary Search Tree, then splay the inserted node.</p>
+
+<h3>Removing</h3>
+<p>Find the node to remove, splay it, then remove it just like you would in a Binary Search Tree.</p>
+
+<h3>big-O</h3>
+<h4>Amortized Big-O</h4>
+<p></p>
+<h4>Splaying</h4>
+<p>Splaying is O(height of the tree). Since </p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

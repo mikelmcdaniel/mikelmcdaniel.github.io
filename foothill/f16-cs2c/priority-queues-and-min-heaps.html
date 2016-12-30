@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<title>Priority Queues and Min Heaps</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/Priority_queue">Priority Queue</a></h2>
+<p>Priority queues are an abstract datatype that support an push, top, and pop operations, much like a regular queue or stack, except that everything that's inserted has an associated priority and all pop operations pop the thing with the highest priority.</p>
+<h3>Example: priority queue via an AVL tree</h3>
+<p>Priority queues can be implemented with <a href="https://en.wikipedia.org/wiki/Binomial_heap#Summary_of_running_times">lots of different data structures</a>, including an AVL tree. Push would just be an AVL tree insert (where the key is the priority and the value is the thing to be inserted). Top would just be 'find min' (where you go from the root to the left-most node). Lastly, pop would just be 'remove(find_min())'. Each of those operations is O(log(N)).</p>
+
+<h2><a href="https://en.wikipedia.org/wiki/Binary_heap">Min Heap</a></h2>
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Min-heap.png" alt="A sample min heap: a complete binary tree where each parent node has a smaller value than its children.">
+<p>Min heaps are a common implementation of a priority queue. First, let's define a <a href="https://en.wikipedia.org/wiki/Heap_(data_structure)">heap</a>: a <a href="http://web.cecs.pdx.edu/~sheard/course/Cs163/Doc/FullvsComplete.html">complete binary tree</a> where every parent node is less than or equal to its children (or greater than or equal to). A min heap is when the parent is less than or equal and a max heap is when the parent is greater than or equal to all its children. Either version of this property where each parent is greater/less than its children is called the heap property.</p>
+<p>Checkout <a href="https://www.cs.usfca.edu/~galles/visualization/Heap.html">https://www.cs.usfca.edu/~galles/visualization/Heap.html</a> for an awesome visualization of Min Heaps.</p>
+
+<h3>Insert</h3>
+<p>To insert, start by inserting at the bottom of the tree (such that the tree is still complete). Done! Just kidding, we might have just inserted a node that's smaller than its parent, which would mean that this is no longer a min heap. If a node is smaller than its parent, then we can swap the node and parent without breaking the heap property (any more than its already broken) because in order for the node to be smaller than its parent, it must also be smaller than the parent's other child. If a node is smaller than its parent, then we percolate it up (swap it with its parent over and over until it becomes the root or its bigger than its parent).</p>
+<p>In the worst case, the newest node must be percolated up all the way to root, requiring O(log(N)) comparisons/swaps.</p>
+
+<h3>Pop</h3>
+<p>Popping is actually very similar to inserting: you remove the root, then take the "last" node (right-most node in the bottom layer) and put it at the root. Since the new root will likely be larger than at least one of its children, we need some way to fix tree. At this point, there are 3 nodes that we need to think about: the root, its left child, and its right child. We could choose to always swap with the left child, but the left child may be greater than the right, which would mean that after swapping it, the new root would be bigger than its right child. The same thing is true if we always swapped with the right child. Instead, we need to percolate the root down, by swapping it with whichever child is the smallest. Eventually, the node will be percolated down to a point in the tree where it satisfies the heap property or back to the bottom of the tree (which still satisfies the heap property).</p>
+<p>In the worst case, the replacement node must be percolated down all the way to bottom, requiring O(log(N)) comparisons/swaps.</p>
+
+<h3>Efficient Storage in an Array (or Vector)</h3>
+<p>Since a heap is a complete binary tree, we can store it very efficiently in an array: the root starts at position i = 0. For any node at position i, its left child is at 2 * i + 1 and its right child is at 2 * i + 2, while its parent is at (i - 1) / 2.</p>
+<p>For example, the min heap above would look like:</p>
+<table border="1">
+  <tr><td>1</td><td>2</td><td>3</td><td>17</td><td>19</td><td>36</td><td>7</td><td>25</td><td>100</td><td>...</td></tr>
+</table>
+
+<h2>Heap Sort</h2>
+<p>Since we can insert (push) things into a heap, find the minimum, and remove the minimum, we can use a heap to sort things! The simplest way is just to push all the items you want to sort into the heap, then contiue popping the minimum and copying it until the heap is empty.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<title>AVL Trees (A Balanced Binary Search Tree)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/AVL_tree">AVL Tree</a></h2>
+<p>An AVL Tree is a Balanced Binary Search Tree where the height of any left and right subtrees don't differ by more than one. It maintains this balance by rebalancing after every insert and erase operation.</p>
+<p>Each node keeps track of a "balance factor", which is just the difference in height between the left and right subtrees. In code, the easiest way to do this is to have each node keep track of it's height; then the balance factor is just <code>node->right_height() - node->left_height()</code>. To keep track of the height: <code>node->height == std::max(node->left_height(), node->right_height()) + 1;</code>. Since we only really care about the balance factor, the height of an empty tree can be whatever you like. (Most people would say the height of an empty tree is 0, but the book calls it -1.)  When a node/subtree's height is updated (for example, when a new leaf node is added), the height of all the parent nodes is simply recomputed.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Tree_rotation_animation_250x250.gif" alt="A tree rotation, where a subtree is moved from one node to another.">
+<p>Whenever the balance factor of a node/subtree differs too much, that node/subtree is <a href="https://en.wikipedia.org/wiki/Tree_rotation">rotated</a>, like above. In the picture above, A and B represent 2 nodes while &alpha;, &beta;, and &gamma; represent subtrees. Notice that A and B can swap places. No matter which node is on top &alpha; is still to the left of A (because it's nodes have a lesser value than A), &beta; is still between A and B (because it's nodes have values between A and B's values), and &gamma; is still to the right of B (because it's nodes have values greater than B). In other words, we're able to move subtrees up and down, while making sure the result is still a binary search tree.</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/AVL_Tree_Rebalancing.svg" width="640" alt="AVL Tree rebalancing scenarios.">
+<p>In order to do a rotation where every node potentially has a subtree, you have to consider rotating a node, as well as it's parent and grandparent nodes. There are four possible ways that you can go from grandparent to grandchild node (left-left, left-right, right-left, and right-right), so there are four different kinds of tree rotations needed to keep an AVL tree balanced, like in the picture above.</p>
+<h3>insert</h3>
+<p>Inserting into an AVL Tree is the same as inserting into a Binary Search Tree, with some extra steps. After inserting the new node, we have to go to the new node's parent and update it's height. As long as the new height we calculate is different from the original height, we have to keep going up to the next parent and update it's height until we get to the root. Since the new node may have caused the tree to become imbalanced, every time we update a subtree's height, we should also check that the balance factor is between -1 and 1. If it's not, then we have to rebalance that part of the tree, like in the pictures above. Once that part of the tree is rebalanced, we have to update the heights accordingly and then we can continue updating heights and rebalancing if necessary.</p>
+<h3><a href="http://www.mathcs.emory.edu/~cheung/Courses/323/Syllabus/Trees/AVL-delete.html">remove</a></h3>
+<p>Removing a node from an AVL Tree is the same as Removing from a Binary Search Tree, with some extra steps. After removing nodes and filling in any empty spaces, we'd eventually remove a leaf node (a node at the bottom of the tree). Since we deleted that node, it's possible that the height of it's parent will change, so we need to update the ex-leaf node's parent's height. Since that may change the parent's parent's height, we may have to update the parent's parent's height as well. It's just like how we had to keep updating heights when inserting a node. Just like inserting a node, we have to keept updating the next parent's height and if/when we detect an imbalance, we have to rebalance that part of the tree.</p>
+<h3>big-O</h3>
+<p>In the worst case in both insert and remove, we have to go all the way to the bottom of the tree, then come all the way back up (potentially rebalancing the tree). Each time we go down to a child node, up to a parent node, or rebalance the tree we only perform a constant number of operations so each of those operations is O(1). Since all of those operations are O(1), the big-O for is O(H) where H is the height of the tree, but what is H?</p>
+<!-- http://users.informatik.uni-halle.de/~jopsi/dinf203/avl_minimal.gif -->
+<!-- http://i.stack.imgur.com/0JfR9.jpg -->
+<!-- http://gateoverflow.in/?qa=blob&qa_blobid=3363434970080213540 -->
+<img src="http://i.stack.imgur.com/uXBst.png" alt="Smallest AVL Trees with height 1, 2, 3, ...">
+<p>Let's think about the smallest tree (tree with the smallest number of nodes, N) with height H. The smallest tree with H == 0 is just the empty tree; with H == 1 is the tree with a single node. In general, if you want to make the smallest tree with height H, knowning that an AVL Tree's left and right height can't differ by more than 1, the smallest possible tree is the smallest tree of height H - 1 and H - 2 with a new root, just like in the picture above. This pattern is a lot like the pattern of <a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci numbers</a>.</p>
+<table border="1">
+  <tr><th>H</th><th>N</th><th>Fibonacci(H + 1)</th></tr>
+  <tr><td>0</td><td>0</td><td>1</td></tr>
+  <tr><td>1</td><td>1</td><td>2</td></tr>
+  <tr><td>2</td><td>2</td><td>3</td></tr>
+  <tr><td>3</td><td>4</td><td>5</td></tr>
+  <tr><td>4</td><td>7</td><td>8</td></tr>
+  <tr><td>5</td><td>12</td><td>13</td></tr>
+  <tr><td>6</td><td>20</td><td>21</td></tr>
+  <tr><td></td><td>...</td><td></td></tr>
+  <tr><td>H</td><td>Fibonacci(H + 1) - 1</td><td>Fibonacci(H + 1)</td></tr>
+</table>
+<p>In fact, it's the same as the Fibonacci numbers minus 1! Unfortunately, this doesn't help us much because what we want is go from N to H, but this does the opposite. However, we know that N == Fibonacci(H + 1) - 1 == Fibonacci(H) + Fibonacci(H - 1) - 1 &ge; 2 * Fibonacci(H - 1) - 1 &ge; 2 * Fibonacci(H - 1) &ge; pow(sqrt(2), H) == pow(2, H / 2). In other words, we know that N &ge; pow(2, H / 2), so we know that 2 * log(N) / log(2) &ge; H, so <strong>insert and remove are O(log(N))</strong>.</p>
+<p>In the best case, for a Binary Search Tree, every layer of the tree has twice as many nodes as the last layer and H &le; log(N) / log(2). Since any insert/remove operation would require walking the whole tree, <strong>it's impossible to do better than O(log(N))</strong>.</p>
+
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

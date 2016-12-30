@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<title>Minimum Spanning Trees and Maximum Flow</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">Minimum Spanning Tree</a></h2>
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Minimum_spanning_tree.svg" width="480" alt="A weighted graph with 10 vertices and 3 to 5 edges per vertex. Many of the edges with smaller weights are drawn with thick lines and form a sub-graph where all vertices are still reachable from any other vertex.">
+<p>A spanning tree is a tree (sub-graph with no cycles) that connects all the nodes in an undirected graph. If you imagine a network of bus-stops or computers in a network, that would be the original graph. A spanning tree, would then be a tree that makes it so that from any node, you can still get to any other node. There are multiple possible spanning trees.</p>
+<p>A <em>minimum</em> spanning tree is a spanning tree where the sum of all the edges in the tree is as small as possible. For example, if you had a graph representing buses and bus stops, the edges between those bus stops would represent being on that bus for some time. The weight between bus stops might then be how long it takes to get there. A minimum spanning tree would be a sub-graph (where some edges are removed) that has no cycles, but makes sure that you can still get from any bus stop to any other bus stop.</p>
+<h3><a href="https://en.wikipedia.org/wiki/Minimum_spanning_tree#Uniqueness">Uniqueness</a></h3>
+<p>It turns out that if every edge has a unique weight in an undirected graph, then there's exactly one minimum spanning tree. For fun, let's assume there is <strong>not</strong> a single minimum spanning tree. Then, if we look at two <abbr title="minimum spanning tree">MSTs</abbr>, A and B, we can take the edge with the smallest wait in A that is not in B and remove it. If the smallest edge in A is greater than the smallest edge in B, then swap A and B first. (Picture doing this with the MST above.)  Without that edge, A is not longer an MST because there are two isolated trees. (Now you cann't get from any node to any other node.)  By definition, the edge we removed isn't in B, so if we were to add it to B, B with the new edge would now have a cycle. In order to make it an MST again, we need to remove one of the edges in the cycle. Since the edge we removed must have the smallest weight in the cycle that's not already in A and B, then one of the other edges in the cycle must be in B, but not in A <em>and</em> it must have a greater weight than the edge we added to B. Therefore, replacing that edge with higher weight with the edge we added would make B have a smaller weight... which can't happen since this "new" B would have a smaller total weight than the original B.</p>
+
+<h3><a href="https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Pseudocode">Kruskal's Algorithm</a></h3>
+<p>Kruskal's algorithm is a greedy algorithm, meaning that it always does the "next best" thing until it gets to an answer. Take the graph where you want to make a minimum spanning tree and make a new graph with the same nodes, but no edges. Sort the edges, in the original graph, by weight from least to greatest. Next, go through those edges, from least to greatest, and add it to your new graph if it connects two nodes that <em>don't already have a path</em> between them. That's it!</p>
+<p>How do we know it works? We know that in a spanning tree, adding an extra edge would always create a cycle. We also know that removing the largest edge in that cycle would make it a spanning tree again and that the new spanning tree will have a smaller or equal weight. Since Kruskal's algorithm starts with the smaller edges first, it avoids all of the larger edges that would form cycles.</p>
+
+<h2><a href="https://en.wikipedia.org/wiki/Maximum_flow_problem">Maximum Flow</a></h2>
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/94/Max_flow.svg" width="480">
+<!-- <h3><a href="https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm">Ford-Fulkerson Algorithm</a></h3> -->
+<p>Dijkstra's algorithm (and A*) is great for finding the shortest path from one node to another. One application for this is to find the shortest path from one city to another. The problem with this approach to directions is that if everyone were to use the shortest path from one city to another, they'd cause a traffic jam! The maximum flow problem is: given a source node, "s", a sink node, "t", and edges with capacity, find out what the maximum flow from "s" to "t" is. A simple extension would be to actually find out how much 'flow' should go over each edge. If we can solve the maximum flow algorithm, we can find a set of paths from one city to another that doesn't cause a traffic jam.</p>
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

@@ -1,0 +1,1250 @@
+<!doctype html>
+<html>
+<head>
+<title>TEMP</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<!-- ["11277803", "20131506", "20134564", "20137770", "20161213", "20203265", "20216539", "20218188", "20218834", "20237139", "20254523", "mikel", "test"]  -->
+
+<h2>Code 0</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+template&lt;typename T&gt;
+std::vector&lt;T&gt; get_left_half(int mid, std::vector&lt;T&gt; container){ 
+    std::vector&lt;T&gt; left_half;
+    for (int i = 0; i &lt; mid; ++i){
+        left_half.push_back(container[i]);
+    }
+    return left_half;
+}
+
+
+template&lt;typename T&gt;    
+std::vector&lt;T&gt; get_right_half(int mid, std::vector&lt;T&gt; container){
+    std::vector&lt;T&gt; right_half;
+    for (uint i = mid; i &lt; container.size(); ++i){
+        right_half.push_back(container[i]);
+    }
+    return right_half;
+}
+
+template&lt;typename T&gt;
+void merge (std::vector&lt;T&gt;&amp; container, std::vector&lt;T&gt;&amp; left_half, std::vector&lt;T&gt;&amp; right_half){
+    uint i = 0, j = 0, k = 0;
+        
+    while (i &lt; left_half.size() &amp;&amp; j &lt; right_half.size()){
+        if(left_half[i] &lt; right_half[j]){
+            container[k] = left_half[i];
+            ++i;
+        } else {
+            container[k] = right_half[j];
+            ++j;
+        }
+        ++k;
+    }
+    
+    while (i &lt; left_half.size()){
+        container[k] = left_half[i];
+        ++i;
+        ++k;
+    }
+    
+    while (j &lt; right_half.size()){
+        container[k] = right_half[j];
+        ++j;
+        ++k;
+    }
+}
+
+template&lt;typename T&gt;
+void sort(std::vector&lt;T&gt;&amp; container){
+    if (container.size() &gt; 1){ //if it is one element in the sub_vector
+        int mid = (container.size()) / 2;
+        //std::cout &lt;&lt; mid &lt;&lt; std::endl;
+        std::vector&lt;T&gt; left_half  = get_left_half(mid, container);
+        std::vector&lt;T&gt; right_half = get_right_half(mid, container);
+        
+        sort(left_half); 
+        sort(right_half); //infinitely recurses here. The problem seems to be when we reach sub-vector.size() = 2, it gets confused
+        
+        merge(container, left_half, right_half);
+    }
+}
+
+template&lt;typename T&gt;
+void print_inventory(std::vector&lt;T&gt;&amp; container){
+    for (const T&amp; x : container){
+        std::cout &lt;&lt; x &lt;&lt; std::endl;
+    }
+}
+
+int main() {
+    std::vector&lt;std::string&gt; tupperware;
+
+    for (std::string line; getline(std::cin, line); ) {
+        tupperware.push_back(line);
+    }
+    
+    sort(tupperware); //Need a better way to implement this, rather than using an index
+
+    print_inventory(tupperware);
+    
+    return 0;
+}</code></pre>
+
+
+<h2>Code 1</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;time.h&gt;
+
+// Quicksort from scratch =&gt; O(N log N), where N = distance(begin, end)
+void customSort(std::vector&lt;std::string&gt;::iterator begin, std::vector&lt;std::string&gt;::iterator end){
+  if(distance(begin,end) &lt;= 1)
+	return;
+
+  // Get iterator to random pivot in range =&gt; [O(N)]
+  srand(time(NULL));
+  std::vector&lt;std::string&gt;::iterator pivot = begin;
+  advance(pivot, std::rand() % distance(begin,end));
+
+  // Compare everything in the range to the pivot =&gt; [O(N))]
+  for(std::vector&lt;std::string&gt;::iterator iter = begin; iter != end; ++iter){
+	if(iter != pivot){
+	  if(*iter &gt; *pivot &amp;&amp; distance(begin, iter) &lt; distance(begin, pivot)){
+		// Put data to right of pivot
+		std::vector&lt;std::string&gt;::iterator pivotLeft = pivot-1;
+		// Swap values of index one left of pivot and iter
+		iter_swap(pivotLeft, iter);
+		// Swap values of index one left of pivot and pivot
+		iter_swap(pivotLeft, pivot);
+		swap(pivotLeft, pivot);
+		--iter;
+	  }
+	  else if(*iter &lt;= *pivot &amp;&amp; distance(begin, iter) &gt; distance(begin, pivot)){
+		// Put data to left of pivot
+		std::vector&lt;std::string&gt;::iterator pivotRight = pivot+1;
+		// Swap values of index one right of pivot and iter
+		iter_swap(pivotRight, iter);
+		// Swap values of index one right of pivot and pivot
+		iter_swap(pivotRight, pivot);
+		swap(pivotRight, pivot);
+		--iter;
+	  }
+    }
+  }
+
+  // Quicksort left and right of pivot =&gt; [O(log N))]
+  customSort(begin, pivot);
+  ++pivot;
+  customSort(pivot, end);
+}
+
+int main() {
+  std::vector&lt;std::string&gt; lines;
+  for (std::string line; std::getline(std::cin, line); ) {
+    lines.push_back(line);
+  }
+
+  customSort(lines.begin(), lines.end());
+
+  for (const std::string&amp; line : lines){
+    std::cout &lt;&lt; line &lt;&lt; std::endl;
+  }
+  return 0;
+}</code></pre>
+
+
+<h2>Code 2</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+  std::vector&lt;std::string&gt; lines;
+  for (std::string line; std::getline(std::cin, line); ) {
+    lines.push_back(line);
+  }
+  std::sort(lines.begin(), lines.end());
+  for (const std::string&amp; line : lines) {
+    std::cout &lt;&lt; line &lt;&lt; std::endl;
+  }
+  return 0;
+}</code></pre>
+
+
+<h2>Code 3</h2>
+
+<pre><code class="c++">// merge_sort.cpp : Defines the entry point for the console application.
+//
+
+#include &#34;Sorting.h&#34;
+#include&lt;iostream&gt; // cin, cout
+#include&lt;fstream&gt; // ofstream, ifstream
+#include&lt;string&gt; // string 
+#include&lt;vector&gt; // vector
+#include&lt;algorithm&gt; // std::sort()
+
+//int main()
+//{
+//   std::vector&lt;std::string&gt; vStr = { &#34;epple&#34;, &#34;axplosive&#34;, &#34;cherry&#34;, &#34;elephant&#34;,
+//      &#34;manga&#34;, &#34;orangutan&#34;, &#34;mouse&#34;, &#34;alien&#34;, &#34;guitar&#34;};
+//   std::vector&lt;int&gt; vInt = { 1, 210, 324, 532, 678, 43, 7765, 3, 4345, 7, 23, 643, 23,
+//      4356, 1234, 23, 1, 34, 2, 10, 420, 98, 87, 32, 54, 65, 84, 92, 72, 63, 76, 66 };
+//   for (auto strings : vInt)
+//      std::cout &lt;&lt; strings &lt;&lt; std::endl;
+//   merge_sort(vInt);
+//   std::cout &lt;&lt; std::endl;
+//   for (auto strings : vInt)
+//      std::cout &lt;&lt; strings &lt;&lt; std::endl;
+//   return 0;
+//}
+
+int main() {
+   std::vector&lt;std::string&gt; strs;
+   for (std::string mystrs; getline(std::cin, mystrs);) {
+      // std::cout &lt;&lt; mystrs &lt;&lt; std::endl;
+      strs.push_back(mystrs);
+   }
+   std::cout &lt;&lt; std::endl;
+   // std::sort(strs.begin(), strs.end());
+   merge_sort(strs);
+   for (std::string&amp; strings : strs){
+      std::cout &lt;&lt; strings &lt;&lt; std::endl;
+   }
+   return 0;
+}</code></pre>
+
+<pre><code class="c++">#pragma once
+#include&lt;vector&gt;
+
+//template&lt;typename T&gt;
+//T&amp; quick_sort(T&amp; myArray) {
+//   if (myArray != NULL)
+//      quick_sort(myArray, 0, (sizeof(myArray) / sizeof(myArray[0])) - 1);
+//}
+//
+//template&lt;typename T&gt;
+//T&amp; quick_sort(T&amp; myArray, int low, int high) {
+//   // pick a pivot randomly
+//   // grab everything greater than the pivot and put it to the right of it
+//   // grab everything less than the pivot and put it to the left of it
+//   // when done, recurse left
+//   // when done, recurse right
+//}
+
+template&lt;typename T&gt;
+void merge(std::vector&lt;T&gt;&amp; myArray, std::vector&lt;T&gt;&amp; extra, int low, int mid, int high) {
+   if (low &lt; high) {
+      auto i = low;
+      auto j = mid + 1;
+
+      // check each place in myArray, store it in order in extra to be copied back over later.
+      while (i &lt;= mid &amp;&amp; j &lt;= high) {
+         if (myArray[i] &lt; myArray[j]) {
+            extra.push_back(myArray[i]);
+            ++i;
+         }
+         else { // just a safety check to ensure it will not check outside of the boundry.
+            extra.push_back(myArray[j]);
+            ++j;
+         }
+      }
+      // if there is anything else to add to extra in left half
+      while (i &lt;= mid &amp;&amp; j &gt; high) {
+         extra.push_back(myArray[i]);
+         ++i;
+      }
+      // if there is anything else to add in right half
+      while (j &lt;= high &amp;&amp; i &gt; mid) {
+         extra.push_back(myArray[j]);
+         ++j;
+      }
+      // for everything in extra, change myArray&#39;s n elements to extra&#39;s n elements, from low to high.
+      for (int i = 0, j = low; i &lt; extra.size() &amp;&amp; j &lt;= high; ++i, ++j) {
+         myArray[j] = extra[i];
+      }
+      extra.clear();
+   }
+}
+
+template&lt;typename T&gt;
+bool is_sorted(std::vector&lt;T&gt;&amp; myArray, int low, int high) {
+   if (low &lt; high) {
+      for (int i = low; i &lt; high; ++i) {
+         if (myArray[i] &gt; myArray[i + 1]) {
+            return false;
+         }
+      }
+   }
+   return true;
+}
+
+
+template&lt;typename T&gt;
+void merge_sort(std::vector&lt;T&gt;&amp; myArray, std::vector&lt;T&gt;&amp; extra, int low, int high) {
+   if (!is_sorted(myArray, low, high)) {
+      auto mid = ((high - low) / 2) + low;
+      merge_sort(myArray, extra, low, mid);
+      merge_sort(myArray, extra, mid + 1, high);
+      merge(myArray, extra, low, mid, high);
+   }
+}
+
+template&lt;typename T&gt;
+void merge_sort(std::vector&lt;T&gt;&amp; myArray) {
+   std::vector&lt;T&gt; extra;
+   extra.reserve(myArray.size());
+   merge_sort(myArray, extra, 0, myArray.size() - 1);
+}</code></pre>
+
+
+<h2>Code 4</h2>
+
+<pre><code class="c++">// Contents of &#34;doubly_linked_list.h&#34;:
+#ifndef _DOUBLY_LINKED_LIST_H_
+#define _DOUBLY_LINKED_LIST_H_
+
+#include &lt;initializer_list&gt;
+#include &lt;iostream&gt;
+using namespace std;
+template &lt;typename T&gt; class DoublyLinkedList;
+template &lt;typename T&gt;
+class DoublyLinkedListNode {
+    public:
+
+      T value;
+      DoublyLinkedListNode *prev, *next;
+
+      // T&amp; getValue() {
+      //   return value;
+      // }
+
+      // DoublyLinkedListNode* getPrev() {
+      //   return prev;
+      // }
+      // DoublyLinkedListNode* getNext() {
+      //   return next;
+      // }
+      // void setValue(T&amp; value) {
+      //   this-&gt;value = value;
+      // }
+      
+      // void setPrev(DoublyLinkedListNode* prev) {
+      //   this-&gt;prev = prev;
+      // }
+      // void setNext(DoublyLinkedListNode* next) {
+      //   this-&gt;next = next;
+      // }
+      DoublyLinkedListNode() {
+        value = NULL;
+        prev = nullptr;
+        next = nullptr;
+      }
+      DoublyLinkedListNode(T value, DoublyLinkedListNode *prev = nullptr, DoublyLinkedListNode* next = nullptr) : value(value), prev(prev), 
+      next(next) {}
+      friend class DoublyLinkedList&lt;T&gt;;
+};
+template &lt;typename T&gt;
+class DoublyLinkedList {
+  protected:
+    DoublyLinkedListNode&lt;T&gt; *head;
+    DoublyLinkedListNode&lt;T&gt; *tail;
+    int length = 0;
+  // Any data members you need should go here, in the private section
+  public:
+    class iterator { 
+      public:
+      // Any data members you need should go here, in the private section
+      DoublyLinkedListNode&lt;T&gt; *cur;
+      bool reversed;
+
+      // DoublyLinkedListNode* getCur() {  
+      //   return cur;
+      // }
+      // bool getReversed() {
+      //   return reversed;
+      // }
+      // void setCur(DoublyLinkedListNode* cur) {
+      //   this.cur = cur;
+      // }
+      // void setReversed(bool reversed) {
+      //   this.reversed = reversed;
+      // }
+      iterator(DoublyLinkedListNode&lt;T&gt; *cur, bool reversed = false) : cur(cur), reversed(reversed) {}
+      iterator&amp; operator--() {
+        if (reversed) {
+          cur = cur-&gt;next;
+        } 
+        else {
+          cur = cur-&gt;prev;
+        }
+        return *this;
+      }
+      iterator&amp; operator++() {
+        if (reversed) {
+          cur = cur-&gt;prev;
+        } 
+        else {
+          cur = cur-&gt;next;
+        }
+        return *this;
+      }
+      const T&amp; operator*() const {
+        return cur-&gt;value;
+      }
+      
+      bool operator!=(const iterator&amp; other) const {
+         return ((this-&gt;cur) != (other.cur));
+      }
+
+      // This allows DoublyLinkedList to be able to look at/modify anything in
+      // iterator, even if it&#39;s in the private section.
+      friend class DoublyLinkedList;
+   };
+    DoublyLinkedList() {
+      head = nullptr;
+      tail = nullptr;
+      length = 0;
+    }
+    DoublyLinkedList(const DoublyLinkedList&amp; other) {
+      for (iterator current = other.begin(); current != other.end(); ++current) {
+        push_back(*current);
+      }
+    }
+    DoublyLinkedList(std::initializer_list&lt;T&gt; init_list) : DoublyLinkedList() {
+      for (const auto&amp; x : init_list) {
+        push_back(x);
+      }
+    }
+    ~DoublyLinkedList() {
+      for (iterator current = begin(); current != end(); ++current) {
+        delete (current.cur);
+      }
+    }
+    DoublyLinkedListNode&lt;T&gt; *getHead() {
+      return head;
+    }
+    DoublyLinkedListNode&lt;T&gt; *getTail() {
+      return tail;
+    }
+
+    void setHead(DoublyLinkedListNode&lt;T&gt;* head) {
+      this-&gt;head = head;
+    }
+    void setTail(DoublyLinkedListNode&lt;T&gt;* tail) {
+      this-&gt;tail = tail;
+    }
+    void setSize(int size) {
+      this-&gt;size = size;
+    }
+    int size() const noexcept {
+      return length;
+    }
+
+    void test_print() {
+      for (DoublyLinkedListNode&lt;T&gt; *cur = head; cur != nullptr; cur = cur-&gt;next) {
+         cout &lt;&lt; cur-&gt;value &lt;&lt; endl;
+      }
+      for (DoublyLinkedListNode&lt;T&gt; *cur = tail; cur != nullptr; cur = cur-&gt;prev) {
+         cout &lt;&lt; cur-&gt;value &lt;&lt; endl;
+      }
+    }
+
+     void push_back(const T&amp; value) {
+        DoublyLinkedListNode&lt;T&gt; *nextNode = new DoublyLinkedListNode&lt;T&gt;(value, nullptr, nullptr);
+        // DoublyLinkedListNode&lt;T&gt; *temp = head;
+        if (getHead() == nullptr) {
+          setHead(nextNode);
+          setTail(nextNode);
+          ++length;
+        }
+        else {
+          tail-&gt;next = nextNode;
+          nextNode-&gt;prev = tail;
+          tail = tail-&gt;next;
+          ++length;
+        }
+    }
+    void remove(const T&amp; val) {
+       DoublyLinkedListNode&lt;T&gt;* temp;
+       for (iterator current = begin(); current != end(); ++current) {
+        if (val != current) {
+          delete current;
+        }
+        if (*current == val) {
+          temp = current.cur;
+          temp-&gt;next-&gt;prev = temp-&gt;prev;
+          temp-&gt;prev-&gt;next = temp-&gt;next;
+        }
+      }
+    }
+   
+    iterator insert(iterator position, const T&amp; value) {
+      DoublyLinkedListNode&lt;T&gt;* temp;
+    //four cases:
+    //case 1: empty list (size == 0, head == tail == nullptr)
+    //case 2: one node (size == 1, head == tail == first_node)
+    //case 3: two nodes (size == 2, head == first_node, tail = second_node)
+    //case 4: &gt;2 nodes
+    if (position.cur == nullptr) {
+    //case 1, also extra code just in case size doesn&#39;t work
+      temp = new DoublyLinkedListNode&lt;T&gt;(value, nullptr, nullptr);  
+      head = temp;
+      tail = temp;
+      ++length;
+      position.cur = temp;
+      return position;
+    }
+    else if (position.cur-&gt;prev == nullptr) {
+      temp = new DoublyLinkedListNode&lt;T&gt;(value, nullptr, position.cur);
+      temp-&gt;next-&gt;prev = temp;
+      head = temp;
+      tail = temp-&gt;next;
+      --position;
+      length++;
+      return position;
+    }
+    else {
+      temp = new DoublyLinkedListNode&lt;T&gt;(value, nullptr, position.cur);
+      temp-&gt;next-&gt;prev = temp;
+      temp-&gt;prev-&gt;next = temp;
+      //dont change head or tail
+      --position;
+      ++length;
+      return position;
+    }
+    
+    }
+   
+   
+
+   iterator begin() {
+    return iterator(head, false);
+   }
+   iterator end() {
+    return iterator(nullptr, false);
+   }
+   iterator rbegin() {
+    return iterator(tail, true);
+   }
+   iterator rend() {
+    return iterator(nullptr, true);
+   }
+   iterator erase(iterator position) {
+      
+      DoublyLinkedListNode&lt;T&gt;* temp = position.cur;
+      temp-&gt;next-&gt;prev = temp-&gt;prev;
+      temp-&gt;prev-&gt;next = temp-&gt;next;
+      ++position;
+      delete temp;
+      return position;
+   }
+
+};
+
+#endif // _DOUBLY_LINKED_LIST_H_</code></pre>
+
+<pre><code class="c++">#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;sstream&gt;
+#include &lt;iterator&gt;
+
+using namespace std;
+using std::ifstream;
+using std::ofstream;
+
+/* problems you can run into
+what if their are odd number of elements in the main vector?
+*/
+// thanks Mikel :D
+void merge_it(vector&lt;string&gt;&amp; vec1, vector&lt;string&gt;&amp; vec2, vector&lt;string&gt;&amp; list) {
+   int max = std::max(vec1.size(), vec2.size());
+   int i = 0, j = 0;
+   while (i &lt; vec1.size() &amp;&amp; j &lt; vec2.size()) {
+      if (vec1[i] &lt; vec2[j]) {
+         list.push_back(vec1[i]); 
+         ++i;
+      }
+      else {
+         list.push_back(vec2[j]);
+         ++j;
+      }
+   }
+   while (i &lt; vec1.size()) {
+      list.push_back(vec1[i]);
+      ++i;
+   }
+   while (j &lt; vec2.size()) {
+      list.push_back(vec2[j]);
+      ++j;
+   }
+}
+
+void my_merge_Sort(vector&lt;string&gt;&amp; list) {
+   if (list.size() != 1) {
+      int mid = list.size() / 2;
+      vector&lt;string&gt;first_array;
+      vector&lt;string&gt;second_array;
+
+      for (int i = 0; i &lt; mid; ++i) {
+         first_array.push_back(list[i]);
+      }
+      for (int j =mid ; j &lt; list.size(); ++j) {
+         second_array.push_back(list[j]);
+      }
+      list.clear();
+      my_merge_Sort(first_array);
+      my_merge_Sort(second_array);
+      merge_it(first_array, second_array, list);
+   }
+}
+int main(int argc, char const *argv[]){
+   vector&lt;string&gt; listOfWords;
+   string line;
+
+   while (!cin.eof()){
+      getline(cin, line);
+      listOfWords.push_back(line);
+   }
+
+   my_merge_Sort(listOfWords);
+   //cout &lt;&lt; &#34;\nsorted list contains: &#34; &lt;&lt; endl;
+   for (int i = 0; i &lt; listOfWords.size(); ++i){
+      cout &lt;&lt; listOfWords[i] &lt;&lt; endl;
+   }
+   system(&#34;pause&#34;);
+   return 0;
+}</code></pre>
+
+
+<h2>Code 5</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+
+void print(std::vector&lt;std::string&gt; qsVector) {
+   for (const std::string&amp; line : qsVector) {
+      std::cout &lt;&lt; line &lt;&lt; std::endl;
+   }
+}
+
+int partition (std::vector&lt;std::string&gt;&amp; parVector, int par_begin, int par_end) {
+   std::string pivot = parVector[par_end];
+   int i = par_begin;
+   for (int j = par_begin; j &lt; par_end; ++j) {
+      if (parVector[j] &lt;= pivot) {
+         std::swap(parVector[i], parVector[j]);
+         ++i;
+      }
+   }
+   std::swap(parVector[i], parVector[par_end]);
+   return i;
+}
+
+void quickSort(std::vector&lt;std::string&gt;&amp; qsVector, int qs_begin, int qs_end) {
+   if (qs_begin &lt; qs_end) {
+      int range = partition(qsVector, qs_begin, qs_end);
+      quickSort(qsVector, qs_begin, range - 1);
+      quickSort(qsVector, range + 1, qs_end);
+   }
+}
+
+int main() {
+   std::vector&lt;std::string&gt; lines;
+   for (std::string line; getline(std::cin, line); ) {
+      if (line == &#34;&#34;) {
+         break;
+      } else {
+         lines.push_back(line);
+      }
+   }
+   quickSort(lines, 0, (unsigned)lines.size() - 1);
+   print(lines);
+   return 0;
+}</code></pre>
+
+
+<h2>Code 6</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+void quickSort(std::vector&lt;std::string&gt;&amp; to_sort, int left, int right) {
+   int low = left;
+   int high = right;
+   std::string temp;
+   std::string pivot = to_sort[(left + right) / 2];
+   while (low &lt;= high) {
+      //adjusts the low boudary
+      while ((to_sort[low].compare(pivot) &lt; 0) &amp;&amp; (low &lt; right)){
+         low++;
+      }
+      //adjusts the high boundary
+      while ((to_sort[high].compare(pivot) &gt; 0) &amp;&amp; (high &gt; left)) {
+         high--;
+      }
+      //swaps the values around the pivot
+      if (low &lt;= high) {
+         temp = to_sort[low];
+         to_sort[low] = to_sort[high];
+         to_sort[high] = temp;
+         low++;
+         high--;
+      }
+   }
+   //recursion
+   //recurses on the left side from the pivot
+   if (left &lt; high){
+      quickSort(to_sort, left, high);
+   }
+   //recurses on the right side form the pivot
+   if (low &lt; right){
+      quickSort(to_sort, low, right);
+   }
+   //checks if sorted and returns
+   int j = 0;
+   for(int i = 0; i &lt; (to_sort.size()-2); i++){
+      if (to_sort[i].compare(to_sort[i+1]) &gt; 0){
+         j++;
+      }
+   }
+   if (j == 0){
+      return;
+   }
+}
+
+int main() {
+  std::vector&lt;std::string&gt; lines;
+  for (std::string line; std::getline(std::cin, line); ) {
+    lines.push_back(line);
+  }
+  quickSort(lines, 0, lines.size()-1);
+  for (const std::string&amp; line : lines) {
+    std::cout &lt;&lt; line &lt;&lt; std::endl;
+  }
+  return 0;
+}</code></pre>
+
+
+<h2>Code 7</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;iterator&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+template &lt;typename Iterator&gt;
+void merge(Iterator a_cur, Iterator a_end,
+             Iterator b_cur, Iterator b_end,
+             Iterator output) {
+  // while a and b still have something left
+  // pick the smaller one and *output it
+  while (a_cur != a_end &amp;&amp; b_cur != b_end) {
+    if (*a_cur &lt; *b_cur) {
+      *output = *a_cur;
+      ++a_cur;
+    } else {
+      *output = *b_cur;
+      ++b_cur;
+    }
+    ++output;
+  }
+
+  // while a has something left, output it
+  while (a_cur != a_end) {
+    *output = *a_cur;
+    ++a_cur;
+    ++output;
+  }
+
+  // while b has something left, output it
+  while (b_cur != b_end) {
+    *output = *b_cur;
+    ++b_cur;
+    ++output;
+  }
+}
+
+template &lt;typename T&gt;
+void merge_sort(vector&lt;T&gt;&amp; vec, int low, int high) {
+  if (high - low &lt;= 1) {
+    return;
+  }
+  int middle = low + (high - low) / 2;
+  merge_sort(vec, low, middle);
+  merge_sort(vec, middle, high);
+  vector&lt;T&gt; temp(high - low);
+  merge(vec.begin() + low, vec.begin() + middle,
+          vec.begin() + middle, vec.begin() + high,
+          temp.begin());
+  for (int j = 0; j &lt; temp.size(); ++j) {
+    vec[low + j] = temp[j];
+  }
+}
+
+template &lt;typename T&gt;
+void merge_sort(vector&lt;T&gt;&amp; vec) {
+  merge_sort(vec, 0, vec.size());
+}
+
+
+int main() {
+   vector&lt;string&gt; list;
+   string line;
+   while (!cin.eof()){
+      getline(cin, line);
+      list.push_back(line);
+   }
+
+   merge_sort(list);
+   //cout &lt;&lt; &#34;\nsorted list contains: &#34; &lt;&lt; endl;
+   for (int i = 0; i &lt; list.size(); ++i){
+      cout &lt;&lt; list[i] &lt;&lt; endl;
+   }
+  
+   return 0;
+ }</code></pre>
+
+
+<h2>Code 8</h2>
+
+<pre><code class="c++">// STICK STICK STICK STICK STICK
+#include &#34;stdafx.h&#34;
+
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;random&gt;
+#include &lt;sstream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+template &lt;typename T&gt;
+void swap_func(vector&lt;T&gt;* arr, int k1, int k2)
+{
+   T temp = arr-&gt;at(k1);
+   arr-&gt;at(k1) = arr-&gt;at(k2);
+   arr-&gt;at(k2) = temp;
+}
+
+// Make sure high is 1 PASSED the index of the last member to be included in the sort!
+// I guess this is like quick sort after looking at algorithms online...
+// This method uses recursion.
+template &lt;typename T&gt;
+void josh_sort(vector&lt;T&gt;* arr, int low, int high)
+{
+   // If this is true, then shits fucked and lets GTFO.
+   if (low &gt;= high)
+      return;
+
+   int pivot = (rand() % (high - low)) + low; // pivot = [low, high)
+   int lower_pointer = low;
+   int upper_pointer = high - 1; // makes arr-&gt;at(upper_pointer) in the index range of arr
+
+   // base case: there are only two elements within the range of [lower_pointer, upper_pointer]
+   if (upper_pointer - lower_pointer &lt; 2)
+   {
+      if (arr-&gt;at(upper_pointer) &lt; arr-&gt;at(lower_pointer)) // If the elements at these two positions need to be swapped, do the swap.
+         swap_func(arr, lower_pointer, upper_pointer); // Swap them elements
+      return;// return out of this part of the function call stack
+   }
+
+   swap_func(arr, pivot, upper_pointer); // moves the pivot data out of the way by placing it in the last spot of the sorting zone.
+   pivot = upper_pointer; // adjusts the pivot index pointer to the last spot of the sorting zone.
+   --upper_pointer; // moves the upper pointer down into the &#34;new&#34; range of the sorting zone.
+
+   while (lower_pointer &lt; upper_pointer) // while the lower index pointer is less than the upper index pointer
+   {
+      if (arr-&gt;at(lower_pointer) &gt; arr-&gt;at(pivot)) // if the data at the lower index pointer is greater than the pivot data
+      {
+         // move the upper index pointer down until its data is less than the pivot data
+         // but only while the upper index pointer is greater than the lower index pointer
+         while (arr-&gt;at(upper_pointer) &gt; arr-&gt;at(pivot) &amp;&amp; upper_pointer &gt; lower_pointer)
+            --upper_pointer; // move the upper index pointer down by one
+         if (lower_pointer &lt; upper_pointer) // if the pointers are not pointing to the same index
+            swap_func(arr, lower_pointer, upper_pointer); // swap the datas at the two pointers
+      }
+      else
+      {
+         ++lower_pointer; // move the lower pointer up by one
+      }
+   }
+
+   if (arr-&gt;at(pivot) &lt; arr-&gt;at(lower_pointer)) // this is true 100% of the time, but i had it in here for a reason and imma leave it...
+   {
+      swap_func(arr, lower_pointer, pivot); // moves the pivot back into the sorting zone in the correct spot.
+      pivot = lower_pointer; // move the pivot index pointer back to the correct spot in the arr
+   }
+
+   josh_sort(arr, low, pivot); // recursive call for lower half of the arr
+   josh_sort(arr, pivot + 1, high); // recursive call for the upper half of the arr
+}
+
+template &lt;typename T&gt;
+void merge_sort(vector&lt;T&gt;* arr, int low, int high)             // O(  )
+{
+   int mid = (high + low) / 2;                                 // O( 1 )
+   int lower_pointer = low;                                    // O( 1 )
+   int upper_pointer = mid;                                    // O( 1 )
+
+   vector&lt;T&gt; *working_arr = new vector&lt;T&gt;();                   // O( 1 )
+
+   if (high - low &gt; 2)                                         // O( () + 1 )
+   {
+      merge_sort(arr, low, mid);                               // O( (high-low) / 2 )
+      merge_sort(arr, mid, high);                              // O( (high-low) / 2 )
+   }
+
+   while(lower_pointer &lt; mid || upper_pointer &lt; high)          // O( (high-lower_pointer) + 5 )
+   {
+      if (lower_pointer &lt; mid &amp;&amp; upper_pointer &lt; high)         // O( 4 )
+      {
+         if (arr-&gt;at(lower_pointer) &lt; arr-&gt;at(upper_pointer))  // O( 3 )
+         {
+            working_arr-&gt;push_back(arr-&gt;at(lower_pointer));    // O( 1 )
+            ++lower_pointer;                                   // O( 1 )
+         }
+         else                                                  // O( 3 )
+         {
+            working_arr-&gt;push_back(arr-&gt;at(upper_pointer));    // O( 1 )
+            ++upper_pointer;                                   // O( 1 )
+         }
+      }
+      else if (lower_pointer &lt; mid)                            // O( 3 )
+      {
+         working_arr-&gt;push_back(arr-&gt;at(lower_pointer));       // O( 1 )
+         ++lower_pointer;                                      // O( 1 )
+      }
+      else                                                     // O( 3 )
+      {
+         working_arr-&gt;push_back(arr-&gt;at(upper_pointer));       // O( 1 )
+         ++upper_pointer;                                      // O( 1 )
+      }
+   }
+
+   for (unsigned int i = 0; i &lt; working_arr-&gt;size(); ++i)      // O( (high-low) + 1 ) &lt; O( N )
+   {
+      arr-&gt;at(low + i) = working_arr-&gt;at(i);                   // O( 1 )
+   }
+
+   delete working_arr;                                         // O( high-low ) &lt; O( N )
+}
+
+void handle_istream(istream&amp; is, vector&lt;string&gt; *arr)
+{
+   string cur;
+   while (is.good())
+   {
+      getline(is, cur);
+      if (is.bad() || cur == &#34;&#34;)
+         break;
+      arr-&gt;push_back(cur);
+   }
+}
+
+int main()
+{
+
+   vector&lt;string&gt; *arr = new vector&lt;string&gt;();
+
+   handle_istream(cin, arr);
+
+   josh_sort(arr,0,arr-&gt;size());
+
+   for (unsigned int i = 0; i &lt; arr-&gt;size(); ++i)
+      cout &lt;&lt; arr-&gt;at(i) &lt;&lt; endl;
+
+   return 0;
+}</code></pre>
+
+
+<h2>Code 9</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+template &lt;typename inItr, typename outItr&gt;
+void myMerge(inItr first_cur, inItr first_end,
+             inItr second_cur, inItr second_end,
+             outItr output) {
+
+    while (first_cur != first_end &amp;&amp; second_cur != second_end) {
+        if (*first_cur &lt; *second_cur) {
+            *output = *first_cur;
+            ++first_cur;
+        } else {
+            *output = *second_cur;
+            ++second_cur;
+        }
+        ++output;
+    }
+    
+    while (first_cur != first_end) {
+        *output = *first_cur;
+        ++first_cur;
+        ++output;
+    }
+    
+    while (second_cur != second_end) {
+        *output = *second_cur;
+        ++second_cur;
+        ++output;
+    }
+}
+
+template &lt;typename T&gt;
+void mergeSort(vector&lt;T&gt;&amp; vec, unsigned long low, unsigned long high) {
+    // base case
+    if (high - low &lt;= 1) {
+        return;
+    }
+    // general case
+    unsigned long middle = low + (high - low) / 2;
+
+    mergeSort(vec, low, middle);
+    mergeSort(vec, middle, high);
+   
+    vector&lt;T&gt; temp(high - low);
+    myMerge(vec.begin() + low, vec.begin() + middle,
+            vec.begin() + middle, vec.begin() + high,
+            temp.begin());
+    
+    for (int j = 0; j &lt; temp.size(); ++j) {
+        vec[low + j] = temp[j];
+    }
+}
+
+template &lt;typename T&gt;
+void mergeSort(vector&lt;T&gt;&amp; vec) {
+    mergeSort(vec, 0, vec.size());
+}
+
+int main(int argc, char *argv[]) {
+    std::vector&lt;std::string&gt; lines;
+    for (std::string line; std::getline(std::cin, line); ) {
+        lines.push_back(line);
+    }
+    mergeSort(lines);
+    for (const std::string&amp; line : lines) {
+        std::cout &lt;&lt; line &lt;&lt; std::endl;
+    }
+    return 0;
+}</code></pre>
+
+
+<h2>Code 10</h2>
+
+<pre><code class="c++">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;fstream&gt;
+
+using namespace std;
+
+
+// MERGE SORT ----------------------------------------------------
+
+using namespace std;
+
+template &lt;typename InputIterator, typename OutputIterator&gt;
+void merge(InputIterator a_cur, InputIterator a_end,
+           InputIterator b_cur, InputIterator b_end,
+           OutputIterator output) {
+   //while a and b stil have something left
+   //pick the smaller one and *output it
+   while (a_cur != a_end &amp;&amp; b_cur != b_end) {
+      if (*a_cur &lt; *b_cur) {
+         *output = *a_cur;
+         ++a_cur;
+      } else {
+         *output = *b_cur;
+         ++b_cur;
+      }
+      ++output;
+   }
+
+   //while a has soemthing left, output it
+   while (a_cur != a_end &amp;&amp; b_cur == b_end) {
+      *output = *a_cur;
+      ++a_cur;
+      ++output;
+   }
+
+      //while b has something left, output it
+   while (b_cur != b_end) {
+         *output = *b_cur;
+         ++b_cur;
+         ++output;
+   }
+}
+
+template &lt;typename T&gt;
+void merge_sort(vector&lt;T&gt;&amp; vec, int low, int high) {
+   //base case
+   if (high - low &lt;= 1) {
+      return;
+   }
+   //general case
+   int middle = low + (high - low) / 2;
+
+   //sort left and right halves of vec from low to to high
+   merge_sort(vec, low, middle);
+   merge_sort(vec, middle, high);
+
+   //merge them to temp
+   vector&lt;T&gt; temp(high - low);
+   merge(vec.begin() + low, vec.begin() + middle, vec.begin()  + middle,
+           vec.begin() + high, temp.begin());
+   for (int j = 0; j &lt; temp.size(); ++j) {
+      vec.at(low + j) = temp.at(j);
+   }
+
+}
+
+// for convenience
+template &lt;typename T&gt;
+void merge_sort(vector&lt;T&gt; &amp; vec) {
+   merge_sort(vec, 0, vec.size());
+}
+
+
+int main() {
+   vector&lt;string&gt; *stuff = new vector&lt;string&gt;();
+
+   string str;
+   while (cin.good()) {
+      getline(cin, str);
+      if (cin.bad() || str == &#34;&#34;)
+         break;
+      stuff-&gt;push_back(str);
+   }
+
+   merge_sort(*stuff, 0, stuff-&gt;size());
+
+   for (int i = 0; i &lt; stuff-&gt;size(); ++i) {
+      cout &lt;&lt; stuff-&gt;at(i) &lt;&lt; endl;
+   }
+
+   return 0;
+
+}</code></pre>
+
+
+<h2>Code 11</h2>
+
+<pre><code class="c++">#include &#34;stdafx.h&#34;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+template &lt;typename Iter, typename OutputIter&gt;
+void merge(Iter a, Iter a_end, Iter b, Iter b_end, OutputIter output) {
+   while (a != a_end &amp;&amp; b != b_end) {
+      if (*a &lt; *b) {
+         *output = *a;
+         ++a;
+      }
+      else {
+         *output = *b;
+         ++b;
+      }
+      ++output;
+   }
+   while (a != a_end) {
+      *output = *a;
+      ++a;
+      ++output;
+   }
+   while (b != b_end) {
+      *output = *b;
+      ++b;
+      ++output;
+   }
+}
+
+void merge_sort(vector&lt;string&gt;&amp; lines, vector&lt;string&gt;&amp; scratch,
+      int low, int high) {
+
+   if (high - low &lt;= 1) {
+      return;
+   }
+
+   bool sorted = true;
+   for (int i = low + 1; i &lt; high; ++i) {
+      if (lines[i] &lt; lines[i - 1]) {
+         sorted = false;
+         break;
+      }
+   }
+   if (sorted)
+      return;
+
+   int middle = (low + high) / 2;
+   merge_sort(lines, scratch, low, middle);
+   merge_sort(lines, scratch, middle, high);
+
+   merge(lines.begin() + low, lines.begin() + middle, lines.begin() + middle, lines.begin() + high, scratch.begin() + low);
+
+   // copy from the scratch buffer back to lines
+   copy(scratch.begin() + low, scratch.begin() + high, lines.begin() + low);
+}
+
+void merge_sort(vector&lt;string&gt;&amp; lines) {
+   vector&lt;string&gt; scratch(lines.size());
+   merge_sort(lines, scratch, 0, lines.size());
+}
+
+
+int main()
+{
+   std::vector&lt;std::string&gt; lines;
+   for (std::string line; std::getline(std::cin, line); ) {
+      lines.push_back(line);
+   }
+   merge_sort(lines);
+   for (const std::string&amp; line : lines) {
+      std::cout &lt;&lt; line &lt;&lt; std::endl;
+   }
+   return 0;
+}</code></pre>
+
+
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

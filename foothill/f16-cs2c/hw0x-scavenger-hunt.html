@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<title>Homework 0x: Extra Credit Scavenger Hunt</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Homework</h2>
+<p>The goals of this assignment are to expose you to open-source code and to see if you can read code and calculate it's big-O.</p>
+<p>Find some snippets of open-source code, outside of Foothill and academia, with any of the following big-Os: O(log(N)), O(N), O(N * log(N)), O(N^2), and O(<em>something else</em>). You may only give one submission for each unique big-O. Each submission must include a snippet of copy-pasted code, a URL to the code, and an explicit statement of what "N" is.</p>
+
+<h3>Example</h3>
+<p>O(N), N = <code>colorList[j].numProperties</code></p>
+<pre><code class="c++">		for(k = 0; k &lt; colorList[j].numProperties; k++)
+		{
+			switch(colorList[j].properties[k].varType)
+			{
+			case Int:
+				*(int *)colorList[j].properties[k].varPtr = colorList[j].properties[k].initVal;
+				break;
+			}
+		}
+</code></pre>
+<a href="https://github.com/mikelmcdaniel/bitpad/blob/master/colors.cpp#L112">https://github.com/mikelmcdaniel/bitpad/blob/master/colors.cpp#L112</a>
+
+<h3>Submission</h3>
+<p>Submit your snippets below.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

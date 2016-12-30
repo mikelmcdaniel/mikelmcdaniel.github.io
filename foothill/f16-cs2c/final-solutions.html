@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+<head>
+<title>Foothill CS 2C Final (Fall 16)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<style>
+@media print {
+  footer {
+    page-break-after: always;
+  }
+  .answer {
+    display: none;
+  }
+}
+</style>
+
+<h2>Foothill CS 2C Final (Fall 2016) (130 points)</h2>
+<pre>
+Name:
+</pre>
+
+<div class="problem">
+<h2>Simplify Big-O (12 points)</h2>
+<p>Simplify the following Big-O's.</p>
+<table border="1" cellpadding="10">
+  <tr><th>Expression</th><th>Simplified Big-O</th></tr>
+  <tr><td>29</td><td><span class="answer">1</span></td></tr>
+  <tr><td>81 * N + 31 * N * N + 55</td><td><span class="answer">N * N</span></td></tr>
+  <tr><td>pow(2, 0) + pow(2, 1) + ... + pow(2, N - 1) + pow(2, N)</td><td><span class="answer">pow(2, N)</span></td></tr>
+  <tr><td>5 * f(3 * N) + 1</td><td><span class="answer">f(3 * N) + 1</span></td></tr>
+  <tr><td>N + (N - 1) + (N - 2) + ... + 3 + 2 + 1</td><td><span class="answer">pow(N, 2)</span></td></tr>
+  <tr><td>pow(3, 3 * N)</td><td><span class="answer">pow(27, N)</span></td></tr>
+</table>
+</div>
+
+<div class="problem">
+<h2>Big-O of Algorithms (12 points)</h2>
+<p>Write the average and worst case big-O's for the following algorithms:</p>
+<table border="1" cellpadding="10">
+  <tr><th>Algorithm</th><th>Average Big-O</th><th>(Worst Case) Big-O</th></tr>
+  <tr><td><code>std::map::find</code></td><td><span class="answer">O(log(N))</span></td><td><span class="answer">O(log(N))</span></td></tr>
+  <tr><td><code>std::unordered_map::find</code></td><td><span class="answer">O(1)</span></td><td><span class="answer">O(N)</span></td></tr>
+  <tr><td><code>std::unordered_map::erase</code></td><td><span class="answer">O(1)</span></td><td><span class="answer">O(N) or O(1)</span></td></tr>
+  <tr><td>Bubble Sort</td><td><span class="answer">O(pow(N, 2))</span></td><td><span class="answer">O(pow(N, 2))</span></td></tr>
+  <tr><td>Merge Sort</td><td><span class="answer">O(N * log(N))</span></td><td><span class="answer">O(N * log(N))</span></td></tr>
+  <tr><td>Heap Sort</td><td><span class="answer">O(N * log(N))</span></td><td><span class="answer">O(N * log(N))</span></td></tr>
+</table>
+</div>
+
+<footer></footer>
+
+<div class="problem">
+<h2>Big-O of Code (20 points)</h2>
+<table border="1">
+  <tr><th>Code</th><th>Big-O (Average or Worst Case)</th></tr>
+  <tr><td><pre><code class="c++">template &lt;typename T&gt;
+std::unique_ptr&lt;std::vector&lt;T&gt;&gt; ternary_merge(
+    const std::vector&lt;T&gt;&amp; a,
+    const std::vector&lt;T&gt;&amp; b,
+    const std::vector&lt;T&gt;&amp; c) {
+  auto output = std::unique_ptr&lt;std::vector&lt;T&gt;&gt;(
+      new std::vector&lt;T&gt;);
+  typename std::vector&lt;T&gt;::const_iterator iters[] {
+      a.begin(), b.begin(), c.begin()};
+  typename std::vector&lt;T&gt;::const_iterator iter_ends[] = {
+      a.end(), b.end(), c.end()};
+  for (;;) {
+    // Find the smallest item in iters
+    int smallest_iter = -1;
+    const T* smallest = nullptr;
+    for (int i = 0; i &lt; 3; ++i) {
+      if (iters[i] != iter_ends[i] &amp;&amp;
+          (smallest == nullptr || *iters[i] &lt; *smallest)) {
+        smallest_iter = i;
+        smallest = &amp;*iters[i];
+      }
+    }
+    if (smallest_iter == -1)
+      break;
+    output-&gt;push_back(*smallest);
+    ++iters[smallest_iter];
+  }
+  return output;
+}</code></pre></td><td><span class="answer">O(a.size() + b.size() + c.size())</span></td></tr>
+  <tr><td><pre><code class="c++">const long large_primes[] = {
+    179424691, 179425033, 179425601, 179426083,
+    179424697, 179425063, 179425619, 179426089};
+const int num_large_primes =
+    sizeof(large_primes) / sizeof(large_primes[0]);
+long large_prime_string_hash(const std::string&amp; str) {
+  long hash = 0, counter = 1;
+  for (const char&amp; c : str) {
+    hash += large_primes[counter % num_large_primes] * c;
+    ++counter;
+  }
+  return hash;
+}</code></pre></td><td><span class="answer">O(str.size())</span></td></tr>
+  <!-- <tr><td><pre><code class="c++"></code></pre></td><td></td></tr> -->
+</table>
+</div>
+
+<footer></footer>
+
+<div class="problem">
+<h2>Best Data Structure (9 points)</h2>
+<p>Practical data structures often make different trade offs.  For each pair of operations, write the data structure with the best big-O for performing that operations.  (Choose from vector, doubly-linked list, AVL tree, splay tree, hash table, or min/max heap.)</p>
+<table border="1" cellpadding="10">
+  <tr><th>Operations</th><th>Best Average Big-O</th><th>Best (Worst Case) Big-O</th></tr>
+  <tr><td>find/remove</td><td><span class="answer">hash table</span></td><td><span class="answer">AVL tree</span></td></tr>
+  <tr><td>insert/remove</td><td><span class="answer">hash table</span></td><td><span class="answer">AVL tree</span></td></tr>
+  <tr><td>find_min/find_max</td><td><span class="answer">min/max heap (or AVL tree)</span></td><td><span class="answer">min/max heap (or AVL tree)</span></td></tr>
+</table>
+</div>
+
+<div class="problem">
+<h2>Big-O Proofs (10 points)</h2>
+<p>f(N) &isin; O(g(N)) if and only if there exists some constants c and n such that for all N > n, f(N) &lt; c * g(N).</p>
+<h3>Prove that Quick Sort is O(N * log(N)) on average for sorting an array of N elements.</h3>
+
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+
+<footer></footer>
+
+<div class="problem">
+<h2>Probing Hash Table (10 points)</h2>
+<p>Assume you have an empty hash table for integers with 7 buckets that does not resize itself and uses quadratic probing (probing by 1, 4, 9, ..., i * i) hash function is <code>std::hash(key) = key</code>.  Draw the resulting hash table after inserting: 31, 41, 59, 26, then 53.</p>
+<table border="1" cellpadding="20">
+  <tr><td></td><td><span class="answer">53</span></td><td></td><td><span class="answer">31</span></td><td><span class="answer">59</span></td><td><span class="answer">26</span></td><td><span class="answer">41</span></td></tr>
+</table>
+</div>
+
+<div class="problem">
+<h2>Dijkstra's Algorithm (20 points)</h2>
+<p>Given the graph below, fill in the table below as if you'd run Dijkstra's Algorithm with A as the starting point until you found the shortest path to every other node.</p>
+<table><tr><td>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+ -->
+<!-- Title: dijkstras Pages: 1 -->
+<svg width="242pt" height="169pt"
+ viewBox="0.00 0.00 242.00 168.71" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 164.708)">
+<title>dijkstras</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-164.708 238,-164.708 238,4 -4,4"/>
+<!-- A -->
+<g id="node1" class="node"><title>A</title>
+<ellipse fill="none" stroke="black" cx="171" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="171" y="-76.6538" font-family="Times,serif" font-size="14.00">A</text>
+</g>
+<!-- B -->
+<g id="node2" class="node"><title>B</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-142.708" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-139.008" font-family="Times,serif" font-size="14.00">B</text>
+</g>
+<!-- A&#45;&gt;B -->
+<g id="edge1" class="edge"><title>A&#45;&gt;B</title>
+<path fill="none" stroke="black" d="M184.258,-96.1198C191.234,-104.546 195.62,-110.252 198.604,-115.297"/>
+<polygon fill="black" stroke="black" points="195.578,-117.096 202.927,-124.727 201.941,-114.178 195.578,-117.096"/>
+<text text-anchor="middle" x="191.481" y="-113.576" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+<!-- C -->
+<g id="node3" class="node"><title>C</title>
+<ellipse fill="none" stroke="black" cx="99" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="99" y="-76.6538" font-family="Times,serif" font-size="14.00">C</text>
+</g>
+<!-- A&#45;&gt;C -->
+<g id="edge2" class="edge"><title>A&#45;&gt;C</title>
+<path fill="none" stroke="black" d="M143.62,-80.3538C141.406,-80.3538 138.964,-80.3538 136.183,-80.3538"/>
+<polygon fill="black" stroke="black" points="136.022,-76.8539 126.022,-80.3538 136.022,-83.8539 136.022,-76.8539"/>
+<text text-anchor="middle" x="132.813" y="-84.1538" font-family="Times,serif" font-size="14.00">1</text>
+</g>
+<!-- E -->
+<g id="node4" class="node"><title>E</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-14.3" font-family="Times,serif" font-size="14.00">E</text>
+</g>
+<!-- A&#45;&gt;E -->
+<g id="edge3" class="edge"><title>A&#45;&gt;E</title>
+<path fill="none" stroke="black" d="M184.258,-64.5879C191.234,-56.1617 195.62,-50.4557 198.604,-45.4107"/>
+<polygon fill="black" stroke="black" points="201.941,-46.5295 202.927,-35.9807 195.578,-43.6121 201.941,-46.5295"/>
+<text text-anchor="middle" x="191.481" y="-39.7313" font-family="Times,serif" font-size="14.00">7</text>
+</g>
+<!-- B&#45;&gt;C -->
+<g id="edge4" class="edge"><title>B&#45;&gt;C</title>
+<path fill="none" stroke="black" d="M184.408,-132.849C170.263,-126.18 158.343,-118.92 126.795,-98.4521"/>
+<polygon fill="black" stroke="black" points="128.63,-95.4706 118.338,-92.956 124.816,-101.34 128.63,-95.4706"/>
+<text text-anchor="middle" x="147.283" y="-117.64" font-family="Times,serif" font-size="14.00">1</text>
+</g>
+<!-- B&#45;&gt;E -->
+<g id="edge5" class="edge"><title>B&#45;&gt;E</title>
+<path fill="none" stroke="black" d="M213.944,-125.21C228.283,-88.3931 229.512,-77.5665 217.63,-45.2041"/>
+<polygon fill="black" stroke="black" points="220.754,-43.5713 213.931,-35.4657 214.21,-46.0569 220.754,-43.5713"/>
+<text text-anchor="middle" x="222.206" y="-84.1531" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+<!-- C&#45;&gt;E -->
+<g id="edge7" class="edge"><title>C&#45;&gt;E</title>
+<path fill="none" stroke="black" d="M118.36,-67.7374C148.521,-48.1099 162.755,-39.069 175.019,-32.5562"/>
+<polygon fill="black" stroke="black" points="176.871,-35.543 184.245,-27.9352 173.737,-29.2842 176.871,-35.543"/>
+<text text-anchor="middle" x="149.953" y="-48.9964" font-family="Times,serif" font-size="14.00">3</text>
+</g>
+<!-- D -->
+<g id="node5" class="node"><title>D</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-76.6538" font-family="Times,serif" font-size="14.00">D</text>
+</g>
+<!-- C&#45;&gt;D -->
+<g id="edge6" class="edge"><title>C&#45;&gt;D</title>
+<path fill="none" stroke="black" d="M71.6676,-80.3538C69.0204,-80.3538 66.6176,-80.3538 64.4156,-80.3538"/>
+<polygon fill="black" stroke="black" points="64.3057,-76.8539 54.3057,-80.3538 64.3057,-83.8539 64.3057,-76.8539"/>
+<text text-anchor="middle" x="61.019" y="-84.1538" font-family="Times,serif" font-size="14.00">6</text>
+</g>
+<!-- E&#45;&gt;D -->
+<g id="edge8" class="edge"><title>E&#45;&gt;D</title>
+<path fill="none" stroke="black" d="M180.039,-16.0316C123.673,-12.4338 109.957,-17.2877 53.2129,-60.2727"/>
+<polygon fill="black" stroke="black" points="50.747,-57.7512 44.9116,-66.5942 54.9879,-63.3202 50.747,-57.7512"/>
+<text text-anchor="middle" x="101.195" y="-29.5946" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+</g>
+</svg>
+
+</td><td>
+
+<p></p>
+<table border="1" cellpadding="10">
+  <tr><th>Node</th><th>Previous Node</th><th>Minimum Path Length</th></tr>
+  <tr><td>A</td><td><span class="answer">-</span></td><td><span class="answer">0</span></td></tr>
+  <tr><td>B</td><td><span class="answer">A</span></td><td><span class="answer">2</span></td></tr>
+  <tr><td>C</td><td><span class="answer">A</span></td><td><span class="answer">1</span></td></tr>
+  <tr><td>D</td><td><span class="answer">E</span></td><td><span class="answer">6</span></td></tr>
+  <tr><td>E</td><td><span class="answer">B or C</span></td><td><span class="answer">4</span></td></tr>
+</table>
+</td></tr></table>
+
+</div>
+
+<footer></footer>
+
+<div class="problem">
+<h2>Minimum Spanning Tree (10 points)</h2>
+<p>Pretend the previous graph (from the Dijkstra's algorithm question) was undirected.  Draw the minimum spanning tree for that graph below:</p>
+<span class="answer"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+ -->
+<!-- Title: dijkstras Pages: 1 -->
+<svg width="242pt" height="169pt"
+ viewBox="0.00 0.00 242.00 168.71" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 164.708)">
+<title>dijkstras</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-164.708 238,-164.708 238,4 -4,4"/>
+<!-- A -->
+<g id="node1" class="node"><title>A</title>
+<ellipse fill="none" stroke="black" cx="171" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="171" y="-76.6538" font-family="Times,serif" font-size="14.00">A</text>
+</g>
+<!-- B -->
+<g id="node2" class="node"><title>B</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-142.708" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-139.008" font-family="Times,serif" font-size="14.00">B</text>
+</g>
+<!-- A&#45;&#45;B -->
+<!-- C -->
+<g id="node3" class="node"><title>C</title>
+<ellipse fill="none" stroke="black" cx="99" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="99" y="-76.6538" font-family="Times,serif" font-size="14.00">C</text>
+</g>
+<!-- A&#45;&#45;C -->
+<g id="edge2" class="edge"><title>A&#45;&#45;C</title>
+<path fill="none" stroke="black" d="M143.62,-80.3538C139.049,-80.3538 133.505,-80.3538 126.022,-80.3538"/>
+<text text-anchor="middle" x="132.413" y="-84.1538" font-family="Times,serif" font-size="14.00">1</text>
+</g>
+<!-- E -->
+<g id="node4" class="node"><title>E</title>
+<ellipse fill="none" stroke="black" cx="207" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-14.3" font-family="Times,serif" font-size="14.00">E</text>
+</g>
+<!-- A&#45;&#45;E -->
+<!-- B&#45;&#45;C -->
+<g id="edge4" class="edge"><title>B&#45;&#45;C</title>
+<path fill="none" stroke="black" d="M184.408,-132.849C169.064,-125.615 156.339,-117.685 118.338,-92.956"/>
+<text text-anchor="middle" x="156.369" y="-123.263" font-family="Times,serif" font-size="14.00">1</text>
+</g>
+<!-- B&#45;&#45;E -->
+<g id="edge5" class="edge"><title>B&#45;&#45;E</title>
+<path fill="none" stroke="black" d="M213.944,-125.21C229.631,-84.9316 229.627,-75.7605 213.931,-35.4657"/>
+<text text-anchor="middle" x="222.206" y="-84.144" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+<!-- C&#45;&#45;E -->
+<!-- D -->
+<g id="node5" class="node"><title>D</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-80.3538" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-76.6538" font-family="Times,serif" font-size="14.00">D</text>
+</g>
+<!-- C&#45;&#45;D -->
+<!-- E&#45;&#45;D -->
+<g id="edge8" class="edge"><title>E&#45;&#45;D</title>
+<path fill="none" stroke="black" d="M180.039,-16.0316C121.022,-12.2646 108.761,-17.763 44.9116,-66.5942"/>
+<text text-anchor="middle" x="110.787" y="-25.3886" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+</g>
+</svg>
+</span>
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+
+<div class="problem">
+<h2>Maximum Flow (10 points)</h2>
+<p>Pretend the previous graph (from the Dijkstra's algorithm question) was undirected.  Fill in the maximum flows below:</p>
+<table border="1" cellpadding="10">
+  <tr><th>Source</th><th>Sink</th><th>Maximum Flow</th></tr>
+  <tr><td>A</td><td>E</td><td><span class="answer">2 + 7 + 1 = 10</span></td></tr>
+  <tr><td>A</td><td>D</td><td><span class="answer">2 + 2 = 4</span></td></tr>
+  <tr><td>B</td><td>D</td><td><span class="answer">2 + 1 = 3</span></td></tr>
+</table>
+</div>
+
+<!-- <footer></footer> -->
+
+<!-- <div class="problem"> -->
+<h2>Min Heap (15 points)</h2>
+<p>Given the code below for a partially-implemented MinHeap class, implement the <code>percolate_down</code> method.</p>
+<pre><code class="c++">int parent_index(int index) {
+  return (index - 1) / 2;
+}
+int left_index(int index) {
+  return 2 * index + 1;
+}
+int right_index(int index) {
+  return 2 * index + 2;
+}
+
+template &lt;typename T&gt;
+class MinHeap {
+private:
+  std::vector&lt;T&gt; values;
+
+  void percolate_up(int index) {
+    while (index &gt; 0) {
+      int parent = parent_index(index);
+      if (values[index] &lt; values[parent]) {
+        std::swap(values[index], values[parent]);
+      } else {
+        break;
+      }
+      index = parent;
+    }
+  }
+  void percolate_down(int index) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }
+
+public:
+  void pop() {
+    if (values.size() &gt; 1) {
+      std::swap(values[0], values[values.size() - 1]);
+    }
+    values.pop_back();
+    percolate_down(0);
+  }
+  ...</code></pre>
+<!-- </div> -->
+
+<h2>Favorites (2 points)</h2>
+<p>What's your favorite data structure and why?  (2-5 sentences)</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

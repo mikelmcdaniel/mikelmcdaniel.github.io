@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<title>Homework: Ternary Search</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Ternary Search</h2>
+<p><a href="https://en.wikipedia.org/wiki/Binary_search_algorithm">Binary Search</a> (on vectors) works by taking a section of a vector (starting with all of it), finding the mid-point, comparing that to the value to be found, then binary searching before or after the mid-point.</p>
+
+<p>Implement a ternary search that looks 1/3 <strong>and then</strong> 2/3 of the way between the lower and upper indices of the section of the vector instead of at the mid-point (1/2 way between the lower and upper indices). Note that in Binary Search, you always do one check then recurse left or right, but in Ternary Search you make a check then either recurse left <strong>or</strong> do a second check and recurse in the middle or right. Use the following type signature so Grade Oven can compile your code: <code class="c++">template &lt;typename ArrayLike, typename T&gt; int ternary_search(const ArrayLike&amp; array, const T&amp; value, int low, int high);</code></p>
+
+<p>Specifically, you'll be implementing and submitting your own version of ternary_search.h that will look something like this:
+<pre><code class="c++">template &lt;typename ArrayLike, typename T&gt;
+int ternary_search(const ArrayLike&amp; array, const T&amp; value, int low, int high) {
+  // Replace the code below with code that actually does a tenary search.
+  for (int i = low; i &lt; high; ++i) {
+    if (array[i] == value) {
+      return i;
+    }
+  }
+  return -1;
+}
+</pre></code>
+</p>
+
+<p>
+Here's an example program that you can run to make sure your <strong>ternary_search.h</strong> is correct:
+<pre><code class="c++">#include &lt;iostream&gt;
+#include <strong>"ternary_search.h"</strong>
+
+int main() {
+  int nums[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
+  for (int i = 0; i &lt;= 90; i += 10) {
+    if (<strong>ternary_search</strong>(nums, i, 0, 10) != i / 10) {
+      std::cout
+        &lt;&lt; "Searching for " &lt;&lt; i &lt;&lt; " returned index "
+        &lt;&lt; <strong>ternary_search</strong>(nums, i, 0, 10) &lt;&lt; " instead of "
+        &lt;&lt; i / 10 &lt;&lt; "." &lt;&lt; std::endl;
+      return 1;
+    }
+
+    // search for something that doesn't exist.
+    if (<strong>ternary_search</strong>(nums, i + 1, 0, 10) != -1) {
+      std::cout
+        &lt;&lt; "Searching for " &lt;&lt; i + 1 &lt;&lt; " returned index "
+        &lt;&lt; <strong>ternary_search</strong>(nums, i + 1, 0, 10) &lt;&lt; " instead of -1."
+        &lt;&lt; std::endl;
+      return 1;
+    }
+  }
+  std::cout &lt;&lt; "On this small example, your search algorithm seems correct.\n";
+  return 0;
+}
+</pre></code>
+</p>
+
+<h3>Submission</h3>
+<p>Submit your homework via <a href="https://gradeoven.com/courses/CS%202C/assignments/01.%20Ternary%20Search">gradeoven.com/courses/CS 2C/assignments/01. Ternary Search</a>.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

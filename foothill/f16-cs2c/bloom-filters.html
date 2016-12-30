@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<title>Bloom Filters</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Bloom Filter</h2>
+<h3>A Problem</h3>
+<p>Imagine that you have an operation, like checking if something is in a set, that's very expensive and you'd like to avoid that expensive operation. For example, you could a big map of words to web pages that contains those words. The map could be so big that it doesn't fit in memory so it has to be on disk. Alternatively, imagine that you have a browser and you want to warn people about malicious sites. It's simple enough... every time someone goes to a URL then send a request to your servers that either say 'yes' this is a bad site or 'no' this site is safe. If you had to send every URL for the servers to check, they'd have to check a lot of URLs.</p>
+<h3>A Solution</h3>
+<p>A bloom filter has 2 operations: <code>insert(x)</code> and <code>maybe_contains(x)</code>. <code>maybe_contains(x)</code> returns true if <code>x</code> might have been inserted and false if it was definitely not inserted. To make a bloom filter, start with N bits and set them to 0. To "insert" something into the bloom filter, hash it, mod it by N, then set that bit to 1. To check if something has been inserted, hash it, mod it by N, then check if that bit was set to 1.</p>
+<p>The problem with bloom filters is that even with a lot of bits, it's possible for two or more things to 'hash' to the same bit. This means that if you check a bit in the bloom filter and it is set to 1, you can't be sure why it was set to 1.</p>
+<h3>Example Program</h3>
+example_char_bloom_filter.cpp<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;utility&gt; // std::hash is in utility
+#include &lt;string&gt;
+
+class CharBloomFilter {
+public:
+  char bits;
+
+  CharBloomFilter() : bits(0) {}
+
+  template &lt;typename T&gt;
+  void insert(const T&amp; x) {
+    bits |= 1 &lt;&lt; (std::hash&lt;T&gt;{}(x) % 8);
+  }
+
+  template &lt;typename T&gt;
+  bool maybe_contains(const T&amp; x) {
+    return bits &amp; (1 &lt;&lt; (std::hash&lt;T&gt;{}(x) % 8));
+  }
+};
+
+std::string binary_string(char c) {
+  std::string s;
+  s.resize(sizeof(c) * 8, &#39;0&#39;);
+  for (int j = 0; j &lt; sizeof(c) * 8; ++j) {
+    if (c &amp; (1 &lt;&lt; j)) {
+      s[j] = &#39;1&#39;;
+    }
+  }
+  return s;
+}
+
+int main() {
+  std::string fruits[] = {
+    &#34;Apple&#34;, &#34;Banana&#34;, &#34;Coconut&#34;, &#34;Grape&#34;, &#34;Lychee&#34;, &#34;Orange&#34;, &#34;Pear&#34;};
+  const int num_fruits = sizeof(fruits) / sizeof(fruits[0]);
+  CharBloomFilter bloom_filter;
+
+  for (int j = 0; j &lt; num_fruits / 2; ++j) {
+    std::cout &lt;&lt; &#34;.insert(&#34; &lt;&lt; fruits[j] &lt;&lt; &#34;);&#34; &lt;&lt; std::endl;
+    bloom_filter.insert(fruits[j]);
+    std::cout &lt;&lt; &#34;.bits == &#34; &lt;&lt; binary_string(bloom_filter.bits) &lt;&lt; std::endl;
+  }
+  std::cout &lt;&lt; std::endl;
+
+  for (int j = 0; j &lt; num_fruits; ++j) {
+    std::cout &lt;&lt; &#34;.maybe_contains(&#34; &lt;&lt; fruits[j] &lt;&lt; &#34;) == &#34;
+              &lt;&lt; bloom_filter.maybe_contains(fruits[j]) &lt;&lt; &#34;;&#34; &lt;&lt; std::endl;
+  }
+  return 0;
+}</code></pre><pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -lpthread -std=c++11 -o example example_char_bloom_filter.cpp</kbd>
+<strong>$</strong> <kbd>./example</kbd></pre><pre><samp>.insert(Apple);
+.bits == 00000100
+.insert(Banana);
+.bits == 00001100
+.insert(Coconut);
+.bits == 01001100
+
+.maybe_contains(Apple) == 1;
+.maybe_contains(Banana) == 1;
+.maybe_contains(Coconut) == 1;
+.maybe_contains(Grape) == 0;
+.maybe_contains(Lychee) == 0;
+.maybe_contains(Orange) == 0;
+.maybe_contains(Pear) == 1;
+</samp></pre>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

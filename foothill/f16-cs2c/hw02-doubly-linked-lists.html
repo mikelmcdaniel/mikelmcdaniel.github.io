@@ -1,0 +1,443 @@
+<!doctype html>
+<html>
+<head>
+<title>Homework 02: Doubly Linked Lists</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Doubly Linked List (the actual homework)</h2>
+<p><a href="https://en.wikipedia.org/wiki/Doubly_linked_list#Double_linked_list_implementation">Doubly Linked Lists</a> already exist in the STL as the <a href="http://www.cplusplus.com/reference/list/list/"><code>std::list</code> class</a>.  For this homework, you'll be implementing the following class:</p>
+<h3>doubly_linked_list.h</h3>
+<pre><code class="c++">#ifndef _DOUBLY_LINKED_LIST_H_
+#define _DOUBLY_LINKED_LIST_H_
+
+#include &lt;initializer_list&gt;
+
+template &lt;typename T&gt;
+class DoublyLinkedList {
+  // Any data members you need should go here, in the private section
+public:
+  class iterator {
+    // Any data members you need should go here, in the private section
+  public:
+    iterator&amp; operator--();
+    iterator&amp; operator++();
+    const T&amp; operator*() const;
+    bool operator!=(const iterator&amp; other) const;
+
+    // This allows DoublyLinkedList to be able to look at/modify anything in
+    // iterator, even if it&#39;s in the private section.
+    friend class DoublyLinkedList;
+  };
+  DoublyLinkedList();
+  DoublyLinkedList(const DoublyLinkedList&amp; other);
+  DoublyLinkedList(std::initializer_list&lt;T&gt;);
+  ~DoublyLinkedList();
+
+  int size() const noexcept;
+  void push_back(const T&amp; value);
+  void remove(const T&amp; val);
+  iterator erase(iterator position);
+  iterator insert(iterator position, const T&amp; value);
+
+  iterator begin();
+  iterator end();
+  iterator rbegin();
+  iterator rend();
+};
+
+#endif  // _DOUBLY_LINKED_LIST_H_</code></pre>
+<p>Each method should behave like the corresponding method in <code>std::list</code> without using any of the code in <code>std::list</code>.  If you get stuck on anything, try implementing just enough of DoublyLinkedList list that you can write short program that tests it, like the sample program below:
+</p>
+<pre><code class="c++">#include &lt;iostream&gt;
+
+#include &#34;doubly_linked_list.h&#34;
+
+// Simple main program that tests that the following methods work:
+// DoublyLinkedList();  // default constructor
+// DoublyLinkedList::push_back;
+// DoublyLinkedList::begin();
+// const T&amp;amp; iterator::operator*() const;
+int main() {
+  DoublyLinkedList&lt;std::string&gt; mylist;
+  mylist.push_back(&#34;first&#34;);
+  mylist.push_back(&#34;second&#34;);
+  DoublyLinkedList&lt;std::string&gt;::iterator myiterator = mylist.begin();
+  if (*myiterator != &#34;first&#34;) {
+    std::cout &lt;&lt; &#34;Oh no!  Expected *myiterator == \&#34;first\&#34;, &#34;
+              &lt;&lt; &#34;but actually *myiterator == &#34; &lt;&lt; *myiterator &lt;&lt; std::endl;
+  }
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -lpthread -std=c++11 -o example doubly_linked_list_simple_test.cpp</kbd>
+<strong>$</strong> <kbd>./example</kbd></pre><pre><samp></samp></pre>
+<p>Remember that a test should only inform the user if there's a problem. This test shouldn't print anything.</p>
+
+<h2>SimpleVector (an example to help with the homework)</h2>
+<p>Below is some sample code for a SimpleVector class that implements a subset of the <a href="http://en.cppreference.com/w/cpp/container/vector"><code>std::vector</code> api</a>.  Use it as an example for implementing your own doubly-linked-list.</p>
+<h3>simple_vector.h</h3>
+<pre><code class="c++">#ifndef _SIMPLE_VECTOR_H_
+#define _SIMPLE_VECTOR_H_
+
+#include &lt;initializer_list&gt;
+
+
+template &lt;typename T&gt;
+class SimpleVector {
+  // All a simple vector needs to keep track of is the array of values,
+  // the current number of values (size_), and the capacity_ of the array.
+  T *array;
+  int size_, capacity_;
+public:
+  // If we didn&#39;t support &#39;reversed&#39; iterators, then we could&#39;ve written
+  // typedef T* iterator;
+  // and instead since it supports all the operations we need.
+  class iterator {
+    SimpleVector* vector;
+    int index;
+    bool reversed;
+  public:
+    iterator(SimpleVector* vector, int index, bool reversed=false)
+      : vector(vector), index(index), reversed(reversed) {}
+    iterator&amp; operator--() {
+      if (reversed) {
+        ++index;
+      } else {
+        --index;
+      }
+      return *this;
+    }
+    iterator&amp; operator++() {
+      if (reversed) {
+        --index;
+      } else {
+        ++index;
+      }
+      return *this;
+    }
+    T&amp; operator*() {
+      return (*vector)[index];
+    }
+    const T&amp; operator*() const {
+      return (*vector)[index];
+    }
+    bool operator!=(const iterator&amp; other) const {
+      return index != other.index || vector != other.vector;
+    }
+  };
+
+  SimpleVector() : size_(0), capacity_(16) {
+    array= new T[capacity_];
+  }
+  SimpleVector(const SimpleVector&amp; other) : SimpleVector() {
+    for (const T&amp; v: other) {
+      push_back(v);
+    }
+  }
+  // This contructor allows you to write code like
+  // SimpleVector&lt;std::string&gt; myvector = {&#34;Hello&#34;, &#34;World&#34;};
+  SimpleVector(std::initializer_list&lt;T&gt; ilist) : SimpleVector() {
+    for (const T&amp; v: ilist) {
+      push_back(v);
+    }
+  }
+
+  int size() const noexcept {
+    return size_;
+  }
+  int capacity() const noexcept {
+    return capacity_;
+  }
+  void reserve(int min_capacity) {
+    int new_capacity = capacity_;
+    // keep doubling new_capacity until we have enough room
+    // e.g. if capacity_ == 500 and min_capacity = 1000, then
+    // this loop will make new_capacity == 1024.
+    while (min_capacity &gt; capacity_) {
+      new_capacity *= 2;
+    }
+    // If we need more capacity, then create a larger new_array and copy
+    // everything to the new_array, then delete the old array.
+    if (new_capacity &gt; capacity_) {
+      T* new_array = new T[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_array[i] = array[i];
+      }
+      delete[] array;
+      array = new_array;
+      capacity_ = new_capacity;
+    }
+  }
+  void push_back(const T&amp; value) {
+    insert(end(), value);
+  }
+  void remove(const T&amp; val) {
+    iterator iter_end = end();
+    for (iterator iter = begin(); iter != iter_end;) {
+      if (*iter == val) {
+        iter = erase(iter);
+      } else {
+        ++iter;
+      }
+    }
+  }
+  iterator erase(iterator position) {
+    iterator iter_end = end();
+    iterator cur = position, next = position;
+    --size_;
+    // Erase this value at position by copying everything over it.
+    for (++next; next != iter_end; ++next, ++cur) {
+      *cur = *next;
+    }
+    return position;
+  }
+  iterator insert(iterator position, const T&amp; value) {
+    reserve(size_ + 1);
+    iterator cur = end();
+    iterator prev = cur;
+    // Copy everything over to make room to insert value at position.
+    for (--prev; cur != position; --cur, --prev) {
+      *cur = *prev;
+    }
+    *position = value;
+    ++size_;
+    ++position;
+    return position;
+  }
+
+  const T&amp; operator[](int index) const {
+    return array[index];
+  }
+  T&amp; operator[](int index) {
+    return array[index];
+  }
+
+  iterator begin() {
+    return iterator(this, 0);
+  }
+  iterator end() {
+    return iterator(this, size_);
+  }
+  iterator rbegin() {
+    return iterator(this, size_ - 1, true);
+  }
+  iterator rend() {
+    return iterator(this, -1, true);
+  }
+};
+
+
+#endif  // _SIMPLE_VECTOR_H_</code></pre>
+<h3>simple_vector.cpp (including output)</h3>
+<p>Here's an example program that tests <em>some</em> of the functionality</p>
+simple_vector.h<pre><code class="c++">#ifndef _SIMPLE_VECTOR_H_
+#define _SIMPLE_VECTOR_H_
+
+#include &lt;initializer_list&gt;
+
+
+template &lt;typename T&gt;
+class SimpleVector {
+  // All a simple vector needs to keep track of is the array of values,
+  // the current number of values (size_), and the capacity_ of the array.
+  T *array;
+  int size_, capacity_;
+public:
+  // If we didn&#39;t support &#39;reversed&#39; iterators, then we could&#39;ve written
+  // typedef T* iterator;
+  // and instead since it supports all the operations we need.
+  class iterator {
+    SimpleVector* vector;
+    int index;
+    bool reversed;
+  public:
+    iterator(SimpleVector* vector, int index, bool reversed=false)
+      : vector(vector), index(index), reversed(reversed) {}
+    iterator&amp; operator--() {
+      if (reversed) {
+        ++index;
+      } else {
+        --index;
+      }
+      return *this;
+    }
+    iterator&amp; operator++() {
+      if (reversed) {
+        --index;
+      } else {
+        ++index;
+      }
+      return *this;
+    }
+    T&amp; operator*() {
+      return (*vector)[index];
+    }
+    const T&amp; operator*() const {
+      return (*vector)[index];
+    }
+    bool operator!=(const iterator&amp; other) const {
+      return index != other.index || vector != other.vector;
+    }
+  };
+
+  SimpleVector() : size_(0), capacity_(16) {
+    array= new T[capacity_];
+  }
+  SimpleVector(const SimpleVector&amp; other) : SimpleVector() {
+    for (const T&amp; v: other) {
+      push_back(v);
+    }
+  }
+  // This contructor allows you to write code like
+  // SimpleVector&lt;std::string&gt; myvector = {&#34;Hello&#34;, &#34;World&#34;};
+  SimpleVector(std::initializer_list&lt;T&gt; ilist) : SimpleVector() {
+    for (const T&amp; v: ilist) {
+      push_back(v);
+    }
+  }
+
+  int size() const noexcept {
+    return size_;
+  }
+  int capacity() const noexcept {
+    return capacity_;
+  }
+  void reserve(int min_capacity) {
+    int new_capacity = capacity_;
+    // keep doubling new_capacity until we have enough room
+    // e.g. if capacity_ == 500 and min_capacity = 1000, then
+    // this loop will make new_capacity == 1024.
+    while (min_capacity &gt; capacity_) {
+      new_capacity *= 2;
+    }
+    // If we need more capacity, then create a larger new_array and copy
+    // everything to the new_array, then delete the old array.
+    if (new_capacity &gt; capacity_) {
+      T* new_array = new T[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_array[i] = array[i];
+      }
+      delete[] array;
+      array = new_array;
+      capacity_ = new_capacity;
+    }
+  }
+  void push_back(const T&amp; value) {
+    insert(end(), value);
+  }
+  void remove(const T&amp; val) {
+    iterator iter_end = end();
+    for (iterator iter = begin(); iter != iter_end;) {
+      if (*iter == val) {
+        iter = erase(iter);
+      } else {
+        ++iter;
+      }
+    }
+  }
+  iterator erase(iterator position) {
+    iterator iter_end = end();
+    iterator cur = position, next = position;
+    --size_;
+    // Erase this value at position by copying everything over it.
+    for (++next; next != iter_end; ++next, ++cur) {
+      *cur = *next;
+    }
+    return position;
+  }
+  iterator insert(iterator position, const T&amp; value) {
+    reserve(size_ + 1);
+    iterator cur = end();
+    iterator prev = cur;
+    // Copy everything over to make room to insert value at position.
+    for (--prev; cur != position; --cur, --prev) {
+      *cur = *prev;
+    }
+    *position = value;
+    ++size_;
+    ++position;
+    return position;
+  }
+
+  const T&amp; operator[](int index) const {
+    return array[index];
+  }
+  T&amp; operator[](int index) {
+    return array[index];
+  }
+
+  iterator begin() {
+    return iterator(this, 0);
+  }
+  iterator end() {
+    return iterator(this, size_);
+  }
+  iterator rbegin() {
+    return iterator(this, size_ - 1, true);
+  }
+  iterator rend() {
+    return iterator(this, -1, true);
+  }
+};
+
+
+#endif  // _SIMPLE_VECTOR_H_</code></pre>simple_vector_demo.cpp<pre><code class="c++">#include &lt;iostream&gt;
+
+#include &#34;simple_vector.h&#34;
+
+int main() {
+  SimpleVector&lt;std::string&gt; vector = {&#34;Simple&#34;, &#34;Simple&#34;, &#34;Vectors&#34;, &#34;can&#34;, &#34;exist&#34;};
+
+  std::cout &lt;&lt; &#34;Initial vector:  &#34;;
+  for (const auto&amp; v : vector) {
+    std::cout &lt;&lt; v &lt;&lt; &#34; &#34;;
+  }
+  std::cout&lt;&lt; &#34;\n\n&#34;;
+
+  std::cout &lt;&lt; &#34;Initial vector (without \&#34;Simple\&#34;):  &#34;;
+  vector.remove(&#34;Simple&#34;);
+  for (const auto&amp; v : vector) {
+    std::cout &lt;&lt; v &lt;&lt; &#34; &#34;;
+  }
+  std::cout&lt;&lt; &#34;\n\n&#34;;
+
+  std::cout &lt;&lt; &#34;Crazy Incredible vector:  &#34;;
+  vector.insert(vector.begin(), &#34;Crazy&#34;);
+  vector.insert(++vector.begin(), &#34;Incredible&#34;);
+  for (const auto&amp; v : vector) {
+    std::cout &lt;&lt; v &lt;&lt; &#34; &#34;;
+  }
+  std::cout&lt;&lt; &#34;\n\n&#34;;
+
+  std::cout &lt;&lt; &#34;Vector backwards:  &#34;;
+  auto iter_end = vector.rend();
+  for (auto iter = vector.rbegin(); iter != iter_end; ++iter) {
+    const auto&amp; v = *iter;
+    std::cout &lt;&lt; v &lt;&lt; &#34; &#34;;
+  }
+  std::cout&lt;&lt; &#34;\n\n&#34;;
+  return 0;
+}</code></pre><pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -lpthread -std=c++11 -o example simple_vector_demo.cpp</kbd>
+<strong>$</strong> <kbd>./example</kbd></pre><pre><samp>Initial vector:  Simple Simple Vectors can exist 
+
+Initial vector (without &#34;Simple&#34;):  Vectors can exist 
+
+Crazy Incredible vector:  Crazy Incredible Vectors can exist 
+
+Vector backwards:  exist can Vectors Incredible Crazy 
+
+</samp></pre>
+
+<h3>Submission</h3>
+<p>Submit your code on <a href="https://gradeoven.com/courses/CS%202C/assignments/02.%20Doubly%20Linked%20List">gradeoven.com</a>.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

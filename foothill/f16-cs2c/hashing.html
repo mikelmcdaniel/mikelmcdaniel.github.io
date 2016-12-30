@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head>
+<title>Hashing</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/Hash_table">Hash Tables</a></h2>
+<h3>A Problem and Imagination</h3>
+<p>Imagine that we wanted to store some data, like a map of names to phone numbers for everyone in the world and we wanted searching, inserting, and deleting names/phone numbers to be really fast. We could use a vector or linked list, but then searching would take O(N) time for N names/numbers. We could improve by using a balanced binary search tree instead, which would make each operation O(log(N)), but we can do even better. So far, we've just talked about putting the data in one data structure... one "bucket". What if we had lots of buckets (vectors, linked lists, or balanced binary search trees) and we could somehow know which one to search for the data? If we had B buckets, then whatever big-O we had before for searching (e.g. O(log(N)) for the trees) would now be divided by B (e.g. O(log(N) / B)). What if we could also could increase the number of buckets as more elements were inserted? Then our big-O of searching could be cut by O(N), so searching would be O(1)!</p>
+<p>Well, if we could take a name and turn it into an in O(1) time, then we could pick a bucket in O(1) time. Just imagine that our buckets are stored in a vector. Then, if we could take a name and turn it into an integer, we'd choose the bucket as the number <a href="https://en.wikipedia.org/wiki/Modulo_operation">modulo</a> the number of buckets.</p>
+<p>Let's call this function (that takes a name and outputs an integer) a <a href="https://en.wikipedia.org/wiki/Hash_function">hash function</a>. Here's a simple hash function: let's take each letter and assign it a number like A=1, B=2, ..., Z=26 and just add up all the letters. This works, but has a couple of big problems. If we have lots of buckets only names with lots of letters and high-value letters will produce a large integer. Also, some integers will be more likely than others, so some buckets in a hash table would become more full than others. Ideally, a hash function has a large range of possible outputs and those outputs are uniformly distributed, meaning that the likely hood of choosing any bucket is equally likely.</p>
+<h3>Design</h3>
+<p>There are other ways to build a hash table that we'll cover later, but for now, let's expand on the 'bucket' idea, also known as separate chaining. We'll also not worry about the name to phone number idea, since all the ideas of a hash table can be applied to virtually any data we want to store. In separate chaining, you have a vector of buckets. Traditionally, each bucket is a linked list, but it could be any container... even another hash table.</p>
+<h4>Insert / Search / Remove  (without resizing)</h4>
+<p>Inserting into a such a hash table is simple, as long as you don't have to resize it. Hash the key you're looking for, mod it by the number of buckets, then just insert in that bucket. Some sample code would look like <code>buckets[std::abs(hash(key) % num_buckets)].insert(key, value)</code>. (Note that in C++ and some other languages, a negative number modulo a positive number returns a non-positive number, even though this is mathematically incorrect! For example, <code>-33 % 10 == -3</code>.)  Searching and removing is very similar, except you just replace <code>.insert(key, value)</code> with <code>.insert(key)</code> or <code>.remove(key)</code>.</p>
+<h4>Example hash functions</h4>
+<pre><code class="c++">#include &lt;cstdlib&gt;
+#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+// Hash a name by assigning each letter a value (A=1, B=2, ..., Z=26)
+// and adding up all the letter-values.
+long simple_name_hash(const std::string&amp; name) {
+  long hash = 0;
+  for (const char&amp; c : name) {
+    if (c &gt;= &#39;a&#39; &amp;&amp; c &lt;= &#39;z&#39;) {
+      hash += c - &#39;a&#39; + 1;
+    } else if (c &gt;= &#39;A&#39; &amp;&amp; c &lt;= &#39;Z&#39;) {
+      hash += c - &#39;A&#39; + 1;
+    }
+  }
+  return hash;
+}
+
+// Hash a string by adding up the ASCII value of each char and multiplying
+// it by it&#39;s &#34;reversed index&#34;  (e.g. &#34;bz&#34; --&gt; 1*96 + 2*121).
+long simple_string_hash(const std::string&amp; str) {
+  long hash = 0, counter = 1;
+  for (const char&amp; c : str) {
+    hash += counter * c;
+    ++counter;
+  }
+  return hash;
+}
+
+// Hash a string by adding up the ASCII value of each char multiplied by
+// a prime in first_primes[].
+const long first_primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23};
+const int num_first_primes = sizeof(first_primes) / sizeof(first_primes[0]);
+long first_prime_string_hash(const std::string&amp; str) {
+  long hash = 0, counter = 1;
+  for (const char&amp; c : str) {
+    hash += first_primes[counter % num_first_primes] * c;
+    ++counter;
+  }
+  return hash;
+}
+
+// Hash a string by adding up the ASCII value of each char multiplied by
+// a prime in large_primes[].
+const long large_primes[] = {179424691, 179425033, 179425601, 179426083,
+                             179424697, 179425063, 179425619, 179426089};
+const int num_large_primes = sizeof(large_primes) / sizeof(large_primes[0]);
+long large_prime_string_hash(const std::string&amp; str) {
+  long hash = 0, counter = 1;
+  for (const char&amp; c : str) {
+    hash += large_primes[counter % num_large_primes] * c;
+    ++counter;
+  }
+  return hash;
+}
+
+// Wrapper around std::hash&lt;std::string&gt;(...)
+long std_string_hash(const std::string&amp; str) {
+  std::hash&lt;std::string&gt; hasher;
+  return hasher(str);
+}
+
+// Given some strings, a total number of buckets, and a hash function
+// display the number of strings that hash to ranges of buckets.
+void hash_demo(const std::vector&lt;std::string&gt;&amp; strs,
+               int num_buckets,
+               long (*hash_func)(const std::string&amp;)) {
+  std::vector&lt;long&gt; buckets(num_buckets, 0);
+  int buckets_per_range = num_buckets / 10;
+  for (const std::string&amp; str : strs) {
+    ++buckets[std::abs(hash_func(str) % num_buckets)];
+  }
+  for (int min_bucket = 0; min_bucket &lt; num_buckets;
+       min_bucket += buckets_per_range) {
+    const int max_bucket = min_bucket + buckets_per_range;
+    int bucket_range_count = 0;
+    for (int bucket = min_bucket; bucket &lt; max_bucket; ++bucket) {
+      bucket_range_count += buckets[bucket];
+    }
+    std::cout &lt;&lt; &#34;[&#34; &lt;&lt; min_bucket &lt;&lt; &#34;, &#34; &lt;&lt; max_bucket &lt;&lt; &#34;) : &#34;
+              &lt;&lt; bucket_range_count &lt;&lt; std::endl;
+  }
+}
+
+void parse_baby_names(std::ifstream&amp; names_file,
+                      std::vector&lt;std::string&gt;* baby_names) {
+  std::string name;
+  while (true) {
+    // read line up to the first &#39;,&#39;
+    std::getline(names_file, name, &#39;,&#39;);
+    if (!names_file.good()) {
+      break;
+    }
+    // std::cout &lt;&lt; name &lt;&lt; std::endl;
+    baby_names-&gt;push_back(name);
+    // read the rest of the line
+    std::getline(names_file, name);
+  }
+}
+
+int main() {
+  // First names of babies born in the US in 1991 from
+  // https://www.socialsecurity.gov/OACT/babynames/names.zip
+  std::vector&lt;std::string&gt; baby_names;
+  std::ifstream names_file(&#34;yob1991.txt&#34;);
+  parse_baby_names(names_file, &amp;baby_names);
+  names_file.close();
+
+  const int num_buckets = 10000;
+  std::cout &lt;&lt; &#34;Distribution of hashes of names:&#34; &lt;&lt; std::endl;
+  std::cout &lt;&lt; &#34;simple_name_hash:&#34; &lt;&lt; std::endl;
+  hash_demo(baby_names, num_buckets, simple_name_hash);
+  std::cout &lt;&lt; &#34;\nsimple_string_hash:&#34; &lt;&lt; std::endl;
+  hash_demo(baby_names, num_buckets, simple_string_hash);
+  std::cout &lt;&lt; &#34;\nfirst_prime_string_hash:&#34; &lt;&lt; std::endl;
+  hash_demo(baby_names, num_buckets, first_prime_string_hash);
+  std::cout &lt;&lt; &#34;\nlarge_prime_string_hash:&#34; &lt;&lt; std::endl;
+  hash_demo(baby_names, num_buckets, large_prime_string_hash);
+  std::cout &lt;&lt; &#34;\nstd_string_hash:&#34; &lt;&lt; std::endl;
+  hash_demo(baby_names, num_buckets, std_string_hash);
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -lpthread -std=c++11 -o example hash_demo.cpp</kbd>
+<strong>$</strong> <kbd>./example</kbd></pre><pre><samp>Distribution of hashes of names:
+simple_name_hash:
+[0, 1000) : 25104
+[1000, 2000) : 0
+[2000, 3000) : 0
+[3000, 4000) : 0
+[4000, 5000) : 0
+[5000, 6000) : 0
+[6000, 7000) : 0
+[7000, 8000) : 0
+[8000, 9000) : 0
+[9000, 10000) : 0
+
+simple_string_hash:
+[0, 1000) : 904
+[1000, 2000) : 6405
+[2000, 3000) : 11184
+[3000, 4000) : 4762
+[4000, 5000) : 1286
+[5000, 6000) : 311
+[6000, 7000) : 118
+[7000, 8000) : 70
+[8000, 9000) : 42
+[9000, 10000) : 22
+
+first_prime_string_hash:
+[0, 1000) : 4659
+[1000, 2000) : 815
+[2000, 3000) : 1989
+[3000, 4000) : 1728
+[4000, 5000) : 3091
+[5000, 6000) : 5199
+[6000, 7000) : 1524
+[7000, 8000) : 4262
+[8000, 9000) : 1656
+[9000, 10000) : 181
+
+large_prime_string_hash:
+[0, 1000) : 2501
+[1000, 2000) : 2510
+[2000, 3000) : 2557
+[3000, 4000) : 2494
+[4000, 5000) : 2523
+[5000, 6000) : 2500
+[6000, 7000) : 2548
+[7000, 8000) : 2533
+[8000, 9000) : 2392
+[9000, 10000) : 2546
+
+std_string_hash:
+[0, 1000) : 2552
+[1000, 2000) : 2402
+[2000, 3000) : 2468
+[3000, 4000) : 2501
+[4000, 5000) : 2495
+[5000, 6000) : 2599
+[6000, 7000) : 2552
+[7000, 8000) : 2501
+[8000, 9000) : 2444
+[9000, 10000) : 2590
+</samp></pre>
+
+<h4>Resizing</h4>
+<p>If we never resized the hash table, then the number of buckets would remain constant and we'd only ever get a constant speed up. In order to make sure that all the operations are O(1), we need to make sure that the number of elements inserted divided by the number of buckets is always less than some constant. In other words, if the hash table's load factor (think <code>num_elements / num_buckets</code>) is ever larger than some constant, we need to make the hash table larger. Making it larger is pretty similar to how a vector is made larger: we allocate double the number of buckets and insert everything from the original hash table into the new hash table. Note that we could choose any constant we want. As long as the hash function is uniformly distributed, insert/search/remove operations will still take O(1) time on average.</p>
+<p>Let's say that we choose some constant load factor, <code>max_load_factor</code>, and we make sure that our insert code always up-sizes the hash table if the <code>load_factor &ge; max_load_factor</code>. What should we choose for the <code>min_load_factor</code>? We could choose to never down-size our hash table, but then we'd waste memory on all the extra buckets and our hash table wouldn't get much faster. (In fact, it might get a slower due to caching, but that's a topic for another time.)  It turns out that for any <code>min_load_factor</code> that's less than <code>max_load_factor / 2</code>, the big-O for <code>insert</code> and <code>remove</code> stays the same: O(N) since we ahve to do N copies and the big-O for insert/search/remove is still O(1). OK, so since any valid value gives the same big-O, let's try to minimize the number of resizes that have to happen.</p>
+<p>Let's assume that insertions and removes are equally likely. If we want to minimize the number of resizes and inserts/removes are equally likely, then after a resize we want the number of inserts (without removes) and the number of removes (without inserts) before forcing a resize to be equal.</p>
+<p>Given <code>max_load_factor</code>, let's find <code>min_load_factor</code>. Let's pretend that we've just downsized a hash table from <code>old_num_buckets</code> to <code>new_num_buckets</code>. Since downsizing always cuts the number of buckets in half, <code>new_num_buckets == old_num_buckets / 2</code>. We also know that since we've just done a resize: <code>old_load_factor == num_elements / old_num_buckets &amp;&amp; old_load_factor == min_load_factor</code>.</p>
+<table>
+  <tr><td>insertions before upsize</td><td>==</td><td>removes before downsize</td></tr>
+  <tr><td>max_load_factor * new_num_buckets - new_load_factor * new_num_buckets</td><td>==</td><td>min_load_factor * new_num_buckets</td></tr>
+  <tr><td>max_load_factor - new_load_factor</td><td>==</td><td>min_load_factor</td></tr>
+  <tr><td>max_load_factor - 2 * min_load_factor</td><td>==</td><td>min_load_factor</td></tr>
+  <tr><td>max_load_factor</td><td>==</td><td>3 * min_load_factor</td></tr>
+  <tr><td>max_load_factor / 3</td><td>==</td><td>min_load_factor</td></tr>
+</table>
+<p>To put this another way, if insertions and deletions are equally likely and we want to minimize the number of resizes, then we should downsize at 1/3 of whatever load factor we upsize at.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

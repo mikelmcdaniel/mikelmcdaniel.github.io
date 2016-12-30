@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<title>Shell Sort</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2><a href="https://en.wikipedia.org/wiki/Shellsort">Shell Sort</a></h2>
+<iframe width="854" height="480" src="https://www.youtube.com/embed/M9YCh-ZeC7Y" frameborder="0" allowfullscreen></iframe>
+<p>Shell Sort is a generalization of <a href="https://en.wikipedia.org/wiki/Insertion_sort">Insertion Sort</a>. Insertion sort works by looking at the next unsorted element in an array, then swapping it to the left until its been inserted into the correct position. Since you start with the first element, you know its already sorted, and since any new elements that get "inserted" go to their 'correct' position in the sorted array, you know that the elements you've inserted so far are sorted.</p>
+<p>With Shell Sort, instead of sorting the whole array at once, you have a gap sequence that ends in 1 (such as K = pow(2, X) - 1, pow(2, X - 1) - 1, ..., 15, 7, 3, 1) and you use Insertion Sort to sort every "sublist" with elements that are K apart. For example, I might have an array with N = 12 elements and a gap sequence of 6, 3, 1. During the first pass, I use insertion sort to sort the elements in the sublist at indices 0, 6 and at 1, 7 and at 2, 8 etc. Then, I use insertion sort to sort the elements in the sublists at indices 0, 3, 6, 9 and 1, 4, 7, 10, and 2, 5, 8, 11. Finally, I use insertion sort to sort the sublist at indices 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 which is just the entire array. Since Shell Sort always ends with a 'regular' Insertion Sort and we know that Insertion Sort is correct, Shell Sort must also be correct.</p>
+<p>How can Shell Sort possibly be better than Insertion Sort? Its just a bunch of steps and <em>then</em> Inserstion Sort! While that's true, each of those little Insertion Sorts takes O(pow(N / K, 2)). For a given K, you have to do that K times, so now doing one round of Insertions Sorts with a gap of K takes O(K * pow(N / K, 2)) = O(pow(N, 2) / K). If we use a sequence like N / 2, N / 4, N / 8, ..., N / pow(2, X), 1, then we'd have a total big-O of O(pow(N, 2) / (N / 2) + pow(N, 2) / (N / 4) + pow(N, 2) / (N / 8) + ... + 2 + 1) = O(pow(N, 2) / (N / 2 + N / 4 + N / 8 + ... + 2 + 1)) = O(pow(N, 2)). Well... that's not helpful. Unfortunately, I'll have to leave out a proof that certain sequences actually give a big-O better than O(pow(N, 2)).</p>
+
+<h2>No (comparison) sorting algorithms is better than O(N * log(N))</h2>
+<p>For an array with N elements, there are N! possible permutations. For any sorting algorithm, each possible input has to be treated differently. For a <em>comparison</em> sorting algorithm, the only way that the algorithm can treat input differently is by doing comparisons. Every comparison that's done gives 1 bit of information (true or false) meaning that the algorithm can only do possibly two different things. In other words, for every comparison, the number of different things the algorithm could possible do doubles. So, if there are X different ways an algorithm needs to treat its input, and the algorithm can only treat input differently by comparisons (or anything else that's boolean), then it'd have to do at least log(X) / log(2) comparisons.</p>
+<p>Since there are N! possiblities, the algorithm must do at least log(N!) / log(2) comparisons. Finally, you can find lots of proofs online that <a href="http://www.bowdoin.edu/~ltoma/teaching/cs231/fall07/Lectures/sortLB.pdf">O(log(N!)) = O(N * log(N))</a>.</p>
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>

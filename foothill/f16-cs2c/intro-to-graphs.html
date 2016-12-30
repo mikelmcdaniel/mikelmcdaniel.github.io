@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<title>Graphs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+  
+
+<h2>Brief intro to graphs</h2>
+<p>Abstractly, graphs are nodes and edges. Nodes can be anything, like people or street intersections. Edges are links from one node to another, like being a blood relative or a road between street intersections.</p>
+<p>For fun, read <a href="https://research.facebook.com/blog/three-and-a-half-degrees-of-separation/">Facebook's blog post about degrees of separation</a>.</p>
+
+<h2>Graphs</h2>
+<h3>Directed versus Undirected</h3>
+<p>Graphs are abstract objects with nodes and edges. A node is 'anything' and an edge is a 2-tuple of nodes, usually drawn as lines or arrows from some node to another node. For example, street intersections could be nodes and pieces of streets between them would be edges. Since streets can be one way or two way, this is an example of a directed graph since the edges (at least sometimes) are directed/go one way. An example of an undirected graph is Facebook friends: Facebook users are nodes and the 'friendship' between two people is an edge.</p>
+
+<h2>Representations of Graphs</h2>
+<p>Graphs can be represented in lots of different ways. In the end, when you decide how to represent a graph, you need to consider the trade-offs. Some representations take more memory, but are faster and some make other trade-offs.</p>
+
+<h3><a href="https://en.wikipedia.org/wiki/Adjacency_matrix">Adjacency Matrix</a></h3>
+<p>Every node is assigned an index, from 0 to N - 1. Then a square N by N matrix of 0's and 1's is used to represent the edges. For example, if the matrix M at row j and column i is 1, then there is an edge from j to i, otherwise it'd be 0, meaning there isn't an edge from j to i.</p>
+<p>The benefit of this representation is that it can be represented is that it's relatively fast and compact if there are a lot of edges. However, the size of the matrix is always O(N * N) for N nodes, but most graphs have very few edges, so this representation often wastes a lot of space.</p>
+
+<h3><a href="https://en.wikipedia.org/wiki/Adjacency_list">Adjacency Lists</a></h3>
+<img src="http://faculty.ycp.edu/~dbabcock/PastCourses/cs360/lectures/images/lecture15/adjlistexample.png" alt="A graph of 1 to 2, 3, and 4; 2 to 3; 3 to 2; 4 to 4 (itself); and 5 to 2.">
+<p>An adjacency list is basically a list of "from" nodes to lists of "to" nodes. If I wanted to represent a graph of numbers, I could use <code>std::vector&lt;std::list&lt;Node&gt;&gt; edges;</code>. Now, you have a couple indices representing nodes i and j, then <code>edges[i].find(j) != edges[i].end()</code> means there's an edge from i to j.</p>
+<p>Vectors and lists aren't ideal, particularly because the nodes have to either be integers or a mapping to/from nodes and integers <em>and</em> the <code>edges[i].find(j)</code> operation is O(edges[i].size()), but if we used a definition like <code>std::unordered_map&lt;Node, std::unordered_set&lt;Node&gt;&gt; edges;</code> now we don't need a mapping of Node to integer (and vice-versa) <em>and</em> on average operations like checking if an edge exist are O(1).</p>
+<h4>Sample Code:</h4>
+<pre><code class="c++">#pragma once
+
+#include &lt;unordered_map&gt;
+#include &lt;unordered_set&gt;
+
+template &lt;typename T&gt;
+class Graph {
+public:
+  Graph() {}
+
+  virtual ~Graph() {}
+  virtual bool contains_node(const T&amp; val) const = 0;
+  virtual bool contains_edge(const T&amp; a, const T&amp; b) const = 0;
+  virtual void add_node(const T&amp; val) = 0;
+  virtual void add_edge(const T&amp; a, const T&amp; b) = 0;
+  // A practical Graph class would also have other methods, like one to iterate
+  // over all the nodes or all the edges.
+};
+
+template &lt;typename T&gt;
+class AdjancencyListGraph : public Graph&lt;T&gt; {
+private:
+  // edges is a map where the key is the &#34;from&#34; node
+  // and the values are the &#34;to&#34; nodes.
+  std::unordered_map&lt;T, std::unordered_set&lt;T&gt; &gt; edges;
+public:
+  AdjancencyListGraph() {}
+
+  virtual ~AdjancencyListGraph() {}
+  virtual bool contains_node(const T&amp; node) const {
+    return edges.find(node) != edges.end();
+  }
+  virtual bool contains_edge(const T&amp; from, const T&amp; to) const {
+    auto from_edges = edges.find(from);
+    return from_edges != edges.end()
+      &amp;&amp; from_edges-&gt;second.find(to) != from_edges-&gt;second.end();
+  }
+  virtual void add_node(const T&amp; node) {
+    // In an std::unordered_map, if you use the bracket operator and
+    // the key doesn&#39;t exist, then a value is default-constructed
+    // for that associated key.
+    edges[node];
+  }
+  virtual void add_edge(const T&amp; from, const T&amp; to) {
+    add_node(to);
+    edges[from].insert(to);
+  }
+};</code></pre>
+
+<h3>Set</h3>
+<p>Lastly, you can simply use a <code>std::unordered_set</code> to represents the nodes and another set to represent the edges. Since the set operations are O(1) on average, and we only need to do a constant of those operations to operate on the graph, the graph operations are O(1) on average.<p>
+
+
+
+</section>
+<footer>Copyright 2016 by Mikel Dmitri Mcdaniel -- Under the <a href="license.html">MIT License</a></footer>
+</body>
+</html>
