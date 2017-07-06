@@ -25,7 +25,7 @@ function textDotCoords(canvas, ctx, text) {
   // Calculate the best textHeight to meet a targetWidth (in pixels).
   var targetWidth = 120;
   var textHeight = 100;  // arbitrary positive constant
-  var font = "px Arial";
+  var font = "px Comic Sans MS";
   textCtx.font = textHeight + font;
   var textSize = textCtx.measureText(text);
   textHeight = textHeight * targetWidth / textSize.width;
@@ -49,7 +49,7 @@ function textDotCoords(canvas, ctx, text) {
   for (var y = 0; y < imgData.height; ++y) {
     for (var x = 0; x < imgData.width; ++x) {
       // console.log(x + "," + y + "  " + imgData.data[4 * (y * imgData.width + x)]);
-      if (imgData.data[4 * (y * imgData.width + x) + 1] > Math.random() * 255) {
+      if (imgData.data[4 * (y * imgData.width + x) + 1] > 255 * Math.random()) {
         dotCoords.push({
           'x': scalingFactor * (x - 0.4 + 0.8 * Math.random()), 
           'y': scalingFactor * (y - 0.4 + 0.8 * Math.random())});
@@ -69,8 +69,8 @@ function drawText(canvas, ctx, text) {
     var x = coords[i].x;
     var y = coords[i].y;
     var cx = xOffset + scalingFactor * x;
-    var cy = yOffset + scalingFactor * y - scalingFactor * 0.2 * x * x;
-    if (cy > 0.837 * canvas.height) {
+    var cy = yOffset + scalingFactor * y + scalingFactor * 0.2 * x * x;
+    if (cy > 0.893 * canvas.height) {
       ctx.fillStyle = "#9d0a13";
     } else {
       ctx.fillStyle = "white";
@@ -88,12 +88,12 @@ function draw() {
   ctx.font = "Bold 92px Arial";
   ctx.textAlign = "center";
   ctx.fillStyle = "black";
-  ctx.fillText(document.getElementById("bg").value, 0.537 * canvas.width, 0.228 * canvas.height);
+  ctx.fillText(document.getElementById("bg").value, 0.537 * canvas.width, 0.215 * canvas.height);
 
   ctx.font = "30px Helvetica";
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
-  ctx.fillText(document.getElementById("name").value, canvas.width / 2, canvas.height / 13);
+  ctx.fillText(document.getElementById("name").value, 0.5 * canvas.width, 0.05 * canvas.height);
 
   drawText(canvas, ctx, document.getElementById("canvasText").value);
 }
