@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<title>Textcom Share</title>
+<meta name="viewport" content="width=device-width">
+</head>
+<body onload="draw()">
+
+<img hidden id="base" src="base.png" alt="Why are you reading this?">
+<canvas hidden id="textCanvas" width="0" height="0"></canvas>
+
+<p>Scroll down and type some text!</p>
+<canvas id="canvas" width="720" height="1280">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<p>Name: <input id="name" type="text" value="Me" oninput="draw()"></p>
+<p>Text: <input id="canvasText" type="text" value="abcdefg" oninput="draw()"></p>
+
+<script>
+function textDotCoords(canvas, ctx, text) {
+  var textCanvas = document.getElementById("textCanvas");
+  var textCtx = textCanvas.getContext("2d");
+
+  // Calculate the best textHeight to meet a targetWidth (in pixels).
+  var targetWidth = 120;
+  var textHeight = 100;  // arbitrary positive constant
+  var font = "px Courier New";
+  textCtx.font = textHeight + font;
+  var textSize = textCtx.measureText(text);
+  textHeight = textHeight * targetWidth / textSize.width;
+  textCtx.font = textHeight + font;
+  textSize = textCtx.measureText(text);
+
+  textCanvas.width = textSize.width;
+  textCanvas.height = textHeight;
+  textCtx.textAlign = "center";
+  textCtx.font = textHeight + font;
+  // Need to fill the canvas first or getImageData returns black
+  textCtx.fillStyle = "black";
+  textCtx.fillRect(0, 0, textCanvas.width, textCanvas.height);
+  textCtx.fillStyle = "white";
+  textCtx.fillText(text, textCanvas.width / 2, 3 * textCanvas.height / 4);
+
+  var imgData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
+  ctx.fillStyle = "white";
+  var scalingFactor = Math.min(1.0 / imgData.width, 1.0 / imgData.height);
+  var dotCoords = [];
+  for (var y = 0; y < imgData.height; ++y) {
+    for (var x = 0; x < imgData.width; ++x) {
+      // console.log(x + "," + y + "  " + imgData.data[4 * (y * imgData.width + x)]);
+      if (imgData.data[4 * (y * imgData.width + x) + 1] > Math.random() * 100 + 100) {
+        dotCoords.push({
+          'x': scalingFactor * (x - 0.4 + 0.8 * Math.random()), 
+          'y': scalingFactor * (y - 0.4 + 0.8 * Math.random())});
+
+      }
+    }
+  }
+  return dotCoords;
+}
+
+function drawText(canvas, ctx, text) {
+  var coords = textDotCoords(canvas, ctx, text);
+  var xOffset = canvas.width * 0.015;
+  var yOffset = canvas.height * 0.68;
+  var scalingFactor = 0.9 * canvas.width;
+  for (var i = 0; i < coords.length; ++i) {
+    var x = coords[i].x;
+    var y = coords[i].y;
+    var cx = xOffset + scalingFactor * x;
+    var cy = yOffset + scalingFactor * y + scalingFactor * 0.2 * x * x;
+    if (cy > 0.837 * canvas.height) {
+      ctx.fillStyle = "#9d0a13";
+    } else {
+      ctx.fillStyle = "white";
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}
+
+function draw() {
+  var ctx = document.getElementById("canvas").getContext("2d");
+  ctx.drawImage(document.getElementById("base"), 0, 0, 720, 1280);
+
+  ctx.font = "30px Helvetica";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.fillText(document.getElementById("name").value, canvas.width / 2, canvas.height / 13);
+
+  drawText(canvas, ctx, document.getElementById("canvasText").value);
+}
+</script>
+
+</body>
+</html>
