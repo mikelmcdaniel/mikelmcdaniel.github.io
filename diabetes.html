@@ -119,7 +119,7 @@ function drawCoords(canvas, ctx, coords) {
   i = document.getElementById("base");
   ctx.drawImage(i, 
     0, 0.4 * i.height, i.width, 0.6 * i.height, 
-    0, 0.4 * i.height, i.width, 0.6 * i.height);
+    0, 0.4 * canvas.height, canvas.width, 0.6 * canvas.height);
 
   // It's assumed that all x,y coords are between 0 and 1.
   maxY = -1;
@@ -159,7 +159,7 @@ function drawCoords(canvas, ctx, coords) {
     }
     ctx.beginPath();
     ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, 3, 0, 2 * Math.PI);
+    ctx.arc(cx, cy, canvas.width / 240, 0, 2 * Math.PI);
     ctx.fill();
   }
 }
@@ -177,12 +177,12 @@ function drawAll() {
   var baseImage = document.getElementById("base");
   ctx.drawImage(baseImage, 0, 0, baseImage.width, baseImage.height, 0, 0, canvas.width, canvas.height);
 
-  ctx.font = "Bold 92px Arial";
+  ctx.font = "Bold " + canvas.width / 720 * 92 + "px Arial";
   ctx.textAlign = "center";
   ctx.fillStyle = "black";
   ctx.fillText(document.getElementById("bg").value, 0.537 * canvas.width, 0.215 * canvas.height);
 
-  ctx.font = "30px Helvetica";
+  ctx.font = canvas.width / 720 * 30 + "px Helvetica";
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
   ctx.fillText(document.getElementById("name").value, 0.5 * canvas.width, 0.05 * canvas.height);
@@ -192,8 +192,14 @@ function drawAll() {
 function init() {
   var baseImage = document.getElementById("base");
   var canvas = document.getElementById("canvas");
-  canvas.width = baseImage.width;
-  canvas.height = baseImage.height;
+  
+  if (window.innerWidth > window.innerHeight) {
+    canvas.height = window.innerHeight;
+    canvas.width = canvas.height * 720 / 1154;
+  } else {
+    canvas.width = window.innerWidth;
+    canvas.height = canvas.width * 1154 / 720;
+  }
 
   coords = randomBGCoods();
   drawAll();
