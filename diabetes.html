@@ -19,7 +19,14 @@ Your browser does not support the HTML5 canvas tag.
 
 <script>
 function Coord(x, y, targetX, targetY) {
-  return {'x': x, 'y': y, 'nx': targetX, 'ny': targetY};
+  coord = {'x': x, 'y': y, 'nx': targetX, 'ny': targetY, 'tx': targetX, 'ty': targetY}
+  randomizeCoordNext(coord);
+  return coord;
+}
+
+function randomizeCoordNext(coord) {
+  coord.nx = coord.tx - 0.005 + 0.01 * Math.random();
+  coord.ny = coord.ty - 0.005 + 0.01 * Math.random();
 }
 
 function randomBGCoods() {
@@ -64,10 +71,8 @@ function textDotCoords(text) {
       // console.log(x + "," + y + "  " + imgData.data[4 * (y * imgData.width + x)]);
       if (imgData.data[4 * (y * imgData.width + x) + 1] > 255 * Math.random()) {
         dotCoords.push(Coord(
-          Math.random(), 
-          Math.random(), 
-          scalingFactor * (x - 0.4 + 0.8 * Math.random()), 
-          scalingFactor * (y - 0.4 + 0.8 * Math.random())));
+          Math.random(), Math.random(), 
+          scalingFactor * x, scalingFactor * y));
       }
     }
   }
@@ -86,16 +91,21 @@ function updateCoords(coords, newCoords) {
     var oldCoord = coords[Math.floor(Math.random() * coords.length)];
     coords.push(Coord(oldCoord.x, oldCoord.y, oldCoord.nx, oldCoord.ny));
   }
+  // Remove dots randomly.
   coords.sort(shuffleCmp);
   while (newCoords.length < coords.length) {
     coords.pop();
   }
+  // Sort the existing coords and new coords by x position so that dots do
+  // not move as much. Ideally, we'd sort them along a space filling curve.
   coords.sort(cmp);
   newCoords.sort(cmp);
   for (var i = 0; i < coords.length; ++i) {
     var j = i % newCoords.length;
     coords[i].nx = newCoords[j].nx;
     coords[i].ny = newCoords[j].ny;
+    coords[i].tx = newCoords[j].tx;
+    coords[i].ty = newCoords[j].ty;
   }
 }
 
@@ -114,13 +124,13 @@ function drawCoords(canvas, ctx, coords) {
   // It's assumed that all x,y coords are between 0 and 1.
   maxY = -1;
   for (var i = 0; i < coords.length; ++i) {
-    if (coords[i].y > maxY) {
-      maxY = coords[i].y;
+    if (coords[i].ty > maxY) {
+      maxY = coords[i].ty;
     }
   }
 
   var time = new Date();
-  var millisPast = time.getTime() - lastDrawCoordsMillis;
+  var millisPast = Math.min(time.getTime() - lastDrawCoordsMillis, 500);
   lastDrawCoordsMillis = time.getTime();
   var downFactor = 0.2;
   var xOffset = canvas.width * 0.015;
@@ -129,8 +139,13 @@ function drawCoords(canvas, ctx, coords) {
   var x, y, cx, cy;
   for (var i = 0; i < coords.length; ++i) {
     var coord = coords[i];
-    coord.x += millisPast * (coord.nx - coord.x) / 500;
-    coord.y += millisPast * (coord.ny - coord.y) / 500;
+    if (Math.random() < 0.0001 * millisPast) {
+      randomizeCoordNext(coord);
+    }
+    var nx = coord.nx;
+    var ny = coord.ny;
+    coord.x += millisPast * (nx - coord.x) / 500;
+    coord.y += millisPast * (ny - coord.y) / 500;
     x = coord.x;
     y = coord.y;
     cx = xOffset + scalingFactor * x;
