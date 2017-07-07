@@ -6,7 +6,7 @@
 </head>
 <body onload="init()">
 
-<img hidden id="base" src="base.png" alt="Why are you reading this?">
+<img hidden id="base" src="low.png" alt="Why are you reading this?">
 <canvas hidden id="textCanvas" width="0" height="0"></canvas>
 
 <canvas id="canvas" width="0" height="0">
