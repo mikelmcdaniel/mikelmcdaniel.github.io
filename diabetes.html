@@ -9,13 +9,13 @@
 <img hidden id="base" src="base.png" alt="Why are you reading this?">
 <canvas hidden id="textCanvas" width="0" height="0"></canvas>
 
-<p>Scroll down and type some text!</p>
 <canvas id="canvas" width="0" height="0">
 Your browser does not support the HTML5 canvas tag.
 </canvas>
-<p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="drawAll()"></p>
-<p><label for="bg">Name:</label><input id="bg" type="text" value="42" oninput="drawAll()"></p>
-<p><label for="canvasText">Text:</label><input id="canvasText" type="text" value="abcdefg" oninput="updateCoordsClosure()"></p>
+<p><label for="text">Text:</label><input id="text" type="text" value="" oninput="updateCoordsClosure()"></p>
+<p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="handleParamChange()"></p>
+<p><label for="bg">BG:</label><input id="bg" type="text" value="42" oninput="handleParamChange()"></p>
+<a id="selfLink" href="">Link to this page (with text filled in)</a>
 
 <script>
 function Coord(x, y, targetX, targetY) {
@@ -110,8 +110,9 @@ function updateCoords(coords, newCoords) {
 }
 
 function updateCoordsClosure() {
-  var newCoords = textDotCoords(document.getElementById("canvasText").value);
+  var newCoords = textDotCoords(document.getElementById("text").value);
   updateCoords(coords, newCoords);
+  updateSelfLink();
 }
 
 var lastDrawCoordsMillis = 0;  // init
@@ -189,10 +190,34 @@ function drawAll() {
   drawCoords(canvas, ctx, coords);
 }
 
+function handleParamChange() {
+  drawAll();
+  updateSelfLink();
+}
+
+function updateSelfLink() {
+  document.getElementById("selfLink").href = (
+    "?name=" + document.getElementById("name").value +
+    "&bg=" + document.getElementById("bg").value + 
+    "&text=" + document.getElementById("text").value);
+}
+
 function init() {
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("name")) {
+    document.getElementById("name").value = urlParams.get("name");
+  }
+  if (urlParams.has("bg")) {
+    document.getElementById("bg").value = urlParams.get("bg");
+  }
+  if (urlParams.has("text")) {
+    document.getElementById("text").value = urlParams.get("text");
+    setTimeout(updateCoordsClosure, 1000);
+  }
+
   var baseImage = document.getElementById("base");
   var canvas = document.getElementById("canvas");
-  
+
   if (window.innerWidth > window.innerHeight) {
     canvas.height = window.innerHeight;
     canvas.width = canvas.height * 720 / 1154;
@@ -202,7 +227,7 @@ function init() {
   }
 
   coords = randomBGCoods();
-  drawAll();
+  handleParamChange();
   time = new Date();
   lastDrawCoordsMillis = time.getTime();
   window.requestAnimationFrame(drawCoordsClosure);
