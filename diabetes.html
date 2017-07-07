@@ -4,21 +4,35 @@
 <title>Textcom Share</title>
 <meta name="viewport" content="width=device-width">
 </head>
-<body onload="draw()">
+<body onload="init()">
 
 <img hidden id="base" src="base.png" alt="Why are you reading this?">
 <canvas hidden id="textCanvas" width="0" height="0"></canvas>
 
 <p>Scroll down and type some text!</p>
-<canvas id="canvas" width="720" height="1280">
+<canvas id="canvas" width="0" height="0">
 Your browser does not support the HTML5 canvas tag.
 </canvas>
-<p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="draw()"></p>
-<p><label for="bg">Name:</label><input id="bg" type="text" value="42" oninput="draw()"></p>
-<p><label for="canvasText">Text:</label><input id="canvasText" type="text" value="abcdefg" oninput="draw()"></p>
+<p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="drawAll()"></p>
+<p><label for="bg">Name:</label><input id="bg" type="text" value="42" oninput="drawAll()"></p>
+<p><label for="canvasText">Text:</label><input id="canvasText" type="text" value="abcdefg" oninput="updateCoordsClosure()"></p>
 
 <script>
-function textDotCoords(canvas, ctx, text) {
+function Coord(x, y, targetX, targetY) {
+  return {'x': x, 'y': y, 'nx': targetX, 'ny': targetY};
+}
+
+function randomBGCoods() {
+  var coords = []
+  for (var i = 0; i < 1; i += 0.01) {
+    x = i;
+    y = (Math.sin(2 * Math.PI * i * i * i + Math.random() * 0.05) + 0.8) / 5;
+    coords.push(Coord(x, y, x, y));
+  }
+  return coords;
+}
+
+function textDotCoords(text) {
   var textCanvas = document.getElementById("textCanvas");
   var textCtx = textCanvas.getContext("2d");
 
@@ -43,47 +57,96 @@ function textDotCoords(canvas, ctx, text) {
   textCtx.fillText(text, textCanvas.width / 2, 3 * textCanvas.height / 4);
 
   var imgData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
-  ctx.fillStyle = "white";
   var scalingFactor = Math.min(1.0 / imgData.width, 1.0 / imgData.height);
   var dotCoords = [];
   for (var y = 0; y < imgData.height; ++y) {
     for (var x = 0; x < imgData.width; ++x) {
       // console.log(x + "," + y + "  " + imgData.data[4 * (y * imgData.width + x)]);
       if (imgData.data[4 * (y * imgData.width + x) + 1] > 255 * Math.random()) {
-        dotCoords.push({
-          'x': scalingFactor * (x - 0.4 + 0.8 * Math.random()), 
-          'y': scalingFactor * (y - 0.4 + 0.8 * Math.random())});
-
+        dotCoords.push(Coord(
+          Math.random(), 
+          Math.random(), 
+          scalingFactor * (x - 0.4 + 0.8 * Math.random()), 
+          scalingFactor * (y - 0.4 + 0.8 * Math.random())));
       }
     }
   }
   return dotCoords;
 }
 
-function drawText(canvas, ctx, text) {
-  var coords = textDotCoords(canvas, ctx, text);
+var coords = [];  // init
+function updateCoords(coords, newCoords) {
+  function cmp(a, b) {
+    return b.nx - a.nx;
+  }
+  function shuffleCmp(a, b) {
+    return Math.random() - 0.5;
+  }
+  while (newCoords.length > coords.length) {
+    var oldCoord = coords[Math.floor(Math.random() * coords.length)];
+    coords.push(Coord(oldCoord.x, oldCoord.y, oldCoord.nx, oldCoord.ny));
+  }
+  coords.sort(shuffleCmp);
+  while (newCoords.length < coords.length) {
+    coords.pop();
+  }
+  coords.sort(cmp);
+  newCoords.sort(cmp);
+  for (var i = 0; i < coords.length; ++i) {
+    var j = i % newCoords.length;
+    coords[i].nx = newCoords[j].nx;
+    coords[i].ny = newCoords[j].ny;
+  }
+}
+
+function updateCoordsClosure() {
+  var newCoords = textDotCoords(document.getElementById("canvasText").value);
+  updateCoords(coords, newCoords);
+}
+
+var lastDrawCoordsSeconds = 0;  // init
+function drawCoords(canvas, ctx) {
+  i = document.getElementById("base");
+  ctx.drawImage(i, 0, i.height / 2, i.width, i.height / 2, 0, i.height / 2, i.width, i.height / 2);
+
+  var time = new Date();
+  var secondsPast = time.getSeconds() - lastDrawCoordsSeconds;
+  lastDrawCoordsSeconds = time.getSeconds();
   var xOffset = canvas.width * 0.015;
   var yOffset = canvas.height * 0.68;
   var scalingFactor = 0.9 * canvas.width;
+  var x, y, cx, cy;
   for (var i = 0; i < coords.length; ++i) {
-    var x = coords[i].x;
-    var y = coords[i].y;
-    var cx = xOffset + scalingFactor * x;
-    var cy = yOffset + scalingFactor * y + scalingFactor * 0.2 * x * x;
+    coords[i].x += (coords[i].nx - coords[i].x) / 100;
+    coords[i].y += (coords[i].ny - coords[i].y) / 100;
+    x = coords[i].x;
+    y = coords[i].y;
+    cx = xOffset + scalingFactor * x;
+    cy = yOffset + scalingFactor * y + scalingFactor * 0.2 * x * x;
     if (cy > 0.893 * canvas.height) {
       ctx.fillStyle = "#9d0a13";
     } else {
       ctx.fillStyle = "white";
     }
     ctx.beginPath();
+    ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, 3, 0, 2 * Math.PI);
     ctx.fill();
   }
 }
 
-function draw() {
-  var ctx = document.getElementById("canvas").getContext("2d");
-  ctx.drawImage(document.getElementById("base"), 0, 0, 720, 1280);
+function drawCoordsClosure() {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  drawCoords(canvas, ctx);
+  window.requestAnimationFrame(drawCoordsClosure);
+}
+
+function drawAll() {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var baseImage = document.getElementById("base");
+  ctx.drawImage(baseImage, 0, 0, baseImage.width, baseImage.height, 0, 0, canvas.width, canvas.height);
 
   ctx.font = "Bold 92px Arial";
   ctx.textAlign = "center";
@@ -94,8 +157,20 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
   ctx.fillText(document.getElementById("name").value, 0.5 * canvas.width, 0.05 * canvas.height);
+  drawCoords(canvas, ctx);
+}
 
-  drawText(canvas, ctx, document.getElementById("canvasText").value);
+function init() {
+  var baseImage = document.getElementById("base");
+  var canvas = document.getElementById("canvas");
+  canvas.width = baseImage.width;
+  canvas.height = baseImage.height;
+
+  coords = randomBGCoods();
+  drawAll();
+  time = new Date();
+  lastDrawCoordsSeconds = time.getSeconds();
+  window.requestAnimationFrame(drawCoordsClosure);
 }
 </script>
 
