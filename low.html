@@ -40,6 +40,10 @@ function randomBGCoods() {
 }
 
 function textDotCoords(text) {
+  if (text == "") {
+    return [];
+  }
+
   var textCanvas = document.getElementById("textCanvas");
   var textCtx = textCanvas.getContext("2d");
 
@@ -68,7 +72,6 @@ function textDotCoords(text) {
   var dotCoords = [];
   for (var y = 0; y < imgData.height; ++y) {
     for (var x = 0; x < imgData.width; ++x) {
-      // console.log(x + "," + y + "  " + imgData.data[4 * (y * imgData.width + x)]);
       if (imgData.data[4 * (y * imgData.width + x) + 1] > 255 * Math.random()) {
         dotCoords.push(Coord(
           Math.random(), Math.random(), 
@@ -86,6 +89,9 @@ function updateCoords(coords, newCoords) {
   }
   function shuffleCmp(a, b) {
     return Math.random() - 0.5;
+  }
+  if (coords.length == 0) {
+    coords.push(Coord(0.5, 0.5, 0.5, 0.5));
   }
   while (newCoords.length > coords.length) {
     var oldCoord = coords[Math.floor(Math.random() * coords.length)];
@@ -193,6 +199,7 @@ function drawAll() {
 function handleParamChange() {
   drawAll();
   updateSelfLink();
+  demo();
 }
 
 function updateSelfLink() {
@@ -200,6 +207,16 @@ function updateSelfLink() {
     "?name=" + document.getElementById("name").value +
     "&bg=" + document.getElementById("bg").value + 
     "&text=" + document.getElementById("text").value);
+}
+
+demoWords = ["anger", "angry", "anxiety", "anxious", "blurred vision", "chills", "clamminess", "clammy skin", "confused", "confusion", "decreased coordination", "delirious", "delirium", "dizziness", "fast heartbeat", "fatigue", "fatigued", "headaches", "heartbeat", "hunger", "hungry", "impatience", "impatient", "irritability", "irritable", "no coordination", "light-headed", "nausea", "nauseous", "nervous", "nightmares", "rapid heartbeat", "sad", "sadness", "seizures", "shakiness", "shaky", "sleepiness", "sleepy", "stubborn", "sweating", "sweaty", "crying in sleep", "tingling", "tired", "unconsciousness", "weakness"];
+function demo() {
+  if (document.getElementById("text").value == "") {
+    var w = demoWords[Math.floor(Math.random() * demoWords.length)];
+    var newCoords = textDotCoords(w);
+    updateCoords(coords, newCoords);
+    setTimeout(demo, 3000);
+  }
 }
 
 function init() {
@@ -231,6 +248,8 @@ function init() {
   time = new Date();
   lastDrawCoordsMillis = time.getTime();
   window.requestAnimationFrame(drawCoordsClosure);
+
+  demo();
 }
 </script>
 
