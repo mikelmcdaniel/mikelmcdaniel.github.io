@@ -15,8 +15,7 @@ Your browser does not support the HTML5 canvas tag.
 <p><label for="text">Text:</label><input id="text" type="text" value="" oninput="updateCoordsClosure()"></p>
 <p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="handleParamChange()"></p>
 <p><label for="bg">BG:</label><input id="bg" type="text" value="42" oninput="handleParamChange()"></p>
-<!-- selfLink is hidden for now since URL parameters do not work by default on github.io pages. -->
-<a hidden id="selfLink" href="">Link to this page (with text filled in)</a>
+<a id="selfLink" href="">Link to this page (with text filled in)</a>
 
 <script>
 function Coord(x, y, targetX, targetY) {
