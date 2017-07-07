@@ -104,26 +104,40 @@ function updateCoordsClosure() {
   updateCoords(coords, newCoords);
 }
 
-var lastDrawCoordsSeconds = 0;  // init
-function drawCoords(canvas, ctx) {
+var lastDrawCoordsMillis = 0;  // init
+function drawCoords(canvas, ctx, coords) {
   i = document.getElementById("base");
-  ctx.drawImage(i, 0, i.height / 2, i.width, i.height / 2, 0, i.height / 2, i.width, i.height / 2);
+  ctx.drawImage(i, 
+    0, 0.4 * i.height, i.width, 0.6 * i.height, 
+    0, 0.4 * i.height, i.width, 0.6 * i.height);
+
+  // It's assumed that all x,y coords are between 0 and 1.
+  maxY = -1;
+  for (var i = 0; i < coords.length; ++i) {
+    if (coords[i].y > maxY) {
+      maxY = coords[i].y;
+    }
+  }
 
   var time = new Date();
-  var secondsPast = time.getSeconds() - lastDrawCoordsSeconds;
-  lastDrawCoordsSeconds = time.getSeconds();
+  var millisPast = time.getTime() - lastDrawCoordsMillis;
+  lastDrawCoordsMillis = time.getTime();
+  var downFactor = 0.2;
   var xOffset = canvas.width * 0.015;
-  var yOffset = canvas.height * 0.68;
+  var yOffset = canvas.height * (0.4 + 0.55 * (1.0 - maxY - downFactor));
   var scalingFactor = 0.9 * canvas.width;
   var x, y, cx, cy;
   for (var i = 0; i < coords.length; ++i) {
-    coords[i].x += (coords[i].nx - coords[i].x) / 100;
-    coords[i].y += (coords[i].ny - coords[i].y) / 100;
-    x = coords[i].x;
-    y = coords[i].y;
+    var coord = coords[i];
+    coord.x += millisPast * (coord.nx - coord.x) / 500;
+    coord.y += millisPast * (coord.ny - coord.y) / 500;
+    x = coord.x;
+    y = coord.y;
     cx = xOffset + scalingFactor * x;
-    cy = yOffset + scalingFactor * y + scalingFactor * 0.2 * x * x;
-    if (cy > 0.893 * canvas.height) {
+    cy = yOffset + scalingFactor * y + scalingFactor * downFactor * x * x;
+    if (cy < 0.4 * canvas.height) {
+      continue;
+    } else if (cy > 0.893 * canvas.height) {
       ctx.fillStyle = "#9d0a13";
     } else {
       ctx.fillStyle = "white";
@@ -138,7 +152,7 @@ function drawCoords(canvas, ctx) {
 function drawCoordsClosure() {
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
-  drawCoords(canvas, ctx);
+  drawCoords(canvas, ctx, coords);
   window.requestAnimationFrame(drawCoordsClosure);
 }
 
@@ -157,7 +171,7 @@ function drawAll() {
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
   ctx.fillText(document.getElementById("name").value, 0.5 * canvas.width, 0.05 * canvas.height);
-  drawCoords(canvas, ctx);
+  drawCoords(canvas, ctx, coords);
 }
 
 function init() {
@@ -169,7 +183,7 @@ function init() {
   coords = randomBGCoods();
   drawAll();
   time = new Date();
-  lastDrawCoordsSeconds = time.getSeconds();
+  lastDrawCoordsMillis = time.getTime();
   window.requestAnimationFrame(drawCoordsClosure);
 }
 </script>
