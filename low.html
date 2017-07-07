@@ -199,7 +199,7 @@ function drawAll() {
 function handleParamChange() {
   drawAll();
   updateSelfLink();
-  demo();
+  setTimeout(demo, 3000);
 }
 
 function updateSelfLink() {
@@ -209,7 +209,7 @@ function updateSelfLink() {
     "&text=" + document.getElementById("text").value);
 }
 
-demoWords = ["anger", "angry", "anxiety", "anxious", "blurred vision", "chills", "clamminess", "clammy skin", "confused", "confusion", "decreased coordination", "delirious", "delirium", "dizziness", "fast heartbeat", "fatigue", "fatigued", "headaches", "heartbeat", "hunger", "hungry", "impatience", "impatient", "irritability", "irritable", "no coordination", "light-headed", "nausea", "nauseous", "nervous", "nightmares", "rapid heartbeat", "sad", "sadness", "seizures", "shakiness", "shaky", "sleepiness", "sleepy", "stubborn", "sweating", "sweaty", "crying in sleep", "tingling", "tired", "unconsciousness", "weakness"];
+demoWords = ["anger", "angry", "anxiety", "anxious", "blurred vision", "chills", "clamminess", "clammy skin", "confused", "confusion", "delirious", "delirium", "dizziness", "fast heartbeat", "fatigue", "fatigued", "headaches", "heartbeat", "hunger", "hungry", "impatient", "irritable", "irritable", "no coordination", "light headed", "nausea", "nauseous", "nervous", "nightmares", "rapid heartbeat", "sad", "sadness", "seizures", "shakiness", "shaky", "sleepiness", "sleepy", "stubborn", "sweating", "sweaty", "crying in sleep", "tingling", "tired", "unconscious", "weakness"];
 function demo() {
   if (document.getElementById("text").value == "") {
     var w = demoWords[Math.floor(Math.random() * demoWords.length)];
@@ -248,8 +248,6 @@ function init() {
   time = new Date();
   lastDrawCoordsMillis = time.getTime();
   window.requestAnimationFrame(drawCoordsClosure);
-
-  demo();
 }
 </script>
 
