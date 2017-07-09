@@ -84,6 +84,10 @@ function textDotCoords(text) {
   return dotCoords;
 }
 
+function distance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
 var coords = [];  // init
 function updateCoords(coords, newCoords) {
   function cmp(a, b) {
@@ -114,6 +118,18 @@ function updateCoords(coords, newCoords) {
     coords[i].ny = newCoords[j].ny;
     coords[i].tx = newCoords[j].tx;
     coords[i].ty = newCoords[j].ty;
+  }
+  // Attempt to optimize how far dots move by swapping target x, y positions
+  // of two dots if it means that both dots would travel less distance.
+  for (var i = 0; i < coords.length; ++i) {
+    for (var j = i + 1; j < coords.length; ++j) {
+      var ci = coords[i];
+      var cj = coords[j];
+      if (distance(ci.x, ci.y, ci.tx, ci.ty) > distance(ci.x, ci.y, cj.tx, cj.ty) 
+        && distance(cj.x, cj.y, cj.tx, cj.ty) > distance(cj.x, cj.y, ci.tx, ci.ty)) {
+        [ci.tx, ci.ty, ci.nx, ci.ny, cj.tx, cj.ty, cj.nx, cj.ny] = [cj.tx, cj.ty, cj.nx, cj.ny, ci.tx, ci.ty, ci.nx, ci.ny];
+      }
+    }
   }
 }
 
