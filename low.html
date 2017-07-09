@@ -53,26 +53,28 @@ function textDotCoords(text) {
   var font = "px Comic Sans MS";
   textCtx.font = textHeight + font;
   var textSize = textCtx.measureText(text);
+  var textHeightBuffer = 0.5;
   textHeight = textHeight * targetWidth / textSize.width;
   textCtx.font = textHeight + font;
   textSize = textCtx.measureText(text);
 
   textCanvas.width = textSize.width;
-  textCanvas.height = textHeight;
+  textCanvas.height = (1.0 + 2 * textHeightBuffer) * textHeight;
   textCtx.textAlign = "center";
   textCtx.font = textHeight + font;
   // Need to fill the canvas first or getImageData returns black
   textCtx.fillStyle = "black";
   textCtx.fillRect(0, 0, textCanvas.width, textCanvas.height);
   textCtx.fillStyle = "white";
-  textCtx.fillText(text, textCanvas.width / 2, 3 * textCanvas.height / 4);
+  textCtx.fillText(text, textCanvas.width / 2, textCanvas.height / 2);
 
   var imgData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
   var scalingFactor = Math.min(1.0 / imgData.width, 1.0 / imgData.height);
   var dotCoords = [];
   for (var y = 0; y < imgData.height; ++y) {
     for (var x = 0; x < imgData.width; ++x) {
-      if (imgData.data[4 * (y * imgData.width + x) + 1] > 255 * Math.random()) {
+      var i = 4 * (y * imgData.width + x);
+      if (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2] > 765 * Math.sqrt(Math.random())) {
         dotCoords.push(Coord(
           Math.random(), Math.random(), 
           scalingFactor * x, scalingFactor * y));
