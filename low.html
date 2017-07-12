@@ -15,7 +15,9 @@ Your browser does not support the HTML5 canvas tag.
 <p><label for="text">Text:</label><input id="text" type="text" value="" oninput="updateCoordsClosure()"></p>
 <p><label for="name">Name:</label><input id="name" type="text" value="Me" oninput="handleParamChange()"></p>
 <p><label for="bg">BG:</label><input id="bg" type="text" value="42" oninput="handleParamChange()"></p>
-<a id="selfLink" href="">Link to this page (with text filled in)</a>
+<p><button onclick="downloadScreenshot()">Download Screenshot</button>
+<a hidden id="downloadScreenshotLink" href=""></a></p>
+<p><a id="selfLink" href="">Link to this page (with text filled in)</a></p>
 
 <script>
 function Coord(x, y, targetX, targetY) {
@@ -235,6 +237,17 @@ function demo() {
     updateCoords(coords, newCoords);
     setTimeout(demo, 3000);
   }
+}
+
+function downloadScreenshot() {
+  var canvas = document.getElementById("canvas");
+  var mime_type = "image/png";
+  var link = document.getElementById("downloadScreenshotLink");
+  link.download = "low.png";
+  link.href = canvas.toDataURL(mime_type);
+  link.dataset.downloadurl = [mime_type, link.download, link.href].join(':');
+  link.click();
+  link.href = "";
 }
 
 function init() {
