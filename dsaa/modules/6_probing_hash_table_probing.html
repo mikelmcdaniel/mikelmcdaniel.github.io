@@ -1,0 +1,67 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Probing Hash Table Implementation</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Probing Hash Table Implementation</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Probing Hash Table Implementation</h1>
+  </p>
+<h2>Probing Hash Table Implementation</h2>
+<h3>Motivation</h3>
+<p>As mentioned, linear probing results in adjacent clusters of occupied hash indexes.</p>
+<p>This results in a performance decrease, as those adjacent clusters must be linear searched during <code>insert()</code> and <code>contains()</code> operations.</p>
+<h3>Linear Probing</h3>
+<p>If <code>h(k)</code> is a hash function of some key/element <code>k</code>, linear probing can be formalized as:</p>
+<p><code>hashIndex(k) = h(k) + i</code></p>
+<p>Where <code>i</code> = probing iterations, and starts at 0, increasing by 1 each iteration.</p>
+<p>You can linearly probe by some constant, maybe advancing 2, 5, or 100 hash indexes each iteraton, but this is still linear probing, just advanced by some constant <code>c</code>.</p>
+<p><code>hashIndex(k) = h(k) + ci</code></p>
+<h3>Quadratic Probing</h3>
+<p>As mentioned, quadratic probing somewhat avoids the adjacent clusters that linear probing can create.  </p>
+<p>Quadratic probing can be formalized as :</p>
+<p><code>hashIndex(k) = h(k) + (i * i) * c</code></p>
+<p>or</p>
+<p><code>hashIndex(k) = h(k) + ((i * i) * c0) + (i * c1)</code></p>
+<p>Quadratic probing creates gaps between the adjacent clusters.</p>
+<p>Adjacent clusters will still exist with quadratic probing, but since you are not linearly probing to the next adjacent hash index, the clusters will be less of a performance problem with quadratic probing, than with linear probing.</p>
+<h3>General Probing and Collision Resolution</h3>
+<p>The above formulas for <code>hashIndex(k)</code> can be generalized as:</p>
+<p><code>hashIndex(k) = h(k) + f(i)</code></p>
+<p><code>f(i)</code>, some formula based on the number of probing iterations, can be thought of as the Collision Resolution Strategy.  Maybe it's advancing by some constant using linear probing, maybe it's advancing by squares using quadratic probing...whatever is happening, the goal of <code>f(i)</code> is to resolve collisions.</p>
+<h3>Double Hashing</h3>
+<p>Another probing or collision resolution strategy is double hashing.  This is when a second hashing function is introduced, and multipled by the probing iteration.  This even further reduces the adjacent clusters problem.</p>
+<p><code>hashIndex(k) = h(k) + i * h2(k)</code></p>
+<p>(where <code>h(k)</code> and <code>h2(k)</code> are two unique hash functions)</p>
+<p>However, <code>h2(k)</code> must never evaluate to 0.  This would mean just re-trying the same hash index!</p>
+<p>If you are using double hashing, the hash table size should be a prime number.  </p>
+<p>A secondary hash function of <code>h2(k) = R - k % R</code>, where <code>R</code> is some prime that is smaller than the prime table size, may perform well.</p>
+<h2>Thanks</h2>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Probing Hash Tables Idea</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Probing Hash Tables Idea</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Probing Hash Tables Idea</h1>
+  </p>
+<h2>Probing Hash Tables Idea</h2>
+<h3>Motivation</h3>
+<p>Chaining hash tables handled collisions (elements hashing to the same index) by maintaining a collection of elements at each hash index.</p>
+<p>While chaining hash tables are easy to implement, they have the disadvantage of using linked lists.  Linked lists can slow performance down, due to extra time needed for allocating new cells.  You are also required to maintain a separate data structure at each hash index, instead of a flat hash table, you have a "collection of collections", or "table of lists", or "vector of sets", as the last lecture covered.  </p>
+<p>There is another way to resolve collisions, that can be done in a flat hash table.  Just a vector/table/array, no "collection of collections", linked lists, or additional data structure at each hash index.</p>
+<h3>Probing</h3>
+<p>The general idea of probing is:</p>
+<ol>
+<li>
+<p>Get the hash index of a key/element (that is either being searched for or inserted)</p>
+</li>
+<li>
+<p>If that hash index is occupied by some other key/element, simply find another hash index.</p>
+</li>
+<li>
+<p>If you reach an empty hash index, you either know that it's safe to insert, or that the element/key is NOT present.  (Depending on if you were inserting or searching)</p>
+</li>
+</ol>
+<p>Two ways of Probing are:</p>
+<p>Linear probing (if hash index 2 is full, go to hash index 3.  Repeat, moving to 4, 5, etc.)</p>
+<p>Quadratic probing - advance through the hash table using the square of your iterative attempt.  If you are on probing attempt 1, look 1 spot ahead.  Probing attempt 2, look 4 spots ahead.  Etc etc, Searching 1, 4, 9, 16, 25, etc spots ahead.  Always % table size, so your searches will wrap around the table, hopefully hitting every hash index.</p>
+<h3>An Issue with Linear Probing</h3>
+<p>With linear probing, you are looking at "the very next hash index" every time you need to probe further.  With inserts that hash to the same hash index, this results in adjacent clusters of occupied hash indexes.  </p>
+<p>This reduces performance, as you have to linearly search through potentially large adjacent clusters of hash indexes.  </p>
+<h2>Thanks</h2>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

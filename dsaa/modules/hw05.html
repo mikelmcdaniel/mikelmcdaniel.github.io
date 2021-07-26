@@ -1,0 +1,115 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Homework 05. AVL Tree</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Homework 05. AVL Tree</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Homework 05. AVL Tree</h1>
+  </p>
+<h2>Homework 05. AVL Tree</h2>
+<h3>Requirements</h3>
+<p>Implement an AVL Tree class which behaves similarly to <a href="http://en.cppreference.com/w/cpp/container/map"><code>std::map</code></a>.</p>
+<p>Any members or methods in the <code>private</code> sections can be modified however you like, as long as it's still in the spirit of the assignment. For example, you may use regular pointers instead of <code>std::unique_ptr</code> but you can't use a <code>std::map</code> as part of your implementation.</p>
+<p>Your methods must have the best possible big-O (e.g. <code>balance_factor()</code> is O(1) and <code>operator[]</code> is O(log(n))). Grade Oven does not check this but I will deduct points when I check the code by hand if the big-O is 💩.</p>
+<h4>avl_tree.h</h4>
+<p><pre><code class="c++">#pragma once
+
+#include &lt;memory&gt;
+
+template &lt;typename Key, typename Value=Key&gt;
+class AVLTree {
+public:
+  class Node {
+  private:
+    Key key_;
+    Value value_;
+    int balance_factor_;
+    std::unique_ptr&lt;Node&gt; left_, right_;
+    Node(const Key&amp; key) : key_(key), balance_factor_(0) {}
+    Node(const Key&amp; key, const Value&amp; value) : key_(key), value_(value), balance_factor_(0) {}
+
+  public:
+    // All these getter methods are O(1)
+    Node *left() {
+      return left_.get();
+    }
+    Node *right() {
+      return right_.get();
+    }
+    const Key&amp; key() const {
+      return key_;
+    }
+    const Value&amp; value() const {
+      return value_;
+    }
+    const int balance_factor() const {
+      return balance_factor_;
+    }
+
+    friend class AVLTree&lt;Key, Value&gt;;
+  };
+
+private:
+  std::unique_ptr&lt;Node&gt; root_;
+  int size_;
+
+public:
+  AVLTree() : size_(0) {}
+
+  // TODO: Add code to update the balance factor and do rebalancing...
+  // This overloaded operator method is O(log(size()))
+  Value&amp; operator[](const Key&amp; key) {
+    // Try to find the node with the value we want:
+    std::unique_ptr&lt;Node&gt; *cur;
+    for (cur = &amp;root_;
+         cur-&gt;get() != nullptr;
+         cur = key &lt; (*cur)-&gt;key_ ? &amp;(*cur)-&gt;left_ : &amp;(*cur)-&gt;right_) {
+      if (key == (*cur)-&gt;key_) {
+        return (*cur)-&gt;value_;
+      }
+    }
+    // If we didn&#39;t find it, insert a new node with that key:
+    // (This is the same behaviour as an std::map.)
+    cur-&gt;reset(new Node(key));
+    ++size_;
+    return (*cur)-&gt;value_;
+  }
+
+  int size() {
+    return size_;
+  }
+
+  Node *root() {
+    return root_.get();
+  }
+};</code></pre></p>
+<h3>Submission</h3>
+<p>Submit your avl_tree.h file at <a href="https://gradeoven.com/courses/CS%202C/assignments/05.%20AVL%20Tree">gradeoven.com/courses/CS 2C/assignments/05. AVL Tree</a>.</p>
+<p>
+</section>
+</body>
+</html>

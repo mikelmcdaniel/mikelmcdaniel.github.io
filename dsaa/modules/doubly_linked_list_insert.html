@@ -1,0 +1,96 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Doubly Linked List Insert</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Doubly Linked List Insert</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Doubly Linked List Insert</h1>
+  </p>
+<h2>Doubly Linked List Insert</h2>
+<p>We will now implement an <code>insert()</code> function, which will insert a new Node into a Doubly Linked List.</p>
+<p>Behavior will be modeled after <code>std::list::insert</code>, with a few key points</p>
+<ul>
+<li><code>insert()</code> function accepts a "position" Iterator parameter, and will insert new Node <strong>before</strong> this position</li>
+<li>(as seen in code below, <code>insert()</code> function also accepts a value parameter, and will construct the new Node using this value)</li>
+<li><code>insert()</code> function returns an Iterator pointing to the newly inserted Node</li>
+</ul>
+<p>http://www.cplusplus.com/reference/list/list/insert/</p>
+<h3>empty() helper function</h3>
+<p>A helper function is added, so that the check for an empty list, "head == nullptr", is wrapped in a meaningful function name. This helps the intent of code to be understood, and keeps logic in a single, reusable place.</p>
+<pre><code class="c++">  bool empty() const {
+    return head == nullptr;
+  }
+</code></pre>
+
+<h3>Pointer updates in an <code>insert()</code> call</h3>
+<p>In general, if inserting a Node <code>new_node</code> in between a Node <code>a</code> and a Node <code>b</code>, the following pointers will need to be updated, for a Doubly Linked List:</p>
+<ul>
+<li><code>a-&gt;next</code> (this will point to <code>new_node</code>)</li>
+<li><code>new_node-&gt;prev</code> (this will point to <code>a</code>)</li>
+<li><code>b-&gt;prev</code> (this will point to <code>new_node</code>)</li>
+<li><code>new_node-&gt;next</code> (this will point to <code>b</code>)</li>
+</ul>
+<h3>Four possible scenarios for <code>insert()</code> into a List</h3>
+<p>There are four possible scenarios for insertion into a list. If they are handled in a specific order, the possibility of null pointer references are eliminated by the time you get to the final, general case, of "inserting a new Node in between two existing Nodes".</p>
+<ol>
+<li>Insert into an empty list</li>
+<li>Insert at the <code>head</code> of a list (new Node becomes the head)</li>
+<li>Insert at <code>end()</code> of a list (new Node becomes the tail, aka, is inserted <strong>after</strong> the existing tail)</li>
+<li>General case: insert between <code>head</code> and <code>end()</code>. The new Node will be inserted between two existing Nodes.</li>
+</ol>
+<p>The following code example is written to reflect this order. In scenarios 1, 2, and 3, there are possibilities of null pointer references, eg, when inserting at the head of a list, <code>new_node-&gt;prev</code> will be nullptr. (So you would <strong>not</strong> want to try and set <code>new_node-&gt;prev-&gt;next = new_node</code>, as there is <strong>no</strong> <code>new_node-&gt;prev</code>.)</p>
+<h3><code>insert()</code> function code</h3>
+<p>This is a public member function of the <code>LinkedList</code> class, our implementation of a Doubly Linked List.</p>
+<pre><code class="c++">  Iterator insert(Iterator position, const T&amp; value) {
+    LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
+    // Insert in an empty list
+    if (empty()) {
+      head = tail = new_node;
+    } else if (position.cur == head) {  // Insert at head
+      new_node-&gt;next = head;
+      head-&gt;prev = new_node;
+      head = new_node;
+    } else if (position == end()) {  // Insert at end()
+      new_node-&gt;prev = tail;
+      tail-&gt;next = new_node;
+      tail = new_node;
+    } else {  // General case: insert between head and end()
+      new_node-&gt;prev = position.cur-&gt;prev;
+      new_node-&gt;next = position.cur;
+      new_node-&gt;prev-&gt;next = new_node;
+      new_node-&gt;next-&gt;prev = new_node;
+    }
+    return Iterator(new_node);
+  }
+</code></pre>
+
+<h4>Thanks</h4>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Week 1 Quiz Answers</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Week 1 Quiz Answers</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Week 1 Quiz Answers</h1>
+  </p>
+<h2>Week 1 Quiz Answers</h2>
+<h3>Big-O of std::string comparison</h3>
+<p>In the lecture videos and lecture notes, I treated <code>std::string</code> comparison (e.g. <code>string1 == string2</code>) as if it was O(1). If you have two strings that each have <strong>n</strong> characters in them (e.g. <code>string1.size() == n &amp;&amp; string2.size() == n</code>), what is the big-O of calculating <code>string1 == string2</code>?</p>
+<p>Does the big-O change if you know that n &lt; 10?</p>
+<h4>Answer</h4>
+<p>Comparing two strings with n characters is O(n). In the worse case, you must compare each character (which is an O(1)) operation and since you're doing that n times, the big-O is O(n * 1) == O(1).</p>
+<p>If we know that n &lt; 10, then O(n) becomes O(10) == O(1), so it's O(1).</p>
+<h3>Math Language</h3>
+<p>How do I write "the number of times I can divide x by y" in math!? (e.g. "the number of times I can divide 20 by 3".)</p>
+<h4>Answer</h4>
+<p>This question should have said "the number of times I can repeatedly divide x by y until I get to 1". Virtually everyone got credit for this question since it wasn't worded well.</p>
+<p>Any version of log<sub>y</sub>(x) would be acceptable (e.g. "log base y of x", std::log(x) / std::log(y), etc.)</p>
+<h3>Formal Big-O proof 1</h3>
+<p>Prove that 9 * pow(n, 3) + sqrt(n) + 5 = O(pow(n, 3)). Show each step of the proof and the values for c and n0.</p>
+<h4>Answer</h4>
+<p>To prove f(n) = O(g(n)), you must show that there exists some constants c and n<sub>0</sub> such that for all n &ge; n<sub>0</sub> f(n) &le; c * g(n).</p>
+<p>To prove 9 * pow(n, 3) + sqrt(n) + 5 = O(pow(n, 3)), you must show that there exists some constants c and n<sub>0</sub> such that for all n &ge; n<sub>0</sub> f(n) &le; c * g(n).</p>
+<ul>
+<li>f(n) = O(g(n))</li>
+<li>f(n) &le; c * g(n)</li>
+<li>9 * pow(n, 3) + sqrt(n) + 5 &le; c * pow(n, 3)</li>
+<li>9 + sqrt(n) / pow(n, 3) + 5 / pow(n, 3) &le; c</li>
+<li>If n &gt; 1 (if n<sub>0</sub> = 1), then 9 + sqrt(n) / pow(n, 3) + 5 / pow(n, 3) &le; 9 + sqrt(1) / pow(1, 3) + 5 / pow(1, 3)</li>
+<li>If we can prove 9 + sqrt(1) / pow(1, 3) + 5 / pow(1, 3) &le; c, that is sufficient to prove 9 + sqrt(n) / pow(n, 3) + 5 / pow(n, 3) &le; c because 'x &lt; y and y &lt; z proves x &lt; z'</li>
+<li>9 + sqrt(1) / pow(1, 3) + 5 / pow(1, 3) &le; c</li>
+<li>9 + 1 + 5 &le; c</li>
+<li>15 &le; c</li>
+<li>If we let c = 15, then we have found some constants c and n<sub>0</sub>, so we proved that f(n) = O(g(n))</li>
+</ul>
+<h3>Formal Big-O proof 2</h3>
+<p>Prove that n != O(1). Show each step of the proof.</p>
+<h4>Answer</h4>
+<p>I used "!=" to write "&ne;", like in code.</p>
+<p>To prove f(n) != O(g(n)), you must show that there does not exist some constants c and n<sub>0</sub> such that for all n &ge; n<sub>0</sub> f(n) &le; c * g(n).</p>
+<p>To prove n != O(1), you must show that there does not exist some constants c and n<sub>0</sub> such that for all n &ge; n<sub>0</sub> n &le; c * 1.</p>
+<ul>
+<li>Let's prove by contradiction by assuming f(n) = O(g(n)):</li>
+<li>f(n) = O(g(n))</li>
+<li>f(n) &le; c * g(n)</li>
+<li>n &le; c * 1</li>
+<li>n &le; c</li>
+<li>No matter what constant c is, n can be larger since it is not a constant, therefore there is no constant c where n &le; c.</li>
+</ul>
+<h3>Big-O Racing</h3>
+<p>Sort the following big-O's from smallest (fastest) to largest (slowest):</p>
+<ul>
+<li>O(pow(n, 3))</li>
+<li>O(pow(n, 2))</li>
+<li>O(sqrt(n))</li>
+<li>O(n)</li>
+<li>O(log(n))</li>
+<li>O(<em>the number of stars in the sky</em>)</li>
+</ul>
+<h4>Answer</h4>
+<p>Originally, I wrote "O(pow(n, 2))" as "O(n * n)", using an asterisk for multiplication, like in code, but if you thought it meant O(n<sup>n</sup>), I gave you full credit.</p>
+<ol>
+<li>O(<em>the number of stars in the sky</em>) = O(1)</li>
+<li>O(log(n))</li>
+<li>O(n)</li>
+<li>O(sqrt(n))</li>
+<li>O(pow(n, 2))</li>
+<li>O(pow(n, 3))</li>
+<li>O(n<sup>n</sup>)</li>
+</ol>
+<h3>Big-O of code</h3>
+<p>What's the big-O of these functions?</p>
+<pre><code class="c++">int sum_from_n_to_m(int n, int m) {
+  int sum = 0;
+  for (int i = n; i &lt;= m; ++i) {
+    sum += i;
+  }
+  return sum;
+}
+</code></pre>
+
+<pre><code class="c++">// coin_flip is a function that randomly returns true or false in O(1) time
+
+int random_int_between_a_and_b(int a, int b) {
+  if (a == b) {
+    return a;
+  } else if (coin_flip()) {
+    return random_int_between_a_and_b(a, (a + b) / 2);
+  } else {
+    return random_int_between_a_and_b((a + b) / 2, b);
+  }
+}
+</code></pre>
+
+<h4>Answer</h4>
+<p><code>sum_from_n_to_m</code> loops m - n + 1 times and the operations inside the loop are O(1). All the other operations are also O(1), so the total big-O is O(m - n).</p>
+<p>For <code>random_int_between_a_and_b</code>, there's a bug in the code! <code>random_int_between_a_and_b((a + b) / 2, b);</code> should be <code>random_int_between_a_and_b((a + b) / 2 + 1, b);</code>. Theoretically, it can recurse infinitely if <code>coin_flip()</code> always returns <code>false</code> and <code>a</code> is some even number and <code>b == a + 1</code>. If you answered O(infinity), I gave you full credit.</p>
+<p>Additionally, I meant to say that <code>b &gt;= a</code>.</p>
+<p><code>random_int_between_a_and_b</code> looks very similar to binary search: In the base case, where a == b, it's O(1), otherwise it recurses on an input half the size. The number of times it recurses is O(log(abs(b - a))) and each recursion performs O(1) steps, so the big-O is O(log(abs(b - a))) (or O(log(b - a)) if <code>b &gt;= a</code>).</p>
+<p>
+</section>
+</body>
+</html>

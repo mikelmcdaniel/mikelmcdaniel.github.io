@@ -1,0 +1,226 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Doubly Linked Lists</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Doubly Linked Lists</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Doubly Linked Lists</h1>
+  </p>
+<h2>Doubly Linked Lists</h2>
+<p>By adding another pointer to the <code>LinkedListNode</code> <code>struct</code>, the Singly-Linked List data type can be enhanced, to a Doubly-Linked List. The new pointer points to the previous Node in a List. Nodes now have access to both the previous, and next, Node in the List.</p>
+<h3>Benefits and Drawbacks (compared to Singly-Linked List)</h3>
+<p>With the extra pointer, inserting and deleting nodes is a bit more complicated. This uses more space but allows us to go from a node to the next <em>or</em> previous node. In other words, iterators can be both incremented and decremented.</p>
+<h3>Changes to LinkedListNode struct</h3>
+<p>A second pointer is added, pointing to the <em>previous</em> Node in a list. Each node in a Doubly-Linked List now has 2 pointers, or links, hence "Doubly-Linked". The constructor is updated, to initialize both pointers to nullptr.</p>
+<pre><code class="c++">template &lt;typename T&gt;
+struct LinkedListNode {
+  T value;
+  LinkedListNode&lt;T&gt; *prev;
+  LinkedListNode&lt;T&gt; *next;
+
+  LinkedListNode(const T&amp; value) : value(value), prev(nullptr), next(nullptr) {}
+};
+</code></pre>
+
+<h3>Changes to pop_front()</h3>
+<p>The <code>pop_front()</code> function removes the Node at the head of a List. To account for the extra prev pointer that Nodes in a Doubly-Linked List have, some extra code is necessary.</p>
+<p>The <code>head-&gt;prev</code> pointer is similar to the <code>tail-&gt;next</code> pointer. A doubly-linked list is symmetrical, so just as tail has nothing AFTER it, head has nothing BEFORE it.</p>
+<p>To ensure that the new head has an appropriate <code>prev</code> pointer, pointing to nothing, we make the assignment <code>head-&gt;next-&gt;prev = nullptr</code>.</p>
+<pre><code class="c++">  void pop_front() {
+    // Let's assume head != nullptr
+    // TODO: Subclass std::exception and throw an exception with a proper error message.
+    if (head == nullptr) {
+      throw std::exception();
+    }
+    LinkedListNode&lt;T&gt; *old_head = head;
+    if (head-&gt;next != nullptr) {
+      head-&gt;next-&gt;prev = nullptr;
+    }
+    head = head-&gt;next;
+    delete old_head;
+  }
+</code></pre>
+
+<h3>Changes to push_back()</h3>
+<p>The <code>push_back()</code> function adds a Node to the end of a List, after the current tail. Code for push_back in a Singly-Linked List was already making the assignment <code>tail-&gt;next = new_node</code>. Now that <code>new_node</code> has a <code>prev</code> pointer, we need to assign that to the Node in front of our newly inserted node. This assignment is: <code>new_node-&gt;prev = tail</code>.</p>
+<pre><code class="c++">  void push_back(const T&amp; value) {
+    LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
+    if (empty()) {
+      head = tail = new_node;
+    } else {
+      new_node-&gt;prev = tail;
+      tail-&gt;next = new_node;
+      tail = new_node;
+    }
+  }
+</code></pre>
+
+<h3>New Iterator Operator: -- (Decrement)</h3>
+<p>Now that nodes have a <code>prev</code> pointer, and "know about the node in front of them", iterators can go both forwards (incrementing, e.g. ++it) through the List, and backwards (decrementing, e.g. --it) through the list.</p>
+<p>The -- operator, to decrement, is very similar to the ++ operator, to increment. Instead of advancing to a Node's next pointer, <code>cur = cur-&gt;next</code>, it advances to a node's previous pointer, <code>cur = cur-&gt;prev</code>.</p>
+<pre><code class="c++">    Iterator&amp; operator--() {
+      cur = cur-&gt;prev;
+      return *this;
+    }
+</code></pre>
+
+<h3>Reminder: existing Iterator locations to support forwards/increment iteration</h3>
+<p>Forwards iteration through a List starts at the head of a list, with the begin() Iterator, and increments until it is equal to an Iterator location AFTER the tail of the list, or end(). This covers the entire list, forwards, from head to tail.</p>
+<pre><code class="c++">  Iterator begin() {
+    return Iterator(head);
+  }
+
+  Iterator end() {
+    return Iterator(nullptr);
+  }
+
+  for (auto it = someList.begin(); it != someList.end(); ++it) {
+      cout &lt;&lt; *it &lt;&lt; endl;
+  }
+</code></pre>
+
+<h3>New Iterator locations to support backwards/decrement iteration</h3>
+<p>Backwards iteration is similar but opposite: we need an Iterator at the tail of the list, or tail_iterator(), and also an Iterator location <strong>before</strong> the head of the list, or before_begin_iterator().</p>
+<p>This will enable us to iterate backward, starting at the tail, and ending when our decremented iterator is equal to a location one place <em>before</em> the head, which covers the entire list, backwards, from tail to head.</p>
+<pre><code class="c++">  Iterator tail_iterator() {
+    return Iterator(tail);
+  }
+
+  Iterator before_begin_iterator() {
+    return Iterator(nullptr);
+  }
+
+  for (auto it = someList.tail_iterator(); it != someList.before_begin_iterator(); --it) {
+      cout &lt;&lt; *it &lt;&lt; endl;
+  }
+</code></pre>
+
+<h3>All together:</h3>
+<p>Here's the complete code incorporating everything we've just covered:</p>
+<pre><code class="c++">#include &lt;exception&gt;
+
+template &lt;typename T&gt;
+struct LinkedListNode {
+  T value;
+  LinkedListNode&lt;T&gt; *prev;
+  LinkedListNode&lt;T&gt; *next;
+
+  LinkedListNode(const T&amp; value) : value(value), prev(nullptr), next(nullptr) {}
+};
+
+template &lt;typename T&gt;
+class LinkedList {
+  LinkedListNode&lt;T&gt; *head, *tail;
+
+  class Iterator {
+    LinkedListNode&lt;T&gt; *cur;
+  public:
+    Iterator(LinkedListNode&lt;T&gt; * cur) : cur(cur) {}
+    // Check for equality (inequality)
+    bool operator==(const Iterator&amp; other) {
+      return cur == other.cur;
+    }
+    bool operator!=(const Iterator&amp; other) {
+      return !(*this == other);
+    }
+    // Increment (e.g. --it)
+    Iterator&amp; operator--() {
+      cur = cur-&gt;prev;
+      return *this;
+    }
+    // Increment (e.g. ++it)
+    Iterator&amp; operator++() {
+      cur = cur-&gt;next;
+      return *this;
+    }
+    // Dereference (e.g. *it)
+    T&amp; operator*() {
+      return cur-&gt;value;
+    }
+
+    friend LinkedList;
+  };
+
+public:
+  LinkedList() : head(nullptr), tail(nullptr) {}
+
+  ~LinkedList() {
+    for(LinkedListNode&lt;T&gt; *cur = head, *next; cur != nullptr; cur = next) {
+      next = cur-&gt;next;
+      delete cur;
+    }
+  }
+
+  void pop_front() {
+    // Let's assume head != nullptr
+    // TODO: Subclass std::exception and throw an exception with a proper error message.
+    if (head == nullptr) {
+      throw std::exception();
+    }
+    LinkedListNode&lt;T&gt; *old_head = head;
+    if (head-&gt;next != nullptr) {
+      head-&gt;next-&gt;prev = nullptr;
+    }
+    head = head-&gt;next;
+    delete old_head;
+  }
+
+  void push_back(const T&amp; value) {
+    LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
+    if (empty()) {
+      head = tail = new_node;
+    } else {
+      new_node-&gt;prev = tail;
+      tail-&gt;next = new_node;
+      tail = new_node;
+    }
+  }
+
+  Iterator begin() {
+    return Iterator(head);
+  }
+
+  Iterator end() {
+    return Iterator(nullptr);
+  }
+
+  Iterator tail_iterator() {
+    return Iterator(tail);
+  }
+
+  Iterator before_begin_iterator() {
+    return Iterator(nullptr);
+  }
+};
+</code></pre>
+
+<h4>Thanks</h4>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

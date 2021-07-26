@@ -1,0 +1,124 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Homework 01. Binary Search (part 2 of 2)</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Homework 01. Binary Search (part 2 of 2)</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Homework 01. Binary Search (part 2 of 2)</h1>
+  </p>
+<h2>Homework 01. Binary Search (part 2 of 2)</h2>
+<h3>Requirements (binary_search_function.h)</h3>
+<p>Implement the <code>binary_search_function</code> function and upload your implementation as files named "binary_search_function.h" and "binary_search_function.cpp".</p>
+<p>Did you know you can use Binary Search for more than just vectors? You can use it for more than just collections of things too. You can even use it for functions!</p>
+<p>When we used Binary Search in class, we had a sorted list of words and wanted to find a word. What does Binary Search need?</p>
+<ul>
+<li>A way to represent a lower and upper bound</li>
+<li>A way to calculate a middle point between the lower and upper bound</li>
+<li>Sorted input -- or at least input such that <code>input[i] &lt;= input[i + some_positive_number_like_1]</code></li>
+</ul>
+<p>Say for example, that you don't have a <code>sqrt</code> function, so you want to make a function that approximates it for non-negative numbers (like 0 or 3.141592 or 1234567890). One way you can do that is to just... guess and check.</p>
+<p>For example, you know that the square root for 5 is between 2 and 3. You know the value you're searching for is somewhere in the range from 2 to 3. You could guess that it's in the middle (2.5) and then check (2.5 * 2.5 == 6.25). 5 &lt; 6.25, so you update you're upper bound from 3 to 2.5... Now you know that the square root of 5 is between 2 and 2.25, so you guess that it's in the middle and repeat the whole process until you get very close.</p>
+<p>The <code>sqrt</code> function has all of the requirements for Binary Search if you're searching for some x that's bigger than 0!</p>
+<ul>
+<li>You can represent a range of possible numbers (0 &le; sqrt(x) &le; x)</li>
+<li>You can calculate some point in the middle of that ranges</li>
+<li>The input is sorted (in math terms, we say that the function is monotonically non-decreasing) because sqrt(x) &le; sqrt(x + some_positive_number_like_1)</li>
+</ul>
+<p>Your goal in this homework is to write a binary_search_function that's <em>even more general</em>. <code>binary_search_function</code> takes in an <code>std::function&lt;double(double)&gt;</code> like <code>double square(double x) { return x * x; }</code>, if you wanted to calculate the square root of a number.</p>
+<p>If you're not sure where to start, try implementing a binary search function that calculates the square root of a number instead of one that takes in <code>const std::function&lt;double(double)&gt;&amp; f</code>.</p>
+<h4>binary_search_function.h</h4>
+<pre><code class="c++">#pragma once
+
+#include &lt;cfloat&gt;  // DBL_MAX
+#include &lt;functional&gt;  // std::function
+
+double binary_search_function(
+    const std::function&lt;double(double)&gt;&amp; f,  // function to binary search
+    double value,  // value we are searching for
+    // max_err is how close we want our answer to be. For example,
+    //   if we passed max_err=0.0, then binary_search_function returns exactly
+    //   the right answer*
+    double max_err=0.001,  // maximum allowed error of value being passed to f
+    double lower_bound=-DBL_MAX,
+    double upper_bound=DBL_MAX);
+</code></pre>
+
+<h4>binary_search_function.cpp</h4>
+<pre><code class="c++">#include &quot;binary_search_function.h&quot;
+
+double binary_search_function(
+    const std::function&lt;double(double)&gt;&amp; f,  // function to binary search
+    double value,  // value we are searching for
+    double max_err,  // maximum allowed error of value being passed to f
+    double lower_bound,
+    double upper_bound) {
+  // your code here...
+}
+</code></pre>
+
+<h3>Simple Manual Test program</h3>
+<p><pre><code class="c++">#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+
+#include &#34;binary_search_function.h&#34;
+
+using namespace std;
+
+double square(double x) {
+  return x * x;
+}
+
+int main() {
+  for (double x = 0; x &lt; 10; x += 1.0) {
+    // Approximate the square root of x by binary searching the square function.
+    // For any positive number, we know the square root of x is between 0 and x.
+    double approx_sqrt_x = binary_search_function(square, x, 0.0001, 0.0, x);
+    cout &lt;&lt; &#34;sqrt(&#34; &lt;&lt; x &lt;&lt; &#34;) ≈ &#34; &lt;&lt; approx_sqrt_x &lt;&lt; endl;
+  }
+  return 0;
+}</code></pre></p>
+<p>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o example hw01/test_binary_search_function.cpp hw01/binary_search_function.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./example</kbd></pre>
+<pre><samp>sqrt(0) ≈ 0
+sqrt(1) ≈ 0.999969
+sqrt(2) ≈ 1.41422
+sqrt(3) ≈ 1.73204
+sqrt(4) ≈ 2.00003
+sqrt(5) ≈ 2.23606
+sqrt(6) ≈ 2.44945
+sqrt(7) ≈ 2.64575
+sqrt(8) ≈ 2.8284
+sqrt(9) ≈ 2.99999
+</samp></pre></p>
+<h3>Submissions</h3>
+<p>TBD. This section will be updated when gradeoven.com is ready for you to submit.</p>
+<p>
+</section>
+</body>
+</html>

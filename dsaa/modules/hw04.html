@@ -1,0 +1,107 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Homework 04. nonstd MultiSet</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Homework 04. nonstd MultiSet</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Homework 04. nonstd MultiSet</h1>
+  </p>
+<h2>Homework 04. nonstd MultiSet</h2>
+<h3>Requirements</h3>
+<p>Implement a(n) (unbalanced) binary search tree <code>nonstd::MultiSet</code> class which behaves similarly to <a href="http://en.cppreference.com/w/cpp/container/multiset"><code>std::multiset</code></a>. Note that you will not have to implement iterators, which is why <code>insert</code> is <code>void</code>.</p>
+<p>Any members or methods in the <code>private</code> sections can be modified however you like, as long as it's still in the spirit of the assignment. For example, you may use regular pointers instead of <code>std::unique_ptr</code> but don't use an <code>std::multiset</code> as part of your implementation.</p>
+<p>Note that in a more realistic implementation, you might not have getters and setters for the <code>MultiSet&lt;T&gt;::Node</code>'s left and right children but I have them in this assignment so I can more easily grade your code without needing to care whether you use regular pointers or something else.</p>
+<h4>multiset.h</h4>
+<p><pre><code class="c++">#pragma once
+
+#include &lt;memory&gt;
+
+namespace nonstd {
+
+template &lt;typename T&gt;
+class MultiSet {
+public:
+  class Node {
+  private:
+    T value_;
+    std::unique_ptr&lt;Node&gt; left_, right_;
+    Node(const T&amp; value) : value_(value) {}
+  public:
+    Node *left() {
+      // TODO
+    }
+    Node *right() {
+      // TODO
+    }
+    const T&amp; value() const {
+      //
+    }
+
+    friend class MultiSet&lt;T&gt;;
+  };
+
+private:
+  std::unique_ptr&lt;Node&gt; root_;
+  int size_;
+
+public:
+  MultiSet() {
+    // TODO
+  }
+
+  ~MultiSet() {
+    // TODO
+  }
+
+  void insert(const T&amp; value) {
+    // TODO
+  }
+
+  int count(const T&amp; value) const {
+    // TODO
+  }
+
+  bool contains(const T&amp; value) const {
+    // TODO
+  }
+
+  int size() const {
+    // TODO
+  }
+
+  Node *root() {
+    // TODO
+  }
+};
+
+} // namespace nonstd</code></pre></p>
+<h3>Submission</h3>
+<p>Submit your multiset.h file at <a href="https://gradeoven.com/courses/CS%202C/assignments/04.%20nonstd%20MultiSet">gradeoven.com/courses/CS 2C/assignments/04. nonstd MultiSet</a>.</p>
+<p>
+</section>
+</body>
+</html>

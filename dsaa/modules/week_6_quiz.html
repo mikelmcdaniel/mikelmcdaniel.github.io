@@ -1,0 +1,100 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Week 6 Quiz</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Week 6 Quiz</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Week 6 Quiz</h1>
+  </p>
+<h2>Week 6 Quiz</h2>
+<p>Email me, post in the Canvas Discussions, or come to office hours if you have any questions.</p>
+<h3>1. Bad Hash Function</h3>
+<p>Here's a bad hash function for <code>std::string</code>:</p>
+<pre><code class="c++">int myHash(std::string x) {
+  return x[0];
+}
+</code></pre>
+
+<p>eww.</p>
+<p>Write a good version of <code>myHash</code> and explain why/how it's better.</p>
+<h4>Answer</h4>
+<p>There are many good answers to this question but ideally they address all (or most) of these points: The hash function should ...
+- work on all inputs (but this one is invalid when <code>x.empty()</code>)
+- uniformly distribute the inputs, even on similar inputs (but this only looks at the 0th char, so all strings with the same 0th char have the same hash)
+- return a large unsigned type like <code>std::size_t</code> or <code>unsigned long</code> instead of <code>int</code>
+- take the input type by const reference (e.g. <code>const std::string&amp;</code>) instead of by value (<code>std::string</code>)</p>
+<pre><code class="c++">const unsigned long hashPrimes = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31};
+const int numHashPrimes = 10;
+
+unsigned long myHash(const std::string&amp; x) {
+  unsigned long h = 6700417;
+  for (int i = 0; i &lt; x.size(); ++i) {
+    h *= hashPrimes[i % numHashPrimes];
+    h += x[i];
+  }
+  return h;
+}
+</code></pre>
+
+<p>This version of <code>myHash</code> isn't the best possible version. It could distribute inputs better and it could be optimized to run faster <em>but</em> it is a big improvement over the original version.</p>
+<h4>Grading</h4>
+<p>You got 1 point if you made it more uniformly distributed (and had larger possible hash values).
+You got 1 point if you mentioned 2 or more of the other improvements above.</p>
+<h3>2. Load Factor</h3>
+<p>What are the trade-offs for having a hash table with a smaller or larger load factor?</p>
+<h4>Answer</h4>
+<p>A smaller load factor will create fewer collisions (so inserting and searching is faster) but a larger balance factor will use more memory.</p>
+<h3>3. Probing</h3>
+<p>Why is quadratic probing better than linearly probing <strong>one</strong> bucket at a time?</p>
+<h4>Answer</h4>
+<p>Quadratic probing helps avoid long sequences of elements in a probing hash table. In other words, it's better at spreading elements around the hash table so that when there are collisions, it doesn't take as long to search through them (or insert a new element).</p>
+<h3>4. Bloom Filters</h3>
+<p>Bloom filters have false positives: When you check if something is in a bloom filter, it might say that some is in the bloom filter when it is not.</p>
+<p>If I have a small bloom filter with 16 bits and insert 2 elements (A and B), then I check if C is in the bloom filter, what is the probability that I will get a false positive?</p>
+<h4>Answer</h4>
+<p>Assume this bloom filter only sets/checks 1 bit per element.</p>
+<p>Assuming a good hash function: any element is equally likely to be hashed to any of the 16 bits. Since 2 elements are inserted already, there are two possibilites: 1 of the 16 bits is set (because both elements hashed to the same bit) or 2 of the 16 bits are set (because each element hashed to a different bit).</p>
+<p>Probability the same bit is set for both elements is 1/16.</p>
+<p>Probability a different bit is set for both elements is 15/16.</p>
+<p>Probability that an arbitrary element hashes to the same bit if one bit is set: 1/16.</p>
+<p>Probability that an arbitrary element hashes to the one of the bits if two bits are set: 2/16 = 1/8.</p>
+<p>False positive rate is 1/16 * 1/16 + 15/16 * 1/8 = 31 / 256 = 0.12109375</p>
+<h4>Common Mistakes</h4>
+<p>2/16. The false positive rate is not 2/16 because it's possible that the 2 elements were hashed to the same bit and in that lucky case, the false positive rate is 1/16.</p>
+<p>1-e^(-2/16) &asymp; 0.1175031. This is an approximation, which for such a simple case isn't good enough. I gave you 1/2 points if you used an approximation.</p>
+<h3>5. Buckets vs Probing</h3>
+<p>What are the trade-offs between using a bucket hash table vs a probing hash table?</p>
+<h4>Answer</h4>
+<p>A bucket hash table uses more memory but is easier to implement and has better guaranteed performance: even in the worst case, the big-O is dominated by the type of bucket used</p>
+<h3>6. Big-O</h3>
+<p>What is the big-O (worst case) of inserting or searching in a bucket-based hash table?</p>
+<h4>Answer</h4>
+<p>The big-O depends on the type of bucket used. For example, a linked list would have O(1) insert and O(n) search while a balanced binary search tree would have O(log(n)) insert and O(log(n)) search.</p>
+<p>
+</section>
+</body>
+</html>

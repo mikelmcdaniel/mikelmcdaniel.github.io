@@ -1,0 +1,338 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Vectors Big-O and Timing</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Vectors Big-O and Timing</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Vectors Big-O and Timing</h1>
+  </p>
+<h2>Vectors Big-O and Timing</h2>
+<h3>push_back big-O</h3>
+<p>In our <code>push_back</code> code, we only have to create a new array and copy things when the array is full. Even though a single call to <code>push_back</code> is O(n) because it will do O(n) copies, in the worst case, <code>push_back</code> is not always that bad. What's the big-O of calling <code>push_back</code> O(n) times?</p>
+<p>To find out, let's look at how many copies are done when we run out of capacity. We know that since we're doubling the array each time, we first resize after 2 elements, 3 elements, 5 elements, 9 elements, 17 elements, 2^k + 1 elements, etc. Here we'll create a table showing the number of elements inserted and count up the number of copies that we have to do per resize and in the last column, we'll sum up the total number of copies done so far:</p>
+<table>
+<thead>
+<tr>
+<th align="center">size=n (smallest)</th>
+<th align="center">size=n (biggest)</th>
+<th align="center">capacity</th>
+<th align="center">copies to resize</th>
+<th align="center">total copies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">8</td>
+<td align="center">8</td>
+<td align="center">4</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">16</td>
+<td align="center">16</td>
+<td align="center">8</td>
+<td align="center">15</td>
+</tr>
+<tr>
+<td align="center">17</td>
+<td align="center">32</td>
+<td align="center">32</td>
+<td align="center">16</td>
+<td align="center">31</td>
+</tr>
+<tr>
+<td align="center">33</td>
+<td align="center">64</td>
+<td align="center">64</td>
+<td align="center">32</td>
+<td align="center">63</td>
+</tr>
+<tr>
+<td align="center">65</td>
+<td align="center">128</td>
+<td align="center">128</td>
+<td align="center">64</td>
+<td align="center">127</td>
+</tr>
+<tr>
+<td align="center">129</td>
+<td align="center">256</td>
+<td align="center">256</td>
+<td align="center">128</td>
+<td align="center">255</td>
+</tr>
+<tr>
+<td align="center">2^(k - 1) + 1</td>
+<td align="center">2^k</td>
+<td align="center">2^k</td>
+<td align="center">2^(k - 1)</td>
+<td align="center">2^k - 1</td>
+</tr>
+<tr>
+<td align="center">n</td>
+<td align="center">2n - 2</td>
+<td align="center">2n - 2</td>
+<td align="center">n - 1</td>
+<td align="center">2n - 2</td>
+</tr>
+</tbody>
+</table>
+<p>The number of copies we have to do is O(n) for single <code>push_back</code> because we might have to copy the n elements we've inserted so far... but it's also O(n) to call <code>push_back</code> n times. So, if you divide the big-O of doing the operation n times by n, we get that <code>push_back</code> is <strong>amortized</strong> O(n) / n = O(1).</p>
+<h3>Timing It</h3>
+<p>Let's see if the theory holds up. Here we'll add an <code>ops_counter</code> to our <code>TemplateVector::push_back</code> to see if it actually scales like we expect <em>and</em> we'll run a timer to see the actual time and plot them both on a graph to see how the real running time lines up with all the operations we're counting.  </p>
+<p>template_vector.h<pre><code class="c++">#pragma once
+
+template &lt;typename T&gt;
+class TemplateVector {
+  int capacity, size_;
+  T* values;
+
+public:
+  int ops_counter;
+
+  TemplateVector() : capacity(1), size_(0), ops_counter(0) {
+    values = new T[capacity];
+  }
+  ~TemplateVector() {
+    delete[] values;
+  }
+
+  void push_back(const T&amp; value) {
+    ++ops_counter;
+    if (size_ &gt;= capacity) {
+      // Create a new bigger
+      ops_counter += 2 * capacity + 3;
+      const int new_capacity = 2 * capacity;
+      T *new_lines = new T[new_capacity];
+      // Copy everything to the big array
+      for (int i = 0; i &lt; size_; ++i) {
+        ++ops_counter;
+        new_lines[i] = values[i];
+      }
+      // Delete old array
+      ops_counter += capacity;
+      delete[] values;
+      // Make lines point to new array
+      ops_counter += 2;
+      values = new_lines;
+      capacity = new_capacity;
+    }
+    ++ops_counter;
+    values[size_] = value;
+    ++ops_counter;
+    ++size_;
+  }
+
+  T* begin() {
+    return values; // same as &amp;strs[0]
+  }
+
+  T* end() {
+    return values + size_; // same as &amp;strs[size]
+  }
+
+  T&amp; operator[](int index) {
+    return values[index];
+  }
+
+  int size() {
+    return size_;
+  }
+};</code></pre>vector_demo.cpp<pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
+#include &lt;chrono&gt;
+#include &lt;vector&gt;
+
+#include &#34;template_vector.h&#34;
+
+using namespace std;
+
+
+class SimpleTimer {
+  std::chrono::time_point&lt;std::chrono::steady_clock&gt; start_time;
+
+public:
+  void start() {
+    start_time = std::chrono::steady_clock::now();
+  }
+
+  // Return the number of seconds since .start() was called
+  double elapsed_seconds() const {
+    std::chrono::duration&lt;double&gt; diff(std::chrono::steady_clock::now() - start_time);
+    return diff.count();
+  }
+};
+
+
+int main(int argc, const char *argv[]) {
+  TemplateVector&lt;int&gt; vec;
+  SimpleTimer timer;
+  cout &lt;&lt; &#34;n,ops_counter,elapsed_seconds&#34; &lt;&lt; endl;
+  timer.start();
+  for (int i = 0; i &lt; 100000; ++i) {
+    vec.push_back(i);
+    // Only print out one in every thousand lines so the output isn&#39;t huge
+    if (i % 1000 == 0) {
+      cout
+          &lt;&lt; vec.size() &lt;&lt; &#34;,&#34; &lt;&lt; vec.ops_counter &lt;&lt; &#34;,&#34;
+          &lt;&lt; timer.elapsed_seconds() &lt;&lt; endl;
+    }
+  }
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o vector_demo template_vec_ops_count/vector_demo.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./vector_demo</kbd></pre>
+<pre><samp>n,ops_counter,elapsed_seconds
+1,3,3.018e-06
+1001,7145,4.1267e-05
+2001,14246,6.3098e-05
+3001,25443,8.5973e-05
+4001,28443,0.00010032
+5001,47832,0.000131381
+6001,50832,0.000146189
+7001,53832,0.000160407
+8001,56832,0.000174295
+9001,92605,0.000215972
+10001,95605,0.000230098
+11001,98605,0.000244612
+12001,101605,0.000258641
+13001,104605,0.000272491
+14001,107605,0.000286505
+15001,110605,0.000300186
+16001,113605,0.00031449
+17001,182146,0.000388756
+18001,185146,0.000404402
+19001,188146,0.000418434
+20001,191146,0.000432182
+21001,194146,0.000445992
+22001,197146,0.000459648
+23001,200146,0.000473268
+24001,203146,0.000486928
+25001,206146,0.000501855
+26001,209146,0.000516095
+27001,212146,0.000530083
+28001,215146,0.00054407
+29001,218146,0.000558269
+30001,221146,0.000572238
+31001,224146,0.000586465
+32001,227146,0.000601724
+33001,361223,0.00074172
+34001,364223,0.000757877
+35001,367223,0.000772936
+36001,370223,0.000787085
+37001,373223,0.000801098
+38001,376223,0.000816207
+39001,379223,0.000830228
+40001,382223,0.000844252
+41001,385223,0.00085813
+42001,388223,0.000871915
+43001,391223,0.000884573
+44001,394223,0.000898214
+45001,397223,0.000911829
+46001,400223,0.000925422
+47001,403223,0.000939076
+48001,406223,0.000952977
+49001,409223,0.000967437
+50001,412223,0.000981109
+51001,415223,0.000994763
+52001,418223,0.00100846
+53001,421223,0.0010222
+54001,424223,0.00103589
+55001,427223,0.00104955
+56001,430223,0.00106318
+57001,433223,0.0010767
+58001,436223,0.0010905
+59001,439223,0.00110403
+60001,442223,0.00111767
+61001,445223,0.00113121
+62001,448223,0.00114472
+63001,451223,0.00115823
+64001,454223,0.00117287
+65001,457223,0.00118644
+66001,722372,0.00143416
+67001,725372,0.00145173
+68001,728372,0.00146569
+69001,731372,0.00147946
+70001,734372,0.00149336
+71001,737372,0.00150726
+72001,740372,0.00152225
+73001,743372,0.00153721
+74001,746372,0.00155125
+75001,749372,0.00156526
+76001,752372,0.00157925
+77001,755372,0.00159312
+78001,758372,0.00160712
+79001,761372,0.00162116
+80001,764372,0.0016351
+81001,767372,0.00164999
+82001,770372,0.00166412
+83001,773372,0.00167804
+84001,776372,0.00169194
+85001,779372,0.0017059
+86001,782372,0.00171878
+87001,785372,0.00173989
+88001,788372,0.00175313
+89001,791372,0.00176743
+90001,794372,0.00178124
+91001,797372,0.00179491
+92001,800372,0.00180855
+93001,803372,0.00182229
+94001,806372,0.00183592
+95001,809372,0.00184954
+96001,812372,0.00186316
+97001,815372,0.00187776
+98001,818372,0.00189155
+99001,821372,0.00190505
+</samp></pre></p>
+<p><img alt="TemplateVector::push_back timing" src="vector_push_back_timing.svg" /></p>
+<p>
+</section>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>BST Iterators</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">BST Iterators</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">BST Iterators</h1>
+  </p>
+<h2>Binary Search Tree Iterators Inspired by Call Stacks Lecture</h2>
+<h3>Example Binary Search Tree</h3>
+<p>This is the tree that we will traverse, via an iterator.  So, all example nodes, call stacks, etc, will come from this tree.</p>
+<pre><code>            e
+           / \
+          b   f
+         / \
+        a   d
+           /
+          c
+</code></pre>
+
+<h3>In-Order Traversal</h3>
+<p>The goal of the iterator we are making is to traverse a sorted collection in-order.  As the iterator is incremented (++it), bigger or "higher value" elements are visited.  Eg, with characters, the iterator will visit a, b, c, ...then finally, z.</p>
+<p>For a BST of Nodes, each having a Left (smaller) subtree and Right (bigger) subtree, In-Order Traversal can be thought of as:</p>
+<ol>
+<li>Processing the left subtree</li>
+<li>Processing the node</li>
+<li>Processing the right subtree</li>
+</ol>
+<p>(This algorithm applies recursively to all nodes and subtrees)</p>
+<p>We have already seen an example of In-Order Traversal of a BST, in the print() method that has been defined for BST.</p>
+<pre><code class="c++">    void print() {
+      if (left != nullptr) {
+        left-&gt;print();
+      }
+      cout &lt;&lt; value &lt;&lt; endl;
+      if (right != nullptr) {
+        right-&gt;print();
+      }
+    }
+</code></pre>
+
+<p>For the example tree, the output of this print() method would be:</p>
+<pre><code>a
+b
+c
+d
+e
+f
+</code></pre>
+
+<h3>Recursive Call Stacks</h3>
+<p>The above print() method is recursive.  It starts off by  "drilling down" in the BST to the left-most node, which, having no left child, prints its own value and returns.  This results in the printing of "a".</p>
+<p>The recursive call stack is just that, a Stack.  When a function recursively calls itself, several things may be stored in a recursive stack frame.</p>
+<ol>
+<li>An instruction pointer, telling the recursive call to "return to this certain place in instruction memory when finished"</li>
+<li>any local variables associated with the recursive functon</li>
+<li>In our example, since the print() method belongs to the Node struct, an implicit "this" pointer is stored. ("this" is a Node, for our example)</li>
+</ol>
+<p>At the point where the recursive print() call is AT the a node, what would the stack of "this" pointers be?  </p>
+<pre><code>            e
+           / \
+          b   f
+         / \
+        a   d
+           /
+          c
+</code></pre>
+
+<p>For our example tree, it would be (writing the stack upside down or "from the top":)
+(** This represents only a small part of the recursive call stack frames.  We are only considering the "this" pointers, aka, the Nodes we are visiting.  Other things like an instruction pointer and other local variables may exist in each stack frame.)</p>
+<pre><code>e
+b
+a
+</code></pre>
+
+<p>Then, the a node is processed (printed), and popped off the stack, which is now:</p>
+<pre><code>e
+b
+</code></pre>
+
+<p>At this point, the print() function, scoped to b, will print its value ("b"), pop b off the recursive call stack, and then, visit its own right subtree.  The root of this subtree is d.  D is added to the stack, but not printed yet -- we need to visit D's left subtree first!</p>
+<pre><code>e
+d
+</code></pre>
+
+<p>Once print() is called, scoped to d, it will visit its own left subtree, adding c to the stack.
+ ```
+e
+d
+c</p>
+<pre><code>C node has no children, so its value is printed. C is popped off the stack.
+</code></pre>
+
+<p>e
+d</p>
+<pre><code>D node has no right subtree, so its value is then printed, and D is popped off the stack.
+</code></pre>
+
+<p>e</p>
+<pre><code>We are now back at E, the root!  E's left subtree has been processed.  So, time to print the node's value ('e'), pop e off the stack, and then visit the right subtree.  Once e is popped off the stack, it's empty.
+</code></pre>
+
+<p>(empty stack!)</p>
+<pre><code>Time to visit the right subtree.  F is e's right child, so f is pushed onto the stack.
+</code></pre>
+
+<p>f</p>
+<pre><code>F node has no children, so its value would be printed, and f is popped off the stack.  The print() function is done, and all its recursive calls are closed out.
+
+### Extracting an algorithm out of the print() recursive call stack
+
+We have just seen how print() function traverses a BST in-order.  Similar to the recursive call stack, we can traverse the tree, starting at the root, and maintain a stack of pointers, representing &quot;nodes still to be processed&quot;.  As long as we have an algorithm for how to push node pointers onto this stack, and pop them off as they are processed, we will be in good shape.
+
+### Things to keep in mind
+
+Here are a few things to keep in mind as we build this algorithm.
+
+1. When processing a BST, you (generally) always start at the root.
+2. Our goal is to iterate through a BST in sorted order, or, &quot;in-order traversal&quot;
+3. Starting from the root, we will perform a &quot;findMin()&quot; type of operation, to get the begin() iterator - the smallest element in the tree.  We will keep going left until we hit a nullptr.
+4. The end() iterator will simply be a nullptr.  This represents a position that is &quot;past the biggest element in the tree&quot;
+
+
+### The general algorithm for a subtree (applies recursively)
+
+1. Push a node, the subtree root, onto the stack
+2. Travel left as far as possible, pushing visited nodes onto the stack
+3. When a node has no left child, process the node, and pop it from the stack
+4. Visit the node's right child (which we saved before the pop in step 3!)
+5. As of step 4, we are now at the root node of a new subtree.  Go back to step 1.
+
+### Code example
+
+The stack is maintained as a vector&lt;Node*&gt;.
+
+In the Iterator(Node* root) constructor, you can see that it travels left, adding nodes to the stack, until it hits a nullptr.  This sets the iterator up in a begin() position.
+
+In the operator++ method, you can see that we add the right child to the stack, remove the current node (popping it off the stack), and then travel as far left as possible, in the right subtree that we are now located in, pushing nodes onto the stack along the way.
+
+Also note, we capture the current node's right child BEFORE popping it off of the stack.  This way, we don't lose our place.
+
+```c++
+  class Iterator {
+    vector&lt;Node*&gt; stack;
+  public:
+    // constructor
+    Iterator() {}
+    Iterator(Node* root) {
+      for (Node* cur = root; cur != nullptr; cur = cur-&gt;left) {
+        stack.push_back(cur);
+      }
+    }
+    // compare (!=)
+    bool operator!=(const Iterator&amp; rhs) const {
+      return stack != rhs.stack;
+    }
+    // dereference (*)
+    pair&lt;Key, Value&gt; operator*() const {
+      Node* top = stack.back();
+      return pair&lt;Key, Value&gt;(top-&gt;key, top-&gt;value);
+    }
+    // increment (++)
+    Iterator&amp; operator++() {
+      Node* cur = stack.back()-&gt;right;
+      stack.pop_back();
+      for (; cur != nullptr; cur = cur-&gt;left) {
+        stack.push_back(cur);
+      }
+      return *this;
+    }
+
+    // This is for demo purposes only, to show how Iterator works.
+    void print_stack_keys() {
+      for (const Node* cur : stack) {
+        cout &lt;&lt; cur-&gt;key &lt;&lt; ' ';
+      }
+      cout &lt;&lt; endl;
+    }
+  };
+</code></pre>
+
+<h2>Thanks</h2>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

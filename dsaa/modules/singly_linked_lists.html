@@ -1,0 +1,184 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Singly Linked Lists</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Singly Linked Lists</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Singly Linked Lists</h1>
+  </p>
+<h2>Singly Linked Lists</h2>
+<p>The idea behind a singly linked list is that you store each element/datum/value in the list with a pointer to the next element in the list. We call this data+pointer combo a node.</p>
+<p>A singly linked list is dynamic data structure with unlimited size that includes linear collections or groups of nodes. Each node contains data and a link/pointer to the next node. The last node of the list points to nothing and it is just a <code>nullptr</code>.</p>
+<p>A node might look like this:</p>
+<pre><code class="c++">template &lt;typename T&gt;
+struct LinkedListNode {
+  T value;
+  LinkedListNode&lt;T&gt; *next;
+
+  LinkedListNode(const T&amp; value) : value(value), next(nullptr) {}
+};
+</code></pre>
+
+<p>So now, if we want to represent a list, we can just represent it as a pointer to the first element, also known as the "head" of the list.</p>
+<h3>Inserting at the front or back</h3>
+<p>If we want to insert at the end of the list, we can just start at the head and continue following the <code>next</code> pointers until we get to end and change <code>next</code> in the last node, also known as the "tail" of the list, to the address of our new node.</p>
+<pre><code class="c++">LinkedListNode&lt;T&gt; *head = ...;
+
+// insert some new value at the end
+if (head == nullptr) {
+  head = new LinkedListNode&lt;T&gt;(value);
+} else {
+  // Go to the end of the Linked List
+  for (LinkedListNode&lt;T&gt; * tail = head; tail-&gt;next != nullptr; tail = tail-&gt;next) {
+  }
+  // Insert the node at the end
+  tail-&gt;next = new LinkedListNode&lt;T&gt;(value);
+}
+</code></pre>
+
+<p>The run time of inserting this way is O(n) if there are n nodes already in the list because we have to start at the head and loop once for every node in our list.</p>
+<p>Inserting at the front is easier though, all we have to do is make a new node that has the current head as it's next pointer, then update head to our new node, like so:</p>
+<pre><code class="c++">LinkedListNode&lt;T&gt; *head = ...;
+
+// insert some new value at the front
+LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
+new_node-&gt;next = head;
+head = new_node;
+</code></pre>
+
+<h3>Tail</h3>
+<p>We can make the previous linked list a lot better if we keep track of two things instead of one. <code>head</code> will be used to point to the first node and <code>tail</code> would be used to point to the last node of the linked list. Since we're keeping track of two things for our Linked List, it makes sense to split the Linked List into two classes, one for the node and one for the whole list.</p>
+<p>linked_list.h<pre><code class="c++">#include &lt;exception&gt;
+
+template &lt;typename T&gt;
+struct LinkedListNode {
+  T value;
+  LinkedListNode&lt;T&gt; *next;
+
+  LinkedListNode(const T&amp; value) : value(value), next(nullptr) {}
+};
+
+template &lt;typename T&gt;
+class LinkedList {
+  LinkedListNode&lt;T&gt; *head, *tail;
+
+  class Iterator {
+    LinkedListNode&lt;T&gt; *cur;
+  public:
+    Iterator(LinkedListNode&lt;T&gt; * cur) : cur(cur) {}
+    // Check for inequality
+    bool operator!=(const Iterator&amp; other) {
+      return cur != other.cur;
+    }
+    // Increment (e.g. ++it)
+    Iterator&amp; operator++() {
+      cur = cur-&gt;next;
+      return *this;
+    }
+    // Dereference (e.g. *it)
+    T&amp; operator*() {
+      return cur-&gt;value;
+    }
+  };
+
+public:
+  LinkedList() : head(nullptr), tail(nullptr) {}
+
+  ~LinkedList() {
+    for(LinkedListNode&lt;T&gt; *cur = head, *next; cur != nullptr; cur = next) {
+      next = cur-&gt;next;
+      delete cur;
+    }
+  }
+
+  void pop_front() {
+    // Let&#39;s assume head != nullptr
+    // TODO: Sublcass std::exception and throw an exception with a proper error message.
+    if (head == nullptr) {
+      throw std::exception();
+    }
+    LinkedListNode&lt;T&gt; *old_head = head;
+    head = head-&gt;next;
+    delete old_head;
+  }
+
+  void push_back(const T&amp; value) {
+    LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
+    if (tail == nullptr) {  // if the list is empty
+      head = tail = new_node;
+    } else {
+      tail-&gt;next = new_node;
+      tail = new_node;
+    }
+  }
+
+  Iterator begin() {
+    return Iterator(head);
+  }
+
+  Iterator end() {
+    return Iterator(nullptr);
+  }
+};</code></pre>demo.cpp<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+#include &#34;linked_list.h&#34;
+
+using std::cout;
+using std::endl;
+using std::string;
+
+int main() {
+  LinkedList&lt;string&gt; words;
+  words.push_back(&#34;apple&#34;);
+  words.push_back(&#34;banana&#34;);
+  words.push_back(&#34;cherry&#34;);
+
+  words.pop_front();
+
+  for (const string&amp; word : words) {
+    cout &lt;&lt; word &lt;&lt; endl;
+  }
+
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o demo simple_singly_linked_list/demo.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./demo</kbd></pre>
+<pre><samp>banana
+cherry
+</samp></pre></p>
+<h3>Removing Nodes</h3>
+<p>When you want to remove the first element of an array or a vector, the vector has to copy everything over one at a time. It becomes very expensive because it is a O(n) operation if I have n things in my array or vector. However, in a linked list it is tremendously efficient to remove an element. All you have to do is to update the pointer pointing to the node that you would like to delete and point it to the node right after. In fact, If you want to delete the node with the value 11, you would have to update the head’s pointer to point to the node containing the value 22 and then you can safely delete the node that you don’t need anymore. This is a O(1) operation because no matter how big the list is (no matter how many nodes are in the list), it takes the same number of constant time steps.</p>
+<p>Another advantage of linked lists is that you can slice out an entire section pretty efficiently. The cost of run time is with number of things (number of pointer in this case) that you are deleting and the size of the elements deleted does not matter. Going back to our example, if we want to delete the nodes containing the values 22, 33, 44, all we have to do is to update the pointer of the node containing the value 11 and point it to the node with the value 55. Whereas with arrays and vectors, if you wanted to delete the middle part, the compiler would have to copy over the remaining elements and input it in the gap which becomes expensive because the size matters and the run time would O(n) where n is the size of the elements deleted.</p>
+<p>Although a linked list has a better big-O for inserting or removing elements in the list, compared to an array or vector, in practice it is <strong>usually</strong> not useful. It is useful to understand how a linked list works because other data structures, like trees, are similar to linked lists but more complex.</p>
+<h3>Thanks</h3>
+<p>Thanks to Lorenzo Jiang for creating the draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

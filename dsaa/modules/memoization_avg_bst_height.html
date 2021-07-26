@@ -1,0 +1,111 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Memoization, approximating mean BST height</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Memoization, approximating mean BST height</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Memoization, approximating mean BST height</h1>
+  </p>
+<h2>Memoization, approximating mean BST height</h2>
+<p>In the previous lecture and notes, a sum expression was described for the mean height of an unbalanced BST.</p>
+<p>In this video, that sum is calculated using a recursive function, and memoization to increase performance.</p>
+<p>Memoization is explained below, but notice that a <code>std::map&lt;int, double&gt;</code> is used to "cache" calculated values: The function takes an <code>int</code> and returns a <code>double</code> so the map takes an <code>int</code> and looks up a <code>double</code>.</p>
+<p>In the code example below, you can see the "mean BST height", h, sum expressed and calculated.</p>
+<p>avg_bst_height_memoized.cpp<pre><code class="c++">#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+
+using namespace std;
+
+// Approximate average height of an unbalanced binary search tree with n nodes
+double approx_avg_bst_height(int n, map&lt;int, double&gt;&amp; cache) {
+  // Check if the answer is already in our cache
+  auto cached_it = cache.find(n);
+  if (cached_it != cache.end()) {
+    return cached_it-&gt;second;
+  }
+
+  // Base case: A BST with 0 nodes has height 0.
+  if (n == 0) {
+    return 0;
+  }
+
+  double h = 1.0;
+  for (int i = 0; i &lt; n; ++i) {
+    h += (max(approx_avg_bst_height(i, cache), approx_avg_bst_height(n - i - 1, cache))) / n;
+  }
+
+  // Add the answer to our cache
+  cache[n] = h;
+  return h;
+}
+
+int main() {
+  map&lt;int, double&gt; cache;
+  for (int n = 1; n &lt; 10000; n *= 2) {
+    cout &lt;&lt; &#34;H(&#34; &lt;&lt; n &lt;&lt; &#34;) == &#34; &lt;&lt; approx_avg_bst_height(n, cache) &lt;&lt; endl;
+  }
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o avg_bst_height_memoized avg_bst_height_memoized.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./avg_bst_height_memoized</kbd></pre>
+<pre><samp>H(1) == 1
+H(2) == 2
+H(4) == 3.33333
+H(8) == 5.00952
+H(16) == 6.9407
+H(32) == 9.0266
+H(64) == 11.1967
+H(128) == 13.4105
+H(256) == 15.6468
+H(512) == 17.8943
+H(1024) == 20.1475
+H(2048) == 22.4035
+H(4096) == 24.661
+H(8192) == 26.9191
+</samp></pre></p>
+<h3>Memoization</h3>
+<p>Memoization can be thought of as "caching".  One of the rules of recursion is called "the compound interest rule".  If you have already calculated a value, then, don't calculate it again!  Depending on how a recursive call stack unfolds, the same value can be calculated or referenced many times.  This means that if you can store previously calculated values, performance can significantly increase, both in running time, and potentially memory dedicated to the recursive call stack though you will also have to use more memory for the cache.</p>
+<p>In this example, memoization is NOT used.  Each time a higher n is passed into <code>fib()</code>, <code>fib(n-1)</code> is calculated, then <code>fib(n-2)</code>, which in term call <code>fib(n-1-1)</code>, <code>fib(n-2-1)</code>, etc.  We have already called <code>fib(n-2)</code> twice in this short example!  This works out to an EXPONENTIAL running time, or about O(2^n). As n increases by 1, the running time doubles.  This is terrible for large and even medium values of n.  </p>
+<pre><code class="c++">// SLOW CODE EXAMPLE!  EXPONENTIAL RUNNING TIME, NO MEMOIZATION
+int fib(int n) {
+  if (n &lt;= 1)
+    return n;
+  return fib(n-1) + fib(n-2);
+}
+</code></pre>
+
+<h3>std::map</h3>
+<p>Storing a value, by a certain key, is a use of <code>std::map</code>.  In the Fibonacci example, the "nth number" can be thought of as the key, and <code>fib(n)</code> can be thought of as the value.  Since keys in a <code>std::map</code> are unique, you can do "if exists" checks (and the [] square bracket operator actually does this for you in a way), and fetch values from the <code>std::map</code> if they exist at a key, and if not, calculate them once, and store them in the <code>std::map</code> for future use.</p>
+<p>Key value pairs, dictionaries, and associate arrays are other common phrases for this type of storage or data relationship.</p>
+<h4>Thanks</h4>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

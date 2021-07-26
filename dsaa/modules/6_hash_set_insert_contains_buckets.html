@@ -1,0 +1,205 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Hash Sets (insert and contains, with buckets)</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Hash Sets (insert and contains, with buckets)</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Hash Sets (insert and contains, with buckets)</h1>
+  </p>
+<h2>Hash Sets (insert and contains, with buckets)</h2>
+<p>This lecture covers a chaining hash table.  A hash index is calculated, and elements at that hash index are added to a set.  This gives our hash table a "collection of collections", or "vector of sets" characteristic.</p>
+<pre><code class="c++">  vector&lt;set&lt;string&gt; &gt; names;
+</code></pre>
+
+<h3>Load Factor</h3>
+<p>The number of buckets in a hash table needs to scale with the number of elements, n.  </p>
+<p>Load Factor is defined as the (number of elements) / (number of buckets).</p>
+<p>For both chaining hash tables and probing hash tables, there is an optimal load factor, or load factor range.</p>
+<p>Chaining hash tables should be kept to Load Factor &lt; 1.</p>
+<p>Probing hash tables should be kept to Load Factor &lt; 0.5</p>
+<p>The general process of filling a hash table is:</p>
+<ol>
+<li>
+<p>Insert elements until Load Factor &gt; Max Desired Load Factor</p>
+</li>
+<li>
+<p>Double the size of the hash table, and insert elements from the old, smaller hash table into the new, larger hash table.</p>
+</li>
+</ol>
+<p>This process, of increasing size and re-inserting elements, is called rehashing.</p>
+<h3>Rehash</h3>
+<p>Since the size of a hash table is increased (doubled) during a Rehash, elements may end up in different buckets.</p>
+<p>This is because the hash index of an element is calculated by hashFunction(element) % tableSize.  Since the tableSize changes, the hash index may change.</p>
+<p>We can implement a rehash function modelled after std::unordered_map::rehash.</p>
+<pre><code class="c++">  void rehash(int new_num_buckets) {
+    vector&lt;set&lt;string&gt; &gt; new_names;
+    new_names.resize(new_num_buckets);
+    for (const set&lt;string&gt;&amp; bucket : names) {
+      for (const string&amp; name : bucket) {
+        new_names[name_hash(name) % new_names.size()].insert(name);
+      }
+    }
+    names = move(new_names);
+  }
+</code></pre>
+
+<h3>Contains</h3>
+<p>The general algorithm for contains() in a chaining hash table is:</p>
+<ol>
+<li>
+<p>Get the hash index for the element/key that you're searching for</p>
+</li>
+<li>
+<p>If the collection at that hash index is not empty, iterate over the collection, looking for the element/key.</p>
+</li>
+<li>
+<p>"Not found" would be an empty hash index, or reaching the end() iterator, in the collection at that hash index.</p>
+</li>
+</ol>
+<pre><code class="c++">  bool contains(const string&amp; name) {
+    const set&lt;string&gt;&amp; subset = names[name_hash(name) % names.size()];
+    return subset.find(name) != subset.end();
+  }
+</code></pre>
+
+<h3>Insert</h3>
+<p>The general algorithm for insert() in a chaining hash table is:</p>
+<ol>
+<li>
+<p>Get the hash index for the element/key that you're inserting</p>
+</li>
+<li>
+<p>If the collection at that hash index does not contain the element/key, insert it.</p>
+</li>
+<li>
+<p>If the element/key is already in the collection at that hash index, there's nothing to do!</p>
+</li>
+</ol>
+<pre><code class="c++">  bool insert(const string&amp; name) {
+    ++size_;
+    if (size_ &gt; names.size() * max_load_factor) {
+      rehash(2 * names.size());
+    }
+    return names[name_hash(name) % names.size()].insert(name).second;
+  }
+</code></pre>
+
+<h3>Full Example Code</h3>
+<p>This is also available attached to the module.</p>
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;utility&gt;
+
+using namespace std;
+
+
+unsigned int name_hash(const string&amp; name) {
+  return hash&lt;string&gt;{}(name);
+}
+
+// We assume no name is empty! (In other words, &quot;&quot; is not a valid name)
+class NamesHashSet {
+  static constexpr double max_load_factor = 1.0;
+
+  vector&lt;set&lt;string&gt; &gt; names;
+  int size_;
+
+public:
+  NamesHashSet() : size_(0) {
+    names.resize(1);
+  }
+
+  int size() {
+    return size_;
+  }
+
+  bool contains(const string&amp; name) {
+    const set&lt;string&gt;&amp; subset = names[name_hash(name) % names.size()];
+    return subset.find(name) != subset.end();
+  }
+
+  bool insert(const string&amp; name) {
+    ++size_;
+    if (size_ &gt; names.size() * max_load_factor) {
+      rehash(2 * names.size());
+    }
+    return names[name_hash(name) % names.size()].insert(name).second;
+  }
+
+  void rehash(int new_num_buckets) {
+    vector&lt;set&lt;string&gt; &gt; new_names;
+    new_names.resize(new_num_buckets);
+    for (const set&lt;string&gt;&amp; bucket : names) {
+      for (const string&amp; name : bucket) {
+        new_names[name_hash(name) % new_names.size()].insert(name);
+      }
+    }
+    names = move(new_names);
+  }
+
+  void print() {
+    cout &lt;&lt; '(';
+    for (const auto&amp; bucket : names) {
+      cout &lt;&lt; '[';
+      for (const string&amp; name : bucket) {
+        cout &lt;&lt; name &lt;&lt; &quot;, &quot;;
+      }
+      cout &lt;&lt; &quot;], &quot;;
+    }
+    cout &lt;&lt; ')' &lt;&lt; endl;;
+  }
+};
+
+
+
+int main() {
+  vector&lt;string&gt; names_vec = {&quot;Alice&quot;, &quot;Brock&quot;, &quot;Mikel&quot;, &quot;Maya&quot;, &quot;Nana&quot;};
+    NamesHashSet names;
+  for (const string&amp; name : names_vec) {
+    cout &lt;&lt; &quot;Inserting &quot; &lt;&lt; name &lt;&lt; &quot; with hash &quot; &lt;&lt; name_hash(name) &lt;&lt; &quot;:&quot; &lt;&lt; endl;
+    names.insert(name);
+    names.print();
+  }
+  for (const string&amp; name : names_vec) {
+    cout &lt;&lt; &quot;names.contains(\&quot;&quot; &lt;&lt; name &lt;&lt; &quot;\&quot;) == &quot; &lt;&lt; names.contains(name) &lt;&lt; endl;
+  }
+  for (const string&amp; name : {&quot;Not a name&quot;, &quot;Coconuts&quot;}) {
+    cout &lt;&lt; &quot;names.contains(\&quot;&quot; &lt;&lt; name &lt;&lt; &quot;\&quot;) == &quot; &lt;&lt; names.contains(name) &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</code></pre>
+
+<h2>Thanks</h2>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

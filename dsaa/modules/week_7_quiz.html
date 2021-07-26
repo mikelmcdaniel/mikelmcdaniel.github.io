@@ -1,0 +1,158 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Week 7 Quiz</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Week 7 Quiz</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Week 7 Quiz</h1>
+  </p>
+<h2>Week 7 Quiz</h2>
+<p>Email me, post in the Canvas Discussions, or come to office hours if you have any questions.</p>
+<p>Please be concise if you can and write the short version of your answer first.</p>
+<h3>1. Compact Representation</h3>
+<p>The compact binary tree representation used for (min and max) heaps uses less memory and is faster than node classes with left and right pointers. Why don't we always use the compact binary tree representation?</p>
+<h4>Answer</h4>
+<p>The compact binary tree representation still uses space for nodes that are "empty". For example, if have an unbalanced binary search tree where you inserted 1, then 2, then 3, then 4, the tree would have N = 4 nodes and H = 4 height, then the representation would have pow(2, H) - 1 - H = 11 empty slots. The compact binary tree representation would use O(pow(2, H)) memory because only 1 node in each "layer" would be used and all the other nodes would be empty.</p>
+<h3>2. N-ary Compact Representation Child</h3>
+<p>The compact binary representation allows you to calculate the index of a "left" child (the 0th child) and "right" child (the 1st child). What if we used the same compact representation for an N-ary tree? Note: In a binary tree, N = 2.</p>
+<p>How would we calculate the <code>j</code>th child (where <code>0 &lt;= j &amp;&amp; j &lt; N</code>) in an N-ary tree, given an index <code>i</code>?</p>
+<h4>Answer</h4>
+<p>The <code>j</code>th child index of node <code>i</code> in an N-ary tree is <code>N * i + j + 1</code>.</p>
+<h3>3. N-ary Compact Representation Parent</h3>
+<p>The compact binary representation allows you to calculate the index of the parent. What if we used the same compact representation for an N-ary tree? Note: In a binary tree, N = 2.</p>
+<p>How would we calculate the index of the parent, given an index <code>i</code>?</p>
+<h4>Answer</h4>
+<p>The parent index of node <code>i</code> in an N-ary tree is <code>(i - 1) / N</code>, using integer division.</p>
+<h3>4. Min vs Max Heap</h3>
+<p>What's the difference between a min heap and a max heap?</p>
+<h4>Answer</h4>
+<p>In a min heap, every node is smaller than (or equal to) all it's children nodes, so the root is the smallest node. In a max heap, the opposite is true: every node is larger than (or equal to) all it's children.</p>
+<h3>5. std::priority_queue</h3>
+<p>Complete the function below:</p>
+<pre><code class="c++">#include &lt;queue&gt;
+#include &lt;vector&gt;
+
+// Given a vector of elements in any order, return the 5th smallest element
+// For example:
+//   std::vector&lt;char&gt; chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+//   assert(fifth_smallest_element(chars) == 'e');
+template &lt;typename T&gt;
+const T&amp; fifth_smallest_element(const std::vector&lt;T&gt;&amp; elements) {
+  // Fill in this part of the function, using an std::priority_queue
+}
+</code></pre>
+
+<h4>Answer</h4>
+<p>fifth_smallest_element.cpp<pre><code class="c++">#include &lt;cstddef&gt;
+#include &lt;functional&gt;
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;vector&gt;
+
+using std::cout;
+using std::endl;
+using std::greater;
+using std::priority_queue;
+using std::size_t;
+using std::vector;
+
+
+template &lt;typename T&gt;
+class VectorElementLess {
+  const vector&lt;T&gt;&amp; elements;
+public:
+  VectorElementLess(const vector&lt;T&gt;&amp; elements) : elements(elements) {}
+  bool operator()(size_t left_index, size_t right_index) {
+    return elements[left_index] &lt; elements[right_index];
+  }
+};
+
+// Given a vector of elements in any order, return the 5th smallest element
+// For example:
+//   std::vector&lt;char&gt; chars = {&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;i&#39;};
+//   assert(fifth_smallest_element(chars) == &#39;e&#39;);
+template &lt;typename T&gt;
+const T&amp; fifth_smallest_element(const vector&lt;T&gt;&amp; elements) {
+  VectorElementLess&lt;T&gt; cmp(elements);
+  priority_queue&lt;
+      size_t, vector&lt;size_t&gt;, VectorElementLess&lt;T&gt;
+    &gt; q(cmp);
+  for (size_t i = 0; i &lt; 5; ++i) {
+    q.push(i);
+  }
+  for (size_t i = 5, i_end = elements.size(); i &lt; i_end; ++i) {
+    q.push(i);
+    q.pop();
+  }
+  return elements[q.top()];
+}
+
+// This function is very similar to the one above, EXCEPT that it returns a
+// copy of the value (T) instead of a const T&amp; to the value inside elements.
+template &lt;typename T&gt;
+T fifth_smallest_element_value(const vector&lt;T&gt;&amp; elements) {
+  priority_queue&lt;T&gt; q;
+  auto it = elements.begin();
+  for (int i = 0; i &lt; 5; ++i) {
+    q.push(*it);
+  }
+  for (auto it_end = elements.end(); it != it_end; ++it) {
+    q.push(*it);
+    q.pop();
+  }
+  return q.top();
+}
+
+int main(int argc, const char* argv[]) {
+  vector&lt;char&gt; chars = {
+      &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;};
+  cout &lt;&lt; fifth_smallest_element(chars) &lt;&lt; endl;
+  cout &lt;&lt; fifth_smallest_element_value(chars) &lt;&lt; endl;
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o fifth_smallest_element fifth_smallest_element.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./fifth_smallest_element</kbd></pre>
+<pre><samp>e
+e
+</samp></pre></p>
+<h3>6. Heap Sort Space Big-O</h3>
+<p>Heap sort takes an array (or vector or other similar container) and sorts it in place. What's the big-O of the amount of <strong>memory</strong> it uses (<strong>not including the memory of the input/array/vector/etcetera itself</strong>)?</p>
+<h4>Answer</h4>
+<p>O(1).</p>
+<h3>7. Big-O</h3>
+<p>What operations do all max heaps support? What's the big-O of each operation?</p>
+<h4>Answer</h4>
+<p>For n elements in the max heap:</p>
+<p>Push and Pop: O(log(n))</p>
+<p>Top: O(1)</p>
+<h3>Dog Tax</h3>
+<p>Please submit a cute animal picture.</p>
+<p>
+</section>
+</body>
+</html>

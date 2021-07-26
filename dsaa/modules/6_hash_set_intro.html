@@ -1,0 +1,87 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Hash Set Rough Introduction</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Hash Set Rough Introduction</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Hash Set Rough Introduction</h1>
+  </p>
+<h2>Hash Set Rough Introduction</h2>
+<h3>Motivation</h3>
+<p>The Search Tree ADT (abstract data type) allowed various operations on a set of elements.  The elements were maintained in a sorted order.  This allowed operations like findMin(), findMax(), printInSortedOrder(), etc.  </p>
+<p>Search Tree ADT operations were generally O(log(n)), correlated to the height of the tree.</p>
+<p>However, recall that array/vector indexed operations, like someVector[someIndex] are O(1), or constant time.  </p>
+<p>If we are willing to sacrifice the order maintained by a Search Tree, we can arrive at a data structure that gives set operations such as Insert, Remove, and Contains in O(1) or constant time.  </p>
+<p>This data structure is a Hash Table.</p>
+<p>A hash table, ideally, is an array of some fixed size, which contains items.</p>
+<h3>Hashing and Hash Functions</h3>
+<p>The general idea of hashing, or hash functions, is to take a piece of data, and output some piece of smaller data.  For example, if we were writing a hash function to hash names of people, which would be strings, a hash function could be "return the first character of the name".</p>
+<p>So Edward would hash to E.</p>
+<p>Mikel would hash to M.</p>
+<p>Maya would hash to M.</p>
+<p>etc.</p>
+<p>If we were hashing numbers, a hash function could be "return the sum of all digits"</p>
+<p>So 123 would hash to 6.</p>
+<p>45 would hash to 9.</p>
+<p>33 would also hash to 6.</p>
+<p>etc.</p>
+<h3>Hash Table</h3>
+<p>We can combine the idea of an array/vector data structure, and the idea of hash functions, to create a Hash Table.</p>
+<p>In a Hash Table, the output of a hash function is used to index into the array/vector data structure.  </p>
+<p>Since an array/vector has some fixed size (ignoring resize for a moment), and there are in theory limitless values/keys/hash ouputs to be indexed, it can often be good to use modulo in a hash function.</p>
+<p>Eg, if a Hash Table array is of size 10, incorporating % 10 into a hash function will always give us indexes between 0 and 9.  </p>
+<h3>Collisions</h3>
+<p>As mentioned above, a hash table will have some fixed size.  There are infinite possible pieces of data to be placed in a Hash Table.  (Names, numbers, some complex object type, etc.)</p>
+<p>This means that there will almost always be collisions.  A collision is when two separate pieces of data hash to the same index.</p>
+<p>In the above "names" example, Mikel and Maya collided at index 'M'.</p>
+<p>123 and 33 collided at index 6.</p>
+<p>There are two main strategies to handle collisions in a Hash Table.</p>
+<ol>
+<li>
+<p>Probing - If an index output by the hash function is taken, move to the next index.  For example, if 33 hashes to 6, and index 6 is taken, maybe try index 7?</p>
+</li>
+<li>
+<p>Chaining - In our hash table array, maintain arrays at each index, instead of a single storage location.  This way, if both 33 and 123 hash to 6, they can both be added to the array that exists at index 6 of the main Hash Table array.</p>
+</li>
+</ol>
+<p>With chaining, you are essentially splitting the collection of input data into smaller collections.  Linear operations such as linear search, will be faster, in proportion to the reduced size of these collections.  (Remember, hashing/hash function is O(1), a constant time operation.)  If a hash table has 20 indexes,  there may be, at most, a 20x performance increase, as the original collection is split into 20 pieces.  This is ONLY IF hashing is random and uniform across the Hash Table container.</p>
+<h3>Design Concerns</h3>
+<p>The basic ideas behind the Hash Table ADT have been discussed above.  For real implementations, a few design concerns remain.</p>
+<ol>
+<li>
+<p>How to resize the Hash Table container?</p>
+</li>
+<li>
+<p>How to judge is a certain Hash function is good?</p>
+</li>
+</ol>
+<h2>Thanks</h2>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>(Unbalanced) Binary Search Tree Average Big-O</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">(Unbalanced) Binary Search Tree Average Big-O</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">(Unbalanced) Binary Search Tree Average Big-O</h1>
+  </p>
+<h2>(Unbalanced) Binary Search Tree Average Big-O</h2>
+<p>Inserting elements into an unbalanced BST in sorted order will lead to a BST that looks like a linked list.  With all right children (or all left children if they are inserted in reverse-sorted order).</p>
+<p>However, random insertions roughly balance themselves out.  On average, subtrees will be roughly balanced.</p>
+<h3>Average-Case Analysis</h3>
+<p>With n nodes inserted into a BST, there are n! (n factorial) possible insertion permutations.</p>
+<p>The Big-O of a BST operation depends on the depth of the node being inserted/deleted/found.</p>
+<p>From any node, the depth of its subtree = max(LeftSubTreeDepth, RightSubtreeDepth) + 1.</p>
+<p>I like to use the convention that empty tree has height = 0 but it is also common to say that an empty tree has height -1.</p>
+<p>The average depth over all nodes in a BST is O(log(n)) on the assumption that all insertion sequences/permutations are equally likely.</p>
+<h3>Average height of an unbalanced BST</h3>
+<p>In this section we will describe a sum expression that describes the average height of nodes in an unbalanced BST.</p>
+<p>With n possible root nodes, there is a (1/n) chance of each being the root.</p>
+<p>An n-node tree consists of a left subtree with i nodes, and an right subtree with n - i - 1 nodes.</p>
+<p>The height of a tree can be described as max(height(left), height(right)) + 1.</p>
+<p>H(n) can be defined to be the average height of a tree.
+So, H(n) = 1 + SUM (from i = 0 to n - 1) of (1 / n) * (max(H(i), H(n - i - 1)) + 1)</p>
+<p>This sum is written clearly in sigma notation at 20:10 in the lecture video, and simplified at 21:03.</p>
+<h3>Takeaway : BST's give O(log(n)) depth and running time</h3>
+<p>The above sum simplifies to H(n) = O(log(n)), so no matter how many nodes a tree has, doubling the number of nodes (assuming they're all inserted in a random order) will increase the height of the tree by about the same mount on average.</p>
+<p>For now, we are skipping the complicated proof to work this out.  A later lecture video computes it programatically though!</p>
+<h4>Thanks</h4>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>
