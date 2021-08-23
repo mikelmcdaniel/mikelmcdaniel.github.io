@@ -1,0 +1,374 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Foothill CS 2C</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Foothill CS 2C</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Foothill CS 2C</h1>
+  </p>
+<h2>Me working out some stuff...</h2>
+<h3>Things I want to do differently</h3>
+<ul>
+<li>Create list of "B" assignments and "A" assignments</li>
+<li>Ungrading (no points, frame assignments as "done or not done yet")</li>
+</ul>
+<h3>Wanted but Not Required</h3>
+<p>All of these are things not mentioned in the course outline. A few are implied but not stated explicitly (e.g. space complexity).</p>
+<ul>
+<li>practiced throughout course<ul>
+<li>unit testing</li>
+<li>documentation</li>
+<li>code review</li>
+<li>version control</li>
+</ul>
+</li>
+<li>interview skills</li>
+<li>ethics?</li>
+<li>undefined behavior</li>
+<li>space complexity</li>
+<li>recurrence relations</li>
+<li>threads?</li>
+<li>how to ask a good question</li>
+<li>bloom filters</li>
+<li>memoization</li>
+<li>iterators (beyond iterating over real collections)</li>
+<li>std::unique_ptr</li>
+<li>amortized analysis</li>
+<li>a page about how what we learn here isn't all practical and super obvious but still exercises skills that are practical (like doing push-ups)</li>
+<li>std::pair</li>
+</ul>
+<h3>Required but Not Wanted</h3>
+<ul>
+<li>Splay Trees</li>
+<li>little-o, theta, omega, and anything else that's not Big-O (but is Big-O style)</li>
+<li>Sparse Matrices</li>
+<li>"Create a graph data structure using OOP techniques and the STL container classes, and implement shortest path, minimum spanning tree and maximum flow problems."</li>
+<li>The "subset sum problem"</li>
+<li>Threaded trees ??</li>
+<li>The alternative "lazy deletion" implementation of tree nodes and its comparative performance to "hard deletion" ??</li>
+<li>Shellsort</li>
+</ul>
+<h3>Required and Wanted</h3>
+<ul>
+<li>abstract data types<ul>
+<li>stack</li>
+<li>queue</li>
+<li>priority queues</li>
+<li>set</li>
+<li>map / table / dict</li>
+</ul>
+</li>
+<li>binary search (iterative and recursive)</li>
+<li>std::<ul>
+<li>vector, list, set, map, unordered_map</li>
+</ul>
+</li>
+<li>containers<ul>
+<li>vector</li>
+<li>linked lists</li>
+<li>binary tree</li>
+<li>binary search tree</li>
+<li>balanced binary search trees</li>
+<li>hashing</li>
+<li>probing hash tables</li>
+<li>bucket hash tables</li>
+<li>iterators</li>
+</ul>
+</li>
+<li>sorting<ul>
+<li>selection sort</li>
+<li>insertion sort</li>
+<li>quick sort</li>
+<li>heap sort</li>
+<li>merge sort</li>
+<li>indirect sorting</li>
+</ul>
+</li>
+<li>dynamic programming</li>
+<li>greedy algorithms</li>
+<li>graphs<ul>
+<li>definition (weighted vs not, directed vs not)</li>
+<li>implementation</li>
+<li>shortest path (dijkstra's algorithm)</li>
+<li>min cut / max flow</li>
+</ul>
+</li>
+</ul>
+<h3>Prerequisite</h3>
+<ul>
+<li>basic command-line usage</li>
+<li>IO streams<ul>
+<li>file IO</li>
+<li>redirecting IO</li>
+</ul>
+</li>
+<li>bits<ul>
+<li>binary</li>
+<li>unsigned integers</li>
+</ul>
+</li>
+<li>undefined behavior<ul>
+<li>segmentation faults<ul>
+<li>reading data out of bounds</li>
+<li>writing data out of bounds</li>
+<li>executing</li>
+</ul>
+</li>
+<li>reading an uninitialized variable</li>
+</ul>
+</li>
+<li>pointers (incl. iterating using pointers, as prereq for iterators)</li>
+<li>std::move and r-value references</li>
+<li>oop stuff</li>
+<li>randomness</li>
+</ul>
+<h3>New Course</h3>
+<p>My goal for the course: Prepare students for a job, with a focus on data structures and algorithms.</p>
+<ul>
+<li>Week 1<ul>
+<li>Talk about the syllabus</li>
+<li>Identify weaknesses in prerequisite knowledge</li>
+</ul>
+</li>
+</ul>
+<h2>Foothill Course Outline</h2>
+<p>This is taken directly from <a href="https://catalog.foothill.edu/course-outlines/C-S-2C/">Foothill's CS 2C Course Outline</a>.</p>
+<h3>Student Learning Outcomes</h3>
+<ul>
+<li>The successful student will be able to write and incorporate balanced trees, hash tables, directed graphs and priority queues in his or her software.</li>
+<li>The successful student will be able to analyze the time complexity of a variety of algorithms and data structure access techniques and choose the best algorithm and/or data structure for the project at hand.</li>
+</ul>
+<h3>Course Objectives</h3>
+<p>The student will be able to:</p>
+<ol>
+<li>Implement a user-defined vector abstract data type (ADT) and its associated iterator from scratch, and compare the performance to the built-in C++ standard template library (STL) vector.</li>
+<li>Implement a user-defined linked-list ADT and its associated iterator from scratch, and compare the user-defined performance to the built-in C++ STL list.</li>
+<li>Build stack, queue and sparse matrix ADTs using C++ vectors and lists.</li>
+<li>Compute the big-O, little-o, omega and theta time complexity of search and sort algorithms.</li>
+<li>Define asymptotic behavior and perform empirical benchmarks to compare brute-force techniques with divide-and-conquer strategies.</li>
+<li>Analyze the basic algorithms of a general tree ADT.</li>
+<li>Use object-oriented programming (OOP) to create alternative implementations of binary search trees in C++ and verify or compare the logN behavior of each.</li>
+<li>Describe the advantages of balanced trees and analyze the performance of AVL trees.</li>
+<li>Write code using the STL that realizes a splay tree using either top-down or bottom-up splaying.</li>
+<li>Define linear probing, quadratic probing and open addressing as used in the hash tables ADT.</li>
+<li>Design a priority queue using heaps in C++.</li>
+<li>Analyze, classify and measure the main non-NlogN sorts and write a clear report of the results.</li>
+<li>Implement a C++ Quicksort and at least one other NlogN sort and compare the results as the number of data items approaches infinity.</li>
+<li>Define indirect sorting and explain why it is particularly important in C++.</li>
+<li>Create a graph data structure using OOP techniques and the STL container classes, and implement shortest path, minimum spanning tree and maximum flow problems.</li>
+<li>Describe common applications for each data structure studied in the course.</li>
+<li>Arrive at a strategy for selecting the right data structure for the job.</li>
+</ol>
+<h3>Course Content</h3>
+<ol>
+<li>The Vector ADT<ol>
+<li>Implementing a vector from scratch</li>
+<li>Using STL</li>
+</ol>
+</li>
+<li>Linked List ADT<ol>
+<li>Implementing a linked list from scratch</li>
+<li>Using STL list and associated iterator</li>
+</ol>
+</li>
+<li>Applications of Vectors and Lists<ol>
+<li>Sparse matrices</li>
+<li>Queues</li>
+<li>Stacks</li>
+<li>The "subset sum problem" and its solution using vectors and lists</li>
+</ol>
+</li>
+<li>Time Complexity<ol>
+<li>O(f) order of magnitude</li>
+<li>o(f) order of magnitude</li>
+<li>theta(f) order of magnitude</li>
+<li>omega(f) order of magnitude</li>
+<li>Constant, polynomial, logarithmic, and exponential time complexity</li>
+<li>NlogN time complexity</li>
+<li>Improper use of recursion leading to exponential time complexity</li>
+</ol>
+</li>
+<li>Measuring Asymptotic Behavior<ol>
+<li>Empirical methods of measurement (benchmarking)</li>
+<li>Brute force vs. strategies that use branching or divide-and-conquer algorithms</li>
+<li>Timing greedy and depth-first algorithms in graphs</li>
+</ol>
+</li>
+<li>General Trees<ol>
+<li>Tree nodes, roots, leaves, children and siblings</li>
+<li>Binary node implementation of a general tree</li>
+<li>Insertion and deletion in general trees</li>
+<li>Traversal with recursion</li>
+<li>Cloning trees</li>
+</ol>
+</li>
+<li>Searching and Binary Search Trees (BSTs)<ol>
+<li>Ordering condition and structure condition</li>
+<li>OOP (object-oriented-programming) implementation</li>
+<li>Time complexity consequence of the divide-and-conquer algorithm in of BSTs</li>
+<li>The alternative "lazy deletion" implementation of tree nodes and its comparative performance to "hard deletion"</li>
+<li>Threaded trees</li>
+<li>Bin heaps</li>
+</ol>
+</li>
+<li>Balanced BSTs 1: AVL Trees<ol>
+<li>Tree height and rebalancing</li>
+<li>Single and double rotations as the fundamental rebalancing tools</li>
+<li>Implementing AVL trees by inheriting from a generic BST</li>
+</ol>
+</li>
+<li>Balanced BSTs 2: Splay Trees<ol>
+<li>Splaying</li>
+<li>Top down vs. bottom-up splaying</li>
+<li>Implementing splay trees using STL classes</li>
+</ol>
+</li>
+<li>Hashing<ol>
+<li>Hashing functions</li>
+<li>Separate chaining</li>
+<li>Linear and quadratic probing</li>
+</ol>
+</li>
+<li>Priority Queues<ol>
+<li>The percolate down operation</li>
+<li>Bin heap implementation of priority queues</li>
+<li>Heap sort</li>
+</ol>
+</li>
+<li>Non-NlogN Sorts<ol>
+<li>Insertion sort</li>
+<li>Shellsort</li>
+<li>Benchmarking non-NlogN sorts compared with the STL sort</li>
+</ol>
+</li>
+<li>NlogN Sorts<ol>
+<li>Merge sort</li>
+<li>Heapsort</li>
+<li>Quicksort</li>
+<li>Benchmarking NlogN sorts compared with the STL sort</li>
+</ol>
+</li>
+<li>Indirect Sorting<ol>
+<li>What it is</li>
+<li>Why it's needed in C++</li>
+</ol>
+</li>
+<li>Graph Theory<ol>
+<li>Structures of a graph</li>
+<li>Nodes, edges and adjacency tables</li>
+<li>Shortest path algorithms and Dijkstra</li>
+<li>Minimal spanning tree algorithms and Kruskal</li>
+<li>Maximum flow graphs and their algorithms</li>
+</ol>
+</li>
+<li>The use of data structures in common applications areas<ol>
+<li>Math</li>
+<li>Physics</li>
+<li>Chemistry</li>
+<li>Biology</li>
+<li>Astronomy</li>
+<li>Business and finance</li>
+<li>Internet</li>
+</ol>
+</li>
+<li>Strategies for selecting the right data structure<ol>
+<li>Storage allocation and use memory for the data structure</li>
+<li>Deciding on a user-defined or built-in data structure</li>
+<li>How declaration models, binding and visibility affect different ADT implementations</li>
+</ol>
+</li>
+</ol>
+<h3>Lab Content</h3>
+<ol>
+<li>Implementation of time-intensive algorithms on various data types<ol>
+<li>Design and implement an algorithm whose execution time and/or memory requirements grow significantly when data size increases</li>
+<li>Use generics (AKA templates), which are a universal tool in advanced data structures, in some aspect of the algorithm</li>
+<li>Demonstrate that the algorithm adapts correctly when the generic that you use is applied to at least two distinct underlying data types</li>
+<li>Document the results of the algorithm when the program is applied to different sized data and different underlying data types</li>
+</ol>
+</li>
+<li>Using linked-list ADTs to optimize for size-varying or space-sensitive data types<ol>
+<li>Demonstrate the ability to use programming language-supplied linked-list structures in a problem that is not easily solved using fixed-size ADTs such as arrays</li>
+<li>Incorporate generics so as to allow the algorithm to work on various underlying data types</li>
+<li>Try different sized data for the linked-list and demonstrate that it handles growth properly</li>
+<li>Summarize the results along with sample program runs</li>
+</ol>
+</li>
+<li>Analyzing time complexity in the lab<ol>
+<li>Implement an assigned algorithm after first predicting its time complexity (linear, quadratic, NlogN, etc.)</li>
+<li>Run the algorithm on various sized data sets, recording times</li>
+<li>Describe the largest size data set that the computer can handle without running out of memory or taking an unreasonable amount of time</li>
+<li>Compare the expected growth rate with the observed growth rate</li>
+</ol>
+</li>
+<li>Demonstrating competence with binary search trees<ol>
+<li>Implement a binary search tree (BST) from scratch, or make significant assigned adjustments to an existing BST data structure supplied by your instructor</li>
+<li>Use recursion as appropriate for some of the BST methods</li>
+<li>Demonstrate that the class works on various underlying base type by use of generic specialization</li>
+<li>Supply runs and report on expected vs. observed time complexity</li>
+</ol>
+</li>
+<li>Demonstrating competence with balanced trees<ol>
+<li>Implement a some assigned balanced tree algorithm (such as AVL, splay or red-black) from scratch, or make significant adjustments to an existing balanced tree algorithm supplied by your instructor</li>
+<li>Use recursion as appropriate for some of the balanced tree methods</li>
+<li>Demonstrate that the class works on various underlying base type by use of generic specialization</li>
+<li>Supply runs and report difference between balanced tree times and simple BST times</li>
+</ol>
+</li>
+<li>Incorporating hash tables into programs<ol>
+<li>Produce a lab that creates or modifies a hash table and hashing function</li>
+<li>Write a client that tests out the hash table on various data</li>
+<li>Using a large data set, demonstrate that near-constant time access is produced by the hashing function and hash table</li>
+<li>Supply runs and report results with varying sized data sets</li>
+</ol>
+</li>
+<li>Analysis of a single sort algorithm<ol>
+<li>Implement a single sort algorithm as directed by the instructor</li>
+<li>Experiment with coding adjustments to try to improve the performance</li>
+<li>Compare the known time complexity of that algorithm with what you observe using increasingly larger data sets</li>
+<li>Attempt to explain any discrepancies in the expected vs. observed growth rate of the sort algorithm</li>
+</ol>
+</li>
+<li>Analysis of multiple sort algorithms<ol>
+<li>Implement multiple sort algorithms, at least two of which involve Shellsort and Quicksort</li>
+<li>Experiment with coding adjustments to try to improve the performance on any one of them to see if you can beat the fastest of the algorithms</li>
+<li>Time the algorithms on very small to very large data sets</li>
+<li>Report on which algorithms work better on small sets, and which on large sets</li>
+</ol>
+</li>
+<li>Writing projects that use graph theory<ol>
+<li>Implement a generic (AKA template) that will realize/specialize a graph of any underlying data type, either from scratch or using code provided by your instructor</li>
+<li>Write one of the common algorithms for graphs: shortest path, maximum flow or minimum spanning tree</li>
+<li>Discuss the problems that arise when debugging labs which involve data structures as complex as graph theoretic algorithms</li>
+<li>Devise a reasonable output for displaying graphs and supply samples with your program runs</li>
+</ol>
+</li>
+</ol>
+<p>
+</section>
+</body>
+</html>

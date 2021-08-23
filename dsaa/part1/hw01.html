@@ -1,0 +1,93 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Homework 01. Text Editor</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Homework 01. Text Editor</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+      <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Homework 01. Text Editor</h1>
+  </p>
+<h2>Goal of this assignment</h2>
+<p>The goal of this assignment is to practice your skills and test your knowledge about vectors and linked lists.</p>
+<p>Once you've mastered vectors and linked lists, you should...</p>
+<ul>
+<li>be able to implement a vector and linked list (including unit tests)</li>
+<li>know the big-O of time and space for vectors and linked lists</li>
+<li>know which data structure is better in theory (big-O)</li>
+<li>be able to measure which data structure is better in practice</li>
+<li>know how to use iterators</li>
+</ul>
+<h2>Problem</h2>
+<p>You and your friend are designing a basic text editor that you'd like to be fast. Your friend is writing the user interface and you're implementing some of the backend that actually edits the text.</p>
+<p>To do this, you need to efficiently support a few operations:</p>
+<ul>
+<li>move the cursor up/down (to the previous/next line)</li>
+<li>move the cursor left/right (to the previous/next character, going to the previous/next line if needed)</li>
+<li>add a character (just after the cursor)<ul>
+<li>if the character is '\n', then the current line should be split into two lines</li>
+</ul>
+</li>
+<li>remove a character (just before the cursor)<ul>
+<li>if the cursor is at the beginning of a line, then that line should be merged with the previous line</li>
+</ul>
+</li>
+<li>delete the line at the cursor</li>
+</ul>
+<p>In other words, you need to support this interface:</p>
+<pre><code class="c++">class TextLines {
+public:
+  void move_cursor_up();
+  void move_cursor_down();
+  void move_cursor_left();
+  void move_cursor_right();
+  void add_char_at_cursor(char c);
+  void remove_char_at_cursor();
+  void delete_line_at_cursor();
+
+  // These methods will be used for testing
+  int cursor_line_number();
+  int cursor_column_number();
+  int line_length_at_cursor();
+  string line_at_cursor();
+};
+</code></pre>
+
+<p>Since this is a homework about linked lists and vectors, <code>TextLines</code> should be represented as a vector of vectors of chars, vector of linked lists of chars, linked list of vectors of chars, <strong>xor</strong> a linked list of linked lists of chars.</p>
+<h3>Step 1a: Implement a vector and linked list</h3>
+<p>Implement a template vector and a template linked list that are similar to the builtin <code>std::vector</code> and <code>std::list</code> with at least these methods for both classes:</p>
+<pre><code class="c++">class Vector {
+public:
+  Vector();
+
+};
+</code></pre>
+
+<h2>Submissions</h2>
+<p>Submit your code on <a href="https://gradeoven.com/courses/CS%202C/assignments/00.%20Hello%20World">gradeoven.com/courses/CS 2C/assignments/00. Hello World</a>.</p>
+<p>
+</section>
+</body>
+</html>
