@@ -31,31 +31,12 @@
 <section>
   <h1 class="visually-hidden">Data Structures and Algorithms</h1>
   </p>
-<h2>Misc. / Other</h2>
-<p>These are topics that are worth discussing but that I haven't found a good place for yet in the course.</p>
-<ul>
-<li><a href="https://youtu.be/sxAjI03OFGw">Union Find video (17 minutes) (Spring 2021)</a></li>
-<li>Dynamic Programming<ul>
-<li><a href="https://youtu.be/fD-xKabyWY8">Dynamic Programming Intro video (38 minutes) (Spring 2021)</a></li>
-<li>Memoization<ul>
-<li><a href="https://youtu.be/RunmsA37YQU">Memoization (Approximating the INCORRECT average unbalanced BST height) video (19 minutes) (Spring 2021)</a></li>
-</ul>
-</li>
-<li>Levenshtein Distance<ul>
-<li><a href="https://youtu.be/9htlGLiVnF8">Levenshtein Distance (a Dynamic Programming Example) part 1/2 video (50 minutes) (Spring 2021)</a></li>
-<li><a href="https://youtu.be/x4ysGtiRBwc">Levenshtein Distance (a Dynamic Programming Example) part 2/2 video (1 hour 15 minutes) (Spring 2021)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Call Stacks<ul>
-<li><a href="https://youtu.be/T7qTOpCrx_8">Call Stacks Fibonacci Example video (24 minutes) (Spring 2021)</a></li>
-</ul>
-</li>
-</ul>
 <h2>Part 0a: Prerequisites</h2>
+<h3>Why study this?</h3>
+<p>These topics are things that you'll want to be comfortable with before learning data structures and algorithms but you don't have to know all of them before you get started. For example, bit arithmetic won't be relevant until we cover Bloom Filters.</p>
+<h3>Content</h3>
 <ul>
-<li>Pointers<ul>
+<li><a href="part0a/pointers">Pointers</a><ul>
 <li><a href="https://youtu.be/AeJ_ZURroVo">Pointers video (28 minutes) (Spring 2021)</a></li>
 </ul>
 </li>
@@ -91,7 +72,12 @@
 </li>
 </ul>
 <p><a href="https://youtu.be/EKDrLLCuX-E">std::initializer_list, std::unique_ptr, deep vs shallow copies, and std::move video (41 minutes) (Spring 2021)</a></p>
+<h3>Homework</h3>
+<p><a href="part0a/hw00">00. Hello World</a></p>
 <h2>Part 0b: Engineering / Practical Skills</h2>
+<h3>Why study this?</h3>
+<p>These are skills that you'll want to be comfortable with for working on real-life projects.</p>
+<h3>Content</h3>
 <ul>
 <li>How to Ask Questions</li>
 <li>Unit Tests</li>
@@ -101,6 +87,11 @@
 <li>Incremental Code Changes</li>
 </ul>
 <h2>Part 1: Introduction to Big-O</h2>
+<h3>Why study this?</h3>
+<p>Data structures and algorithms is all about solving problems efficiently: quickly and using little memory. Big-O is a tool that allows us to compare the efficiency of different data structures, algorithms, or other code no matter what computer we're using.</p>
+<h3>Goals</h3>
+<p>After this Part of the course, you'll be able to calculate the big-O of a few algorithms and possibly all the code you've ever written so far. You'll also be able to compare the big-O of virtually anything and know which data structure or algorithm is <em>theoretically</em> more efficient without ever looking at the code! These are skills you'll use throughout this course and throughout your career whenever you want things to be efficient at large scale.</p>
+<h3>Content</h3>
 <ul>
 <li><a href="part1/linear_search">Linear Search</a><ul>
 <li>Exponents and Logarithms</li>
@@ -127,8 +118,10 @@
 <li><a href="https://youtu.be/dpS9SksBb-A">Abstract Data Types video (6 minutes) (Spring 2021)</a></li>
 <li>Vectors<ul>
 <li><a href="https://youtu.be/eKAXxzVn2ik">Simple Vector Implementation video (36 minutes) (Spring 2021)</a></li>
+<li><a href="part2/vector_of_string_impl">Vector of String Implementation</a></li>
 <li>Amortized Analysis<ul>
 <li><a href="https://youtu.be/2ZSro82czUw">Simple Vector (Amortized) Big-O and Timing video (37 minutes)</a></li>
+<li><a href="part2/vector_push_back_big_o">Vector push_back Big-O</a></li>
 </ul>
 </li>
 </ul>
@@ -146,7 +139,7 @@
 <li>Circular Queues</li>
 </ul>
 </li>
-<li>Iterators<ul>
+<li><a href="part2/iterators">Iterators</a><ul>
 <li><a href="https://youtu.be/pQxOV6BJSHE">Iterators video (22 minutes) (Spring 2021)</a></li>
 <li>Bonus: <a href="https://youtu.be/uvUjyHBmDQo">Abusing Iterators video (14 minutes) (Spring 2021)</a></li>
 </ul>
@@ -195,7 +188,10 @@
 </ul>
 </li>
 <li>Bloom Filters<ul>
-<li><a href="https://youtu.be/QOA5db0Di0Q">Simple Bloom Filter Idea and Implementation (25 minutes) (Spring 2021)</a></li>
+<li><a href="https://youtu.be/QOA5db0Di0Q">Simple Bloom Filter Idea and Implementation (25 minutes) (Spring 2021)</a><ul>
+<li><a href="part4/bloom_filters">Bloom Filters (video notes)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -262,6 +258,28 @@
 </li>
 <li>Min Cut and Max Flow<ul>
 <li><a href="https://youtu.be/gKERMAuEhUo">Min Cut / Max Flow Problem video (11 minutes) (Spring 2021)</a></li>
+</ul>
+</li>
+</ul>
+<h2>Misc. / Other</h2>
+<p>These are topics that are worth discussing but that I haven't found a good place for yet in the course. -- These topics may or may not be covered. You can ignore them for now.</p>
+<ul>
+<li><a href="https://youtu.be/sxAjI03OFGw">Union Find video (17 minutes) (Spring 2021)</a></li>
+<li>Dynamic Programming<ul>
+<li><a href="https://youtu.be/fD-xKabyWY8">Dynamic Programming Intro video (38 minutes) (Spring 2021)</a></li>
+<li>Memoization<ul>
+<li><a href="https://youtu.be/RunmsA37YQU">Memoization (Approximating the INCORRECT average unbalanced BST height) video (19 minutes) (Spring 2021)</a></li>
+</ul>
+</li>
+<li>Levenshtein Distance<ul>
+<li><a href="https://youtu.be/9htlGLiVnF8">Levenshtein Distance (a Dynamic Programming Example) part 1/2 video (50 minutes) (Spring 2021)</a></li>
+<li><a href="https://youtu.be/x4ysGtiRBwc">Levenshtein Distance (a Dynamic Programming Example) part 2/2 video (1 hour 15 minutes) (Spring 2021)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Call Stacks<ul>
+<li><a href="https://youtu.be/T7qTOpCrx_8">Call Stacks Fibonacci Example video (24 minutes) (Spring 2021)</a></li>
 </ul>
 </li>
 </ul>

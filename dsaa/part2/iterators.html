@@ -1,0 +1,116 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Iterators</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Iterators</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Iterators</h1>
+  </p>
+<h2>Iterators</h2>
+<p>In other languages, like Java or Python, iterators only allow you to do the operations needed for iterating like checking if there is next element and getting the next element. C++ is relatively unique because it's iterators are modeled after pointers.</p>
+<h3>Iterating with Pointers</h3>
+<p>If you had an array, you'd probably iterate over it using an index like this:</p>
+<pre><code class="c++">int a[] = {11, 22, 33, 44, 55};
+for (int i = 0; i &lt; 5; ++i) {
+  cout &lt;&lt; a[i] &lt;&lt; endl;
+}
+</code></pre>
+
+<p>However, you could also equivalently iterate over it using pointers, like this:</p>
+<pre><code class="c++">int a[] = {11, 22, 33, 44, 55};
+int *begin = &amp;a[0], *end = &amp;a[5];
+for (int *p = begin; p != end; ++p) {
+  cout &lt;&lt; *p &lt;&lt; endl;
+}
+</code></pre>
+
+<p>This works because in an array, the elements are stored one after another in memory. If <code>a[i]</code> is at address 1,024 (0x400) and sizeof(int) == 4, then <code>a[i + 1]</code> is at address 1,024 + sizeof(int) == 1,028 (0x404).</p>
+<p>In the loop, <code>p</code> starts out pointing to <code>&amp;a[0]</code>, then gets incremented (<code>++p</code>) to point to <code>&amp;a[1]</code> which is <code>sizeof(int) == 4</code> bytes later in memory, and so on.</p>
+<h3>Iterating over <code>std::vector</code></h3>
+<p>Since <code>std::vector</code> stores it's elements in an array, we can actually iterate over it in the same we that we did for an array.</p>
+<pre><code class="c++">std::vector&lt;int&gt; a = {11, 22, 33, 44, 55};
+int *begin = &amp;a[0], *end = &amp;a[5];
+for (int *p = begin; p != end; ++p) {
+  cout &lt;&lt; *p &lt;&lt; endl;
+}
+</code></pre>
+
+<p>That loop is almost identical to how you'd iterate over an <code>std::vector</code> with iterators:</p>
+<pre><code class="c++">std::vector&lt;int&gt; a = {11, 22, 33, 44, 55};
+for (auto it = a.begin(); it != a.end(); ++it) {
+  cout &lt;&lt; *it &lt;&lt; endl;
+}
+</code></pre>
+
+<p>This is how iterators are modeled or inspired by pointers. All iterators in C++ support the operations you need to loop in this way but not all iterators in C++ support other things like subtraction or addition, like regular pointers: you can copy them (<code>auto it = a.begin()</code>), compare them (<code>it != a.end()</code>), increment them (<code>++it</code>), and dereference them (<code>*it</code>) like a pointer. <code>std::vector::iterator</code> is what's called a <a href="https://www.cplusplus.com/reference/iterator/RandomAccessIterator/">RandomAccessIterator</a> and supports a lot of the same things that regular pointers do, like subtraction (<code>a.end() - a.begin() == 5</code> in the example above). Other iterators, like <code>std::list::iterator</code> support fewer operations but all iterators support the operations you need to write a for-loop.</p>
+<h3>For-each Loops</h3>
+<p>For-each loops in C++ are actually just using iterators behind the scenes. The following loops are equivalent:</p>
+<pre><code class="c++">std::vector&lt;int&gt; a = {11, 22, 33, 44, 55};
+for (auto it = a.begin(); it != a.end(); ++it) {
+  cout &lt;&lt; *it &lt;&lt; endl;
+}
+for (const int x : a) {
+  cout &lt;&lt; x &lt;&lt; endl;
+}
+</code></pre>
+
+<p>For each loops work on any iterable that provides a begin() and end() method that returns an appropriate iterator.</p>
+<h3>Making your own Iterators</h3>
+<p>To keep things simple, let's start by making an iterator that just wraps a pointer, just to show that iterators in C++ really do behave like pointers:</p>
+<pre><code class="c++">class IntPointerIterator {
+  int *p;
+public:
+  IntPointerIterator(int *p) : p(p) {}
+
+  bool operator!=(const IntPointerIterator&amp; other) {
+    return p != other.p;
+  }
+
+  IntPointerIterator&amp; operator++() {
+    ++p;
+    return *this;
+  }
+
+  int operator*() {
+    return *p;
+  }
+};
+
+int main() {
+  int a[] = {11, 22, 33, 44, 55};
+  IntPointerIterator begin(a), end(a + 5);
+  for (IntPointerIterator it = begin; it != end; ++it) {
+    cout &lt;&lt; *it &lt;&lt; endl;
+  }
+}
+</code></pre>
+
+<p>
+</section>
+</body>
+</html>

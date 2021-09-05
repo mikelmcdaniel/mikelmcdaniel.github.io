@@ -1,0 +1,171 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Pointers</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Pointers</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Pointers</h1>
+  </p>
+<h2>Pointers</h2>
+<p>Before talking about pointers, we need to talk about what a variables and memory.</p>
+<p>Note: I'm going to assume that <code>sizeof(int) == 4</code>, <code>sizeof(long) == 8</code>, and <code>sizeof(T*) == 8</code> (e.g. <code>sizeof(int*) == 8</code>). This is the case on most 64-bit architecture/compiler combinations.</p>
+<h3>Variables In Memory</h3>
+<p>When you declare a variable by saying <code>int x</code>, part of the compiler's job is to decide where in memory that variable should go. On my 64-bit laptop, an <code>int</code> is 4 bytes, so the compiler will need to make sure there's at least 4 bytes for <code>x</code> in memory. If you have multiple variables, the compiler has to plan out where each one goes.</p>
+<pre><code class="c++">// Note: I'm assuming sizeof(int) == 4 for this example.
+// When the compiler sees this code, it might give x an address like 1,024
+// (0x400) and y and address like 1,024 + sizeof(int) = 1,024 + 4 = 1,028
+// (0x404). You don't know where x and y will be stored or if they'll be next to
+// each other in memory *but* you also don't have to do any work to make sure
+// that all of your variables have some place to be and they aren't overlapping.
+int x = 5, y = 7;
+</code></pre>
+
+<h3>Pointers: Indices into Memory</h3>
+<p>Memory is basically a giant array of bytes where pointers are like indices into memory. When you write code like <code>int *p = &amp;x;</code>, the compiler sets aside <code>sizeof(int*)</code> bytes of memory for <code>p</code> and then sets the value of those bytes to represent the address of <code>x</code>, which in our example is 0x400 (1,024). In a practical example, the address will probably be some very large number like 0x7fff1394fa1c (140733521918492).</p>
+<pre><code class="c++">// Note: I'm assuming sizeof(int) == 4 for this example.
+// When the compiler sees this code, it might give p an address like 2,048
+// (0x800), x and address like 2,048 + sizeof(int*) = 2,048 + 8 = 2,056
+// (0x808), and y an address like 2,068. You don't know where x, y, and p will
+// be stored or if they'll be next to  each other in memory *but* you also don't
+// have to do any work to make sure that all of your variables have some place
+// to be and they aren't overlapping.
+// You do know that the bytes at &amp;x will represent the int 5 and the bytes at &amp;p
+// will represent &amp;x (e.g. 0x808).
+int x = 5, y = 7;
+int* p = &amp;x;
+</code></pre>
+
+<h3>Arrays</h3>
+<p>If you have an array, <code>int a[] = {11, 22, 33, 44, 55};</code>, then the compiler will set aside <code>5 * sizeof(int) == 20</code> bytes somewhere. Since it's an array, you are guaranteed that the <code>int</code>s are stored right after each other in memory. You don't know where <code>&amp;a[0]</code> is but you do know that <code>&amp;a[1]</code> is <code>sizeof(int) == 4</code> bytes after <code>&amp;a[0]</code> and in general that <code>&amp;a[i + d]</code> is <code>d * sizeof(int) == d * 4</code> bytes after <code>&amp;a[i]</code>.</p>
+<p>The variable <code>a</code> actually behaves almost identically to a pointer and represents the address of the 0th element in the array; in basically every way, you can treat it as a pointer and it will work the same. If you have <code>int *p = a; // same as p = &amp;a[0]</code>, then <code>p</code> and <code>a</code> will behave in almost the same way. You can actually write code like <code>p[i]</code> and get the same exact result as <code>a[i]</code> because in both cases, what you're <em>really</em> doing is taking the address that <code>a</code> or <code>p</code> is pointing to, then adding <code>i * sizeof(int)</code> to it, then reading those <code>sizeof(int) == 4</code> bytes from memory.</p>
+<p><code>*p</code> and <code>*a</code> also do the same thing and more interestingly, <code>*(p + 4)</code> and <code>*(a + 4)</code> also do the same thing, but it might not be exactly what you expect. The <code>+ 4</code> doesn't add 4 bytes to the address, it adds <code>4 * sizeof(int)</code> bytes to the address. Since the compiler knows that <code>a</code> is an <code>int[]</code> and <code>p</code> is an <code>int*</code>, it knows that <code>+ d</code> means it should add <code>d * sizeof(int)</code> to the address, not just <code>d</code> to the address. If I wanted to do a for loop over <code>a</code> using just pointers, I could write code like this:</p>
+<pre><code class="c++">int a[] = {11, 22, 33, 44, 55};
+int *begin = a, *end = a + 5;
+
+// If &amp;a[0] is 0x800 and sizeof(int) == 4, then this would print:
+// 0x800  11
+// 0x804  22
+// 0x808  33
+// ...
+for (int *p = begin; p != end; ++p) {
+  cout &lt;&lt; p &lt;&lt; &quot;  &quot; &lt;&lt; *p &lt;&lt; endl;
+}
+</code></pre>
+
+<h3>Pointers to Pointers</h3>
+<p>I might make more detailed notes on pointers to pointers later but I'll just say this short bit for now:</p>
+<p>So far, we've just looked at <code>int*</code> that point to <code>int</code> but you can have a pointer to any type, including other pointers. For <em>any</em> type and variable, <code>T x</code>, you can have a <code>T* p</code>. When you write <code>*p</code>, that code will read the address that <code>p</code> represents, then go read <code>sizeof(T)</code> bytes from that address and interpret those bytes as representing a <code>T</code>. If <code>T = int*</code>, then... dereferencing that pointer (<code>*p</code>) will go to the address of <code>x</code> (<code>&amp;x</code>) and read those <code>sizeof(T*) == sizeof(int*) == 8</code> bytes and interpret them as an int pointer.</p>
+<h3>Example Program</h3>
+<p>Let's tie all this together with a quick example program to demonstrate:</p>
+<p>pointers_example.cpp<pre><code class="c++">#include &lt;iostream&gt;
+
+using std::cout;
+using std::endl;
+
+int main(int argc, const char *argv[]) {
+  int x = 5, y = 7;
+  int a[] = {11, 22, 33, 44, 55};
+  int *p = &amp;x;
+
+  cout &lt;&lt; &#34;sizeof(int) == &#34; &lt;&lt; sizeof(int) &lt;&lt; endl;
+  cout &lt;&lt; &#34;sizeof(int*) == &#34; &lt;&lt; sizeof(int*) &lt;&lt; endl;
+  cout &lt;&lt; &#34;x == &#34; &lt;&lt; x &lt;&lt; &#34;  (at address &#34; &lt;&lt; &amp;x &lt;&lt; &#34;)&#34; &lt;&lt; endl;
+  cout &lt;&lt; &#34;y == &#34; &lt;&lt; y &lt;&lt; &#34;  (at address &#34; &lt;&lt; &amp;y &lt;&lt; &#34;)&#34; &lt;&lt; endl;
+  cout &lt;&lt; &#34;a == &#34; &lt;&lt; a &lt;&lt; &#34;  (at address &#34; &lt;&lt; &amp;a &lt;&lt; &#34;)&#34; &lt;&lt; endl;
+  cout &lt;&lt; &#34;p == &#34; &lt;&lt; p &lt;&lt; &#34;  (at address &#34; &lt;&lt; &amp;p &lt;&lt; &#34;)&#34; &lt;&lt; endl;
+  cout &lt;&lt; endl;
+
+  p = a; // same as p = &amp;a[0];
+  cout &lt;&lt; &#34;Now p == &#34; &lt;&lt; p &lt;&lt; &#34; == a == &#34; &lt;&lt; a &lt;&lt; endl;
+  cout
+      &lt;&lt; &#34;*a == &#34; &lt;&lt; *a &lt;&lt; &#34; &amp;&amp; a[0] == &#34; &lt;&lt; a[0] &lt;&lt; &#34; &amp;&amp; &#34;
+      &lt;&lt; &#34;*p == &#34; &lt;&lt; *p &lt;&lt; &#34; &amp;&amp; p[0] == &#34; &lt;&lt; p[0]
+      &lt;&lt; &#34;  at address &#34; &lt;&lt; a &lt;&lt; &#34; &#34; &lt;&lt; p &lt;&lt; endl;
+  for (int i = 0; i &lt; 5; ++i) {
+    cout
+        &lt;&lt; &#34;*(a + &#34; &lt;&lt; i &lt;&lt; &#34;) == &#34; &lt;&lt; *(a + i) &lt;&lt; &#34;  at &#34; &lt;&lt; a + i &lt;&lt; endl
+        &lt;&lt; &#34;    a[&#34; &lt;&lt; i &lt;&lt; &#34;] == &#34; &lt;&lt; a[i]     &lt;&lt; &#34;  at &#34; &lt;&lt; &amp;a[i] &lt;&lt; endl
+        &lt;&lt; &#34;*(p + &#34; &lt;&lt; i &lt;&lt; &#34;) == &#34; &lt;&lt; *(p + i) &lt;&lt; &#34;  at &#34; &lt;&lt; p + i &lt;&lt; endl
+        &lt;&lt; &#34;    p[&#34; &lt;&lt; i &lt;&lt; &#34;] == &#34; &lt;&lt; p[i]     &lt;&lt; &#34;  at &#34; &lt;&lt; &amp;p[i] &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+
+  cout &lt;&lt; &#34;You can iterate using indices in an array or with pointers:&#34; &lt;&lt; endl;
+  int *begin = a, *end = a + 5;
+  for (int *p = begin; p != end; ++p) {
+    cout
+        &lt;&lt; &#34;int at address &#34; &lt;&lt; p &lt;&lt; &#34; is &#34; &lt;&lt; *p &lt;&lt; &#34; which is &#34;
+        &lt;&lt; p - begin &lt;&lt; &#34; ints from address &#34; &lt;&lt; begin &lt;&lt; endl;
+  }
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o pointers_example pointers_example.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
+<pre><samp>sizeof(int) == 4
+sizeof(int*) == 8
+x == 5  (at address 0x7ffcb1a5865c)
+y == 7  (at address 0x7ffcb1a58658)
+a == 0x7ffcb1a58640  (at address 0x7ffcb1a58640)
+p == 0x7ffcb1a5865c  (at address 0x7ffcb1a58638)
+
+Now p == 0x7ffcb1a58640 == a == 0x7ffcb1a58640
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffcb1a58640 0x7ffcb1a58640
+*(a + 0) == 11  at 0x7ffcb1a58640
+    a[0] == 11  at 0x7ffcb1a58640
+*(p + 0) == 11  at 0x7ffcb1a58640
+    p[0] == 11  at 0x7ffcb1a58640
+*(a + 1) == 22  at 0x7ffcb1a58644
+    a[1] == 22  at 0x7ffcb1a58644
+*(p + 1) == 22  at 0x7ffcb1a58644
+    p[1] == 22  at 0x7ffcb1a58644
+*(a + 2) == 33  at 0x7ffcb1a58648
+    a[2] == 33  at 0x7ffcb1a58648
+*(p + 2) == 33  at 0x7ffcb1a58648
+    p[2] == 33  at 0x7ffcb1a58648
+*(a + 3) == 44  at 0x7ffcb1a5864c
+    a[3] == 44  at 0x7ffcb1a5864c
+*(p + 3) == 44  at 0x7ffcb1a5864c
+    p[3] == 44  at 0x7ffcb1a5864c
+*(a + 4) == 55  at 0x7ffcb1a58650
+    a[4] == 55  at 0x7ffcb1a58650
+*(p + 4) == 55  at 0x7ffcb1a58650
+    p[4] == 55  at 0x7ffcb1a58650
+
+You can iterate using indices in an array or with pointers:
+int at address 0x7ffcb1a58640 is 11 which is 0 ints from address 0x7ffcb1a58640
+int at address 0x7ffcb1a58644 is 22 which is 1 ints from address 0x7ffcb1a58640
+int at address 0x7ffcb1a58648 is 33 which is 2 ints from address 0x7ffcb1a58640
+int at address 0x7ffcb1a5864c is 44 which is 3 ints from address 0x7ffcb1a58640
+int at address 0x7ffcb1a58650 is 55 which is 4 ints from address 0x7ffcb1a58640
+</samp></pre>
+</p>
+<p>
+</section>
+</body>
+</html>

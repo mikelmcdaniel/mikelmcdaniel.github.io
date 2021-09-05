@@ -1,0 +1,566 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Vectors String Implementation</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Vectors String Implementation</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Vectors String Implementation</h1>
+  </p>
+<h2>Vectors String Implementation</h2>
+<h3>Before Vectors</h3>
+<p>Before we had vectors, we had arrays and they were good enough. Just kidding. Arrays are useful but they're not great when you don't know (at compile time) how many things you're going to store in the array (at run time). Imagine implementing a function that takes a filename as input and returns an array of all the lines...</p>
+<p><pre><code>You can&#39;t sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.</code></pre></p>
+<p>read_lines_array1.cpp<pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
+#include &lt;exception&gt;  // std::exception
+#include &lt;fstream&gt;  // std::ifstream
+#include &lt;utility&gt;  // std::pair, std::make_pair
+#include &lt;string&gt;  // std::string
+
+using std::cout;
+using std::endl;
+using std::exception;
+using std::ifstream;
+using std::make_pair;
+using std::pair;
+using std::string;
+
+
+// It&#39;s good to subclass on an existing exception type when you write a library
+// so people using your code can choose to catch the specific exception type.
+class read_lines_exception : public exception {
+  string what_str;
+public:
+  read_lines_exception(const string&amp; what_str) : what_str(what_str) {}
+  const char* what() const noexcept override {
+    return what_str.c_str();
+  }
+};
+
+
+// Returns an array of lines (strings) and the number of lines.
+// If we just returned the pointer to the strings, then the caller wouldn&#39;t know
+// how many lines we read fromt he file, so we return both.
+pair&lt;string*, int&gt; read_lines_array(const string&amp; filepath) {
+  ifstream f(filepath);
+  // We don&#39;t know how many lines are in the file, so we need an array that we
+  // can resize somehow... Arrays don&#39;t really support resizing but if we create
+  // an array and need more space, we can create a new[] bigger array, copy
+  // everything to the new array, then delete[] the old array.
+  //
+  // No matter how big we make the original array, it might have to get bigger,
+  // so let&#39;s just start with a capacity (number of lines we can fit) of 10.
+  int lines_capacity = 10;
+  // We also need to keep track of how many lines we have so far.
+  int lines_size = 0;
+  string *lines = new string[lines_capacity];
+  if (f.fail()) {
+    throw read_lines_exception(&#34;Could not open file &#34; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    // Now we need to add the line to our array
+    // It&#39;s possible that there&#39;s no more space, so we need to check that first.
+    if (lines_size &gt;= lines_capacity) {
+      // &#34;Resize&#34; lines by creating a new array, copying all the lines to the
+      // new array, then deleting the old array.
+      // Create a new array with more capacity.
+      const int new_lines_capacity = lines_capacity * 2;
+      string *new_lines = new string[new_lines_capacity];
+      // Copy existing lines
+      for (int i = 0; i &lt; lines_capacity; ++i) {
+        new_lines[i] = lines[i];
+      }
+      // Delete old lines
+      delete[] lines;
+      // Update lines/capacity to point to the new lines/capacity.
+      lines = new_lines;
+      lines_capacity = new_lines_capacity;
+    }
+    // Add the line to our array.
+    lines[lines_size] = line;
+    ++lines_size;
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&#34;Failed to read all lines in &#34; + filepath);
+  }
+  return make_pair(lines, lines_size);
+}
+
+int main(int argc, const char *argv[]) {
+  string filepath = argc &gt; 1 ?  argv[1] : &#34;truth.txt&#34;;
+
+  auto lines_and_size = read_lines_array(filepath);
+  string* lines = lines_and_size.first;
+  int num_lines = lines_and_size.second;
+  cout &lt;&lt; &#34;read_lines_array:&#34; &lt;&lt; endl;
+  for (int i = 0; i &lt; num_lines; ++i) {
+    cout &lt;&lt; lines[i] &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+  // Don&#39;t forget to delete[] dynamically allocated arrays when you&#39;re done!
+  delete[] lines;
+
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o read_lines_array1 read_lines_array1.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./read_lines_array1</kbd></pre>
+<pre><samp>read_lines_array:
+You can&#39;t sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
+
+</samp></pre>
+</p>
+<p>That's really tedious compared to the vector version that does the same thing:</p>
+<pre><code class="c++">vector&lt;string&gt; read_lines_std_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  vector&lt;string&gt; lines;
+  if (f.fail()) {
+    throw read_lines_exception(&quot;Could not open file &quot; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&quot;Failed to read all lines in &quot; + filepath);
+  }
+  return lines;
+}
+
+// ...
+cout &lt;&lt; &quot;read_lines_string_vector:&quot; &lt;&lt; endl;
+for (const string&amp; line : read_lines_string_vector(filepath)) {
+  cout &lt;&lt; line &lt;&lt; endl;
+}
+cout &lt;&lt; endl;
+// ...
+</code></pre>
+
+<h3>Building our own simple vector</h3>
+<p>Let's start out by just building what we need in a <code>StringVector</code> class, implementing just the operations that are used in <code>read_lines_string_vector</code> and the for-loop that prints the lines (<code>for (const string&amp; line : read_lines_string_vector(filepath))</code>).</p>
+<pre><code class="c++">class StringVector {
+  // We need to keep track of how much room is in the array (capacity)
+  // and the number of elements in the array (size_).
+  int capacity, size_;
+  string *strs;
+
+public:
+  StringVector() : capacity(1), size_(0)) {
+    strs = new string[capacity];
+  }
+
+  // Don't forget to delete dynamically allocated arrays when we're done using
+  // them! Alternatively, use an std::unique_ptr.
+  ~StringVector() {
+    delete[] strs;
+  }
+
+  void push_back(const string&amp; str) {
+    if (size_ &gt;= capacity) {
+      const int new_capacity = 2 * capacity;
+      string *new_strs = new string[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_strs[i] = strs[i];
+      }
+      delete[] strs;
+      strs = new_strs;
+      capacity = new_capacity;
+    }
+    strs[size_] = str;
+    ++size_;
+  }
+
+  string* begin() {
+    return strs;  // same as &amp;strs[0]
+  }
+
+  string* end() {
+    return strs + size_;  // same as &amp;strs[size_]
+  }
+};
+
+
+StringVector read_lines_string_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  StringVector lines;
+  if (f.fail()) {
+    throw read_lines_exception(&quot;Could not open file &quot; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&quot;Failed to read all lines in &quot; + filepath);
+  }
+  return lines;
+}
+</code></pre>
+
+<p>Most of the <code>push_back</code> method is just copy-pasted from <code>read_lines_array</code>.
+There are lots of other things that a <code>std::vector</code> does, like <code>pop_back</code>, <code>insert</code>, <code>remove</code>, <code>erase</code>, <code>operator[]</code>, etc. but we're just starting with putting things in our vector class and iterating over it.</p>
+<p><code>pop_back</code> actually behaves similarly to <code>push_back</code> in reverse: when the array array size gets small relative to the capacity, it actually creates a new <em>smaller</em> array, copies the elements over, then deletes the old <em>larger</em> array.</p>
+<p>Exercise for the reader: Try writing a short program that creates an <code>std::vector</code>, then calls <code>push_back</code> many times and measure when <code>your_vector.capacity()</code> changes and what it changes to. How does that compare to <code>your_vector.size()</code>? How does it change when you do many calls to <code>pop_back</code>?</p>
+<p>This <code>StringVector</code> is nice but it only works for <code>std::string</code>. What if our program has other types of data? We use templates! Switching to templates in this example is easy since we only have one type that we need to change, so all we do is rename the class to <code>TemplateVector</code>, rename <code>strs</code> to <code>values</code> since it might not have strings in it, and replace <code>string</code> with our template typename, <code>T</code>.</p>
+<pre><code class="c++">
+template&lt;typename T&gt;
+class TemplateVector {
+  int capacity, size_;
+  T *values;  // We could use an std::unique_ptr here instead...
+
+public:
+  TemplateVector() : capacity(1), size_(0) {
+    values = new T[capacity];
+  }
+
+  ~TemplateVector() {
+    delete[] values;
+  }
+
+  void push_back(const T&amp; value) {
+    if (size_ &gt;= capacity) {
+      const int new_capacity = 2 * capacity;
+      T *new_values = new T[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_values[i] = values[i];
+      }
+      delete[] values;
+      values = new_values;
+      capacity = new_capacity;
+    }
+    values[size_] = value;
+    ++size_;
+  }
+
+  T&amp; operator[](int index) {
+    return values[index];
+  }
+
+  int size() {
+    return size_;
+  }
+
+  T* begin() {
+    return values;  // same as &amp;values[0]
+  }
+
+  T* end() {
+    return values + size_;  // same as &amp;values[size_]
+  }
+};
+
+
+TemplateVector&lt;string&gt; read_lines_template_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  TemplateVector&lt;string&gt; lines;
+  if (f.fail()) {
+    throw read_lines_exception(&quot;Could not open file &quot; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&quot;Failed to read all lines in &quot; + filepath);
+  }
+  return lines;
+}
+</code></pre>
+
+<p>Here's a program that shows each implementation as a demo:</p>
+<p>read_lines_array.cpp<pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
+#include &lt;exception&gt;  // std::exception
+#include &lt;fstream&gt;  // std::ifstream
+#include &lt;string&gt;  // std::string
+#include &lt;utility&gt;  // std::pair, std::make_pair
+#include &lt;vector&gt;  // std::vector
+
+using std::cout;
+using std::endl;
+using std::exception;
+using std::ifstream;
+using std::make_pair;
+using std::pair;
+using std::string;
+using std::vector;
+
+
+// It&#39;s good to subclass on an existing exception type when you write a library
+// so people using your code can choose to catch the specific exception type.
+class read_lines_exception : public exception {
+  string what_str;
+public:
+  read_lines_exception(const string&amp; what_str) : what_str(what_str) {}
+  const char* what() const noexcept override {
+    return what_str.c_str();
+  }
+};
+
+
+// Returns an array of lines (strings) and the number of lines.
+// If we just returned the pointer to the strings, then the caller wouldn&#39;t know
+// how many lines we read fromt he file, so we return both.
+pair&lt;string*, int&gt; read_lines_array(const string&amp; filepath) {
+  ifstream f(filepath);
+  // We don&#39;t know how many lines are in the file, so we need an array that we
+  // can resize somehow... Arrays don&#39;t really support resizing but if we create
+  // an array and need more space, we can create a new[] bigger array, copy
+  // everything to the new array, then delete[] the old array.
+  //
+  // No matter how big we make the original array, it might have to get bigger,
+  // so let&#39;s just start with a capacity (number of lines we can fit) of 1.
+  int lines_capacity = 1;
+  // We also need to keep track of how many lines we have so far.
+  int lines_size = 0;
+  string *lines = new string[lines_capacity];
+  if (f.fail()) {
+    throw read_lines_exception(&#34;Could not open file &#34; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    // Now we need to add the line to our array
+    // It&#39;s possible that there&#39;s no more space, so we need to check that first.
+    if (lines_size &gt;= lines_capacity) {
+      // &#34;Resize&#34; lines by creating a new array, copying all the lines to the
+      // new array, then deleting the old array.
+      // Create a new array with more capacity.
+      const int new_lines_capacity = lines_capacity * 2;
+      string *new_lines = new string[new_lines_capacity];
+      // Copy existing lines
+      for (int i = 0; i &lt; lines_capacity; ++i) {
+        new_lines[i] = lines[i];
+      }
+      // Delete old lines
+      delete[] lines;
+      // Update lines/capacity to point to the new lines/capacity.
+      lines = new_lines;
+      lines_capacity = new_lines_capacity;
+    }
+    // Add the line to our array.
+    lines[lines_size] = line;
+    ++lines_size;
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&#34;Failed to read all lines in &#34; + filepath);
+  }
+  return make_pair(lines, lines_size);
+}
+
+
+class StringVector {
+  // We need to keep track of how much room is in the array (capacity)
+  // and the number of elements in the array (size_).
+  int capacity, size_;
+  string *strs;
+
+public:
+  StringVector() : capacity(1), size_(0) {
+    strs = new string[capacity];
+  }
+
+  // Don&#39;t forget to delete dynamically allocated arrays when we&#39;re done using
+  // them! Alternatively, use an std::unique_ptr.
+  ~StringVector() {
+    delete[] strs;
+  }
+
+  void push_back(const string&amp; str) {
+    if (size_ &gt;= capacity) {
+      const int new_capacity = 2 * capacity;
+      string *new_strs = new string[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_strs[i] = strs[i];
+      }
+      delete[] strs;
+      strs = new_strs;
+      capacity = new_capacity;
+    }
+    strs[size_] = str;
+    ++size_;
+  }
+
+  string&amp; operator[](int index) {
+    return strs[index];
+  }
+
+  int size() {
+    return size_;
+  }
+
+  string* begin() {
+    return strs;  // same as &amp;strs[0]
+  }
+
+  string* end() {
+    return strs + size_;  // same as &amp;strs[size_]
+  }
+};
+
+
+StringVector read_lines_string_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  StringVector lines;
+  if (f.fail()) {
+    throw read_lines_exception(&#34;Could not open file &#34; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&#34;Failed to read all lines in &#34; + filepath);
+  }
+  return lines;
+}
+
+
+template&lt;typename T&gt;
+class TemplateVector {
+  int capacity, size_;
+  T *values;
+
+public:
+  TemplateVector() : capacity(1), size_(0) {
+    values = new T[capacity];
+  }
+
+  ~TemplateVector() {
+    delete[] values;
+  }
+
+  void push_back(const T&amp; value) {
+    if (size_ &gt;= capacity) {
+      const int new_capacity = 2 * capacity;
+      T *new_values = new T[new_capacity];
+      for (int i = 0; i &lt; size_; ++i) {
+        new_values[i] = values[i];
+      }
+      delete[] values;
+      values = new_values;
+      capacity = new_capacity;
+    }
+    values[size_] = value;
+    ++size_;
+  }
+
+  T&amp; operator[](int index) {
+    return values[index];
+  }
+
+  int size() {
+    return size_;
+  }
+
+  T* begin() {
+    return values;  // same as &amp;values[0]
+  }
+
+  T* end() {
+    return values + size_;  // same as &amp;values[size_]
+  }
+};
+
+
+TemplateVector&lt;string&gt; read_lines_template_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  TemplateVector&lt;string&gt; lines;
+  if (f.fail()) {
+    throw read_lines_exception(&#34;Could not open file &#34; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&#34;Failed to read all lines in &#34; + filepath);
+  }
+  return lines;
+}
+
+
+vector&lt;string&gt; read_lines_std_vector(const string&amp; filepath) {
+  ifstream f(filepath);
+  vector&lt;string&gt; lines;
+  if (f.fail()) {
+    throw read_lines_exception(&#34;Could not open file &#34; + filepath);
+  }
+  for(string line; getline(f, line); ) {
+    lines.push_back(line);
+  }
+  if (f.bad()) {
+    throw read_lines_exception(&#34;Failed to read all lines in &#34; + filepath);
+  }
+  return lines;
+}
+
+
+int main(int argc, const char *argv[]) {
+  string filepath = argc &gt; 1 ?  argv[1] : &#34;truth.txt&#34;;
+
+  auto lines_and_size = read_lines_array(filepath);
+  string* lines = lines_and_size.first;
+  int num_lines = lines_and_size.second;
+  cout &lt;&lt; &#34;read_lines_array:&#34; &lt;&lt; endl;
+  for (int i = 0; i &lt; num_lines; ++i) {
+    cout &lt;&lt; lines[i] &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+  delete[] lines;
+
+  cout &lt;&lt; &#34;read_lines_string_vector:&#34; &lt;&lt; endl;
+  for (const string&amp; line : read_lines_string_vector(filepath)) {
+    cout &lt;&lt; line &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+
+  cout &lt;&lt; &#34;read_lines_template_vector:&#34; &lt;&lt; endl;
+  for (const string&amp; line : read_lines_template_vector(filepath)) {
+    cout &lt;&lt; line &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+
+  cout &lt;&lt; &#34;read_lines_std_vector:&#34; &lt;&lt; endl;
+  for (const string&amp; line : read_lines_std_vector(filepath)) {
+    cout &lt;&lt; line &lt;&lt; endl;
+  }
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o read_lines_array read_lines_array.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./read_lines_array</kbd></pre>
+<pre><samp>read_lines_array:
+You can&#39;t sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
+
+</samp></pre>
+</p>
+<p>
+</section>
+</body>
+</html>
