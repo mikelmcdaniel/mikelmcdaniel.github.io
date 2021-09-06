@@ -1,0 +1,66 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Binary Search Tree Erase Idea</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Binary Search Tree Erase Idea</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Binary Search Tree Erase Idea</h1>
+  </p>
+<h2>Different cases</h2>
+<p>In a BST, a node can have either 0, 1, or 2 child nodes.  If the parent node were to be deleted, in each of these cases:</p>
+<p>0 children:  This is easy, nothing happens.  The deleted node is a leaf, and can simply be removed from the tree.</p>
+<p>1 child:  This is also easy.  The deleted node would be replaced with the child node, similarly to deleting a node from a singly linked list.  One pointer update happens. (And dynamically allocated memory is handled with a delete!)</p>
+<p>2 children:  This is trickier.  We have two options to replace the deleted node.</p>
+<p>Option A: replace the deleted node with the biggest element from the left subtree</p>
+<p>Option B: replace the deleted node with the smallest element from the right subtree</p>
+<p>For example, in this tree, if the root node 5 were deleted, it could either be replaced with 4 (option A), or 7 (option B)
+If 2 were deleted, it could be replaced with either 1 (option A) or 3 (option B)</p>
+<pre><code>            5
+          /   \
+         2      8
+        / \    /
+       1   4  7
+          /
+         3
+</code></pre>
+
+<p>We will use Option A for now.  We will replace a deleted node with the biggest element from the node's left subtree.</p>
+<h2>The general Algorithm for Option A</h2>
+<ol>
+<li>Go as far right as possible in the left subtree (aka, find the biggest node in the left subtree)</li>
+<li>This will be the largest node in the left subtree.  It won't have any right subtree.</li>
+<li>But, it may have a left subtree.  Replace it with the biggest element in the left subtree.</li>
+<li>This may result in recursive replacements.</li>
+<li>Replace the originally deleted node with the node "fetched" in steps 1-3.</li>
+</ol>
+<h3>Thanks</h3>
+<p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>

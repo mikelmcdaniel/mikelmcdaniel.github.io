@@ -1,0 +1,58 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Trees and Graphs Introduction</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Trees and Graphs Introduction</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Trees and Graphs Introduction</h1>
+  </p>
+<p>In computer science, the word graph refers to a set of nodes/vertices connected by edges/links.</p>
+<p>The same meaning of graph shows up in Discrete mathematics and Graph theory. We are <strong>not</strong> talking about the x-axis/y-axis graphs, or the "stocks go up" type of graph.</p>
+<p>A graph can be simply thought of as "things, with connections".</p>
+<p>The things are called nodes, or vertices (we will use the word node in this class). For example, intersections in a city or people.</p>
+<p>The connections are called edges. For example, roads between intersections or friend ships.</p>
+<h2>Directed and Undirected Graphs</h2>
+<p>Graphs can be undirected, or directed.</p>
+<p>Undirected graphs have edges that do not have a direction. This indicates a two-way relationship, like a two-way street in the city intersections example. You can travel from each node to the other.</p>
+<p>Directed graphs have edges with direction. This indicates a one-way relationship, and the edge can only be traversed in a single direction, like a one-way street in the city intersections example.</p>
+<h2>Cyclic and Acyclic Graphs</h2>
+<p>Graphs can have cycles. A cycle means that there is a path in the graph from at least one node back to itself.</p>
+<p>Cyclic graphs have cycles, like intersections in a city.</p>
+<p>Acyclic graphs do not have cycles, like your family tree (where family members are nodes and the parent-child relationships are edges).</p>
+<h2>File system example</h2>
+<p>You can think of a computer's file system as a graph. From the root folder, down, each folder may contain multiple folders. Folders can be thought of as nodes.</p>
+<p>A file system is an acyclic graph (ignoring symlinks), and has a tree-like structure of hierarchy.</p>
+<p>For example, on a typical Linux file system, the "/" directories contains the "/bin", "/home", and "/etc" directories along with many others and "/home" will contain a directory for various users (e.g. "/home/mikel" on my laptop). Each of these directories is a node we can think of each connection as an edge.</p>
+<h2>Internet example</h2>
+<p>Another example is the internet: Each website or page can be a node and every link to another website or page is an edge.</p>
+<h3>Thanks</h3>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

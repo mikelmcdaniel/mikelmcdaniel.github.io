@@ -1,0 +1,327 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Converting a BST set to a BST map</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Converting a BST set to a BST map</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Converting a BST set to a BST map</h1>
+  </p>
+<h2>Converting a BST set to a BST map</h2>
+<h3>Motivation</h3>
+<p>The previously shown implementation of a BST was similar to an <code>std::set</code> in that, nodes in the BST only had values. There was no concept of a key-value pair. Values were used to sort the BST, comparisons were based on the value, etc. In a set, the value "is its own key".</p>
+<p>However, there are use cases for having a key/value relationship; where a value is stored, and updated/output as needed, but the key is used for comparison, sorting, lookup, etc. One example of this could be using the name of a color as a key to its hex value. For example, <code>colors_bst["black"] = "#000000"</code>, <code>colors_bst["white"] = "#ffffff"</code>, etc. Another example of this could be values of some complex object type (e.g. a contact in your phone who has a name, email address, phone number, etc.), where a single property of the object type like 'name' could be used as the key.</p>
+<h3>Code changes</h3>
+<p>Complete example code is at the bottom.</p>
+<h4>1. Template class changes</h4>
+<p>The template class now accepts two types, Key and Value. All references to T in the template code were updated to reflect the new Key and Value types. (In general, the Key type is used for comparisons in the tree, eg, contains, &lt; or &gt;, and Value type is used as the value contained in each node.)</p>
+<pre><code class="c++">template &lt;typename Key, typename Value&gt;
+class BinarySearchTree {...}
+</code></pre>
+
+<h4>2. Node struct properties and constructor</h4>
+<p>The Node struct now has key and value properties (of type Key and Value, respectively), and its constructors have been updated to reflect that. There is a new Node constructor, that only accepts a key. This constructor will result in a value created by the default constructor of its type.</p>
+<pre><code class="c++">struct Node {
+    Key key;
+    Value value;
+    Node *left, *right;
+    Node(const Key&amp; key) : key(key), left(nullptr), right(nullptr) {}
+
+    Node(const Key&amp; key, const Value&amp; value)
+        : key(key), value(value), left(nullptr), right(nullptr) {}
+
+    // ... more Node member functions below....
+}
+</code></pre>
+
+<h4>3. Changes to .insert() and .contains()</h4>
+<p>As mentioned above, keys are used for comparison, sorting, etc in the tree. The value is what is actually stored in nodes, and output or inserted as needed.</p>
+<p>The two insert functions below demonstrate the use of key and value in code.</p>
+<h5>BinarySearchTree::insert()</h5>
+<pre><code class="c++">bool insert(const Key&amp; key, const Value&amp; value) {
+    if (root == nullptr) {
+      root = new Node(key, value);
+      return true;
+    } else {
+      return root-&gt;insert(key, value);
+    }
+  }
+</code></pre>
+
+<h5>Node::insert()</h5>
+<pre><code class="c++">    bool insert(const Key&amp; new_key, const Value&amp; new_value) {
+      if (new_key == key) {
+        return false;
+      } else if (new_key &lt; key) {  // Need to insert to the left
+        if (left == nullptr) {
+          left = new Node(new_key, new_value);
+          return true;
+        } else {
+          return left-&gt;insert(new_key, new_value);
+        }
+      } else { // if (new_key &gt; key)  Need to insert to the right
+        if (right == nullptr) {
+          right = new Node(new_key, new_value);
+          return true;
+        } else {
+          return right-&gt;insert(new_key, new_value);
+        }
+      }
+    }
+</code></pre>
+
+<h4>4. Overloaded [] square bracket operator</h4>
+<p>This operator is present on both the BinarySearchTree class and the Node struct. It uses the same pattern as other functions; called on the root node in the BinarySearchTree class, then recursively called on left/right child as needed, in Node::operator[]</p>
+<p>The [] operator returns a value, given a key.</p>
+<p>The [] operator is used for someBinarySearchTree[someKey] = someValue syntax</p>
+<p>Similarly to <code>std::map</code>, if a nonexistent key is passed in, a new node at that key will be added, containing a default-constructed value.</p>
+<h5>BinarySearchTree::operator[]</h5>
+<pre><code class="c++">  Value&amp; operator[](const Key&amp; key) {
+    if (root == nullptr) {
+      root = new Node(key);
+      return root-&gt;value;
+    } else {
+      return (*root)[key];
+    }
+  }
+</code></pre>
+
+<h5>Node::operator[]</h5>
+<pre><code class="c++">    Value&amp; operator[](const Key&amp; k) {
+      if (k == key) {
+        return value;
+      } else if (k &lt; key) {  // Need to insert to the left
+        if (left == nullptr) {
+          left = new Node(k);
+          return left-&gt;value;
+        } else {
+          return (*left)[k];
+        }
+      } else { // if (k &gt; key)  Need to insert to the right
+        if (right == nullptr) {
+          right = new Node(k);
+          return right-&gt;value;
+        } else {
+          return (*right)[k];
+        }
+      }
+    }
+</code></pre>
+
+<h3>Complete Example Code</h3>
+<p>These are the complete files after the set to map refactor, which added the concept of a key that maps to a value.</p>
+<p><a href="bst.h">bst.h</a><pre><code class="c++">#ifndef BST_H_
+#define BST_H_
+
+#include &lt;iostream&gt;
+
+using std::cout;
+using std::endl;
+
+template &lt;typename Key, typename Value&gt;
+class BinarySearchTree {
+  struct Node {
+    Key key;
+    Value value;
+    Node *left, *right;
+    Node(const Key&amp; key) : key(key), left(nullptr), right(nullptr) {}
+
+    Node(const Key&amp; key, const Value&amp; value)
+        : key(key), value(value), left(nullptr), right(nullptr) {}
+
+    void print() {
+      if (left != nullptr) {
+        left-&gt;print();
+      }
+      cout &lt;&lt; key &lt;&lt; &#34;: &#34; &lt;&lt; value &lt;&lt; endl;
+      if (right != nullptr) {
+        right-&gt;print();
+      }
+    }
+
+    bool contains(const Key&amp; k) {
+      if (k == key) {
+        return true;
+      } else if (k &lt; key) {
+        if (left == nullptr) {
+          return false;
+        } else {
+          return left-&gt;contains(k);
+        }
+      } else { // if (k &gt; key)
+        if (right == nullptr) {
+          return false;
+        } else {
+          return right-&gt;contains(k);
+        }
+      }
+    }
+
+    bool insert(const Key&amp; new_key, const Value&amp; new_value) {
+      if (new_key == key) {
+        return false;
+      } else if (new_key &lt; key) {  // Need to insert to the left
+        if (left == nullptr) {
+          left = new Node(new_key, new_value);
+          return true;
+        } else {
+          return left-&gt;insert(new_key, new_value);
+        }
+      } else { // if (new_key &gt; key)  Need to insert to the right
+        if (right == nullptr) {
+          right = new Node(new_key, new_value);
+          return true;
+        } else {
+          return right-&gt;insert(new_key, new_value);
+        }
+      }
+    }
+
+    Value&amp; operator[](const Key&amp; k) {
+      if (k == key) {
+        return value;
+      } else if (k &lt; key) {  // Need to insert to the left
+        if (left == nullptr) {
+          left = new Node(k);
+          return left-&gt;value;
+        } else {
+          return (*left)[k];
+        }
+      } else { // if (k &gt; key)  Need to insert to the right
+        if (right == nullptr) {
+          right = new Node(k);
+          return right-&gt;value;
+        } else {
+          return (*right)[k];
+        }
+      }
+    }
+  };
+
+  Node *root;
+
+public:
+  BinarySearchTree() : root(nullptr) {}
+
+  ~BinarySearchTree() {
+    delete root;
+  }
+
+  void print() {
+    if (root != nullptr) {
+      root-&gt;print();
+    }
+  }
+
+  bool insert(const Key&amp; key, const Value&amp; value) {
+    if (root == nullptr) {
+      root = new Node(key, value);
+      return true;
+    } else {
+      return root-&gt;insert(key, value);
+    }
+  }
+
+  bool contains(const Key&amp; key) {
+    if (root == nullptr) {
+      return false;
+    } else {
+      return root-&gt;contains(key);
+    }
+  }
+
+  Value&amp; operator[](const Key&amp; key) {
+    if (root == nullptr) {
+      root = new Node(key);
+      return root-&gt;value;
+    } else {
+      return (*root)[key];
+    }
+  }
+};
+
+
+
+#endif /* BST_H_ */</code></pre><a href="bst_set_to_map_demo.cpp">bst_set_to_map_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+#include &#34;bst.h&#34;
+
+using namespace std;
+
+int main() {
+  BinarySearchTree&lt;int, string&gt; bst;
+  bst[11] = &#34;eleven&#34;;
+  bst[55] = &#34;fifty five&#34;;
+  bst[99] = &#34;ninety nine&#34;;
+
+  cout &lt;&lt; &#34;bst before using operator[]:&#34; &lt;&lt; endl;
+  bst.print();
+  cout &lt;&lt; endl;
+
+  for (int x : {0, 11, 33, 55, 88, 99, 1000}) {
+    cout &lt;&lt; &#34;bst[&#34; &lt;&lt; x &lt;&lt; &#34;] == &#34; &lt;&lt; bst[x] &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+
+  cout &lt;&lt; &#34;bst after using operator[]:&#34; &lt;&lt; endl;
+  bst.print();
+
+	return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o bst_set_to_map_demo bst_set_to_map_demo.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./bst_set_to_map_demo</kbd></pre>
+<pre><samp>bst before using operator[]:
+11: eleven
+55: fifty five
+99: ninety nine
+
+bst[0] == 
+bst[11] == eleven
+bst[33] == 
+bst[55] == fifty five
+bst[88] == 
+bst[99] == ninety nine
+bst[1000] == 
+
+bst after using operator[]:
+0: 
+11: eleven
+33: 
+55: fifty five
+88: 
+99: ninety nine
+1000: 
+</samp></pre>
+</p>
+<h4>Thanks</h4>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>

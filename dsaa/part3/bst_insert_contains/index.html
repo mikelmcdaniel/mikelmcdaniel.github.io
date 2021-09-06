@@ -1,0 +1,197 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Binary Search Tree: Insert and Contains Implementation</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Binary Search Tree: Insert and Contains Implementation</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Binary Search Tree: Insert and Contains Implementation</h1>
+  </p>
+<h2>Tree</h2>
+<p>A Tree is a graph of nodes with edges to child nodes.</p>
+<p>Trees are acyclic and hierarchical.</p>
+<p>Simple file systems (without symlinks) and family trees are two examples of trees while city intersections and the roads that connect them are not trees.</p>
+<h2>Binary Tree</h2>
+<p>A binary tree is a tree in which each node has 0, 1, or 2 child nodes (0, 1, or 2 edges further down in the tree).</p>
+<p>A linked list can be thought of a unary tree, which each node having a number of 0 or 1 child nodes.</p>
+<h2>Binary Search Tree (BST)</h2>
+<p>A Binary Search Tree (BST) is a binary tree with a certain organization characteristic.</p>
+<p>Everything to the left of a node is smaller. Everything to the right of a node is bigger.</p>
+<h2>Searching a BST</h2>
+<p>Searching a balanced BST is efficient. In the worst case, you travel to the bottom of a tree. Similar to binary search, since each node in a balanced BST has 2 children, the height of a BST having n elements is log2(n).</p>
+<p>If a BST is un-balanced, search is less efficient. If a BST has only right children, the height of the BST with n elements is n. And you would have to visit each element to search in the worst case, making search O(n).</p>
+<h2>Inserting into a BST in sorted order</h2>
+<p>This is a worst case for BST insertion!  If you are inserting elements that are pre-sorted, the BST will become an expensive linked list, with all right children, or all left children. The height of the BST having n elements would be n. Both <code>.insert()</code> and <code>.search()</code> would be O(n).</p>
+<h2>Balanced BST</h2>
+<p>A balanced tree has an enforcement that its height, with n elements, is close to log2(n). In other words, the size of a left subtree is roughly the size of a right subtree.</p>
+<h2>std::set and std::map</h2>
+<p>A balanced BST underlies the implementations of <code>std::set</code> and <code>std::map</code>. This gives <code>std::set</code> and <code>std::map</code> efficient insert and contains operations, that are O(log(n)).</p>
+<h2>Example code - Insert, Contains, Print</h2>
+<p>The below code examples are the simplest implementations of BST in this set of videos. This code will be expanded, for Nodes to contain both a Key and a Value (and thus, mimic the API of <code>std::map</code>), in later videos. This code can be thought to mimic the API of <code>std::set</code>.</p>
+<p><code>.print()</code>, <code>.contains()</code>, and <code>.insert()</code> follow a common pattern. For the BinarySearchTree class itself, there is an entry point function, that calls a Node-scoped version of the function, on the root node of the tree.</p>
+<p><code>.contains()</code> and <code>.insert()</code> use a pre-order processing order. Data in the node is examined first. If needed, recursive calls to the left, then right, subtrees are made.</p>
+<p><code>.print()</code> prints the values in a BST out in order. Thus, <code>.print()</code> uses an in-order processing order. First, the left subtree is recursively examined. Then, data in the node is examined. Finally, the right subtree is recursively examined.</p>
+<p><a href="bst.h">bst.h</a><pre><code class="c++">#ifndef BST_H_
+#define BST_H_
+
+#include &lt;iostream&gt;
+
+using std::cout;
+using std::endl;
+
+template &lt;typename T&gt;
+class BinarySearchTree {
+  struct Node {
+    T value;
+    Node *left, *right;
+    Node(const T&amp; value) : value(value), left(nullptr), right(nullptr) {}
+
+    void print() {
+      if (left != nullptr) {
+        left-&gt;print();
+      }
+      cout &lt;&lt; value &lt;&lt; endl;
+      if (right != nullptr) {
+        right-&gt;print();
+      }
+    }
+
+    bool contains(const T&amp; v) {
+      if (v == value) {
+        return true;
+      } else if (v &lt; value) {
+        if (left == nullptr) {
+          return false;
+        } else {
+          return left-&gt;contains(v);
+        }
+      } else { // if (v &gt; value)
+        if (right == nullptr) {
+          return false;
+        } else {
+          return right-&gt;contains(v);
+        }
+      }
+    }
+
+    bool insert(const T&amp; new_value) {
+      if (new_value == value) {
+        return false;
+      } else if (new_value &lt; value) {  // Need to insert to the left
+        if (left == nullptr) {
+          left = new Node(new_value);
+          return true;
+        } else {
+          return left-&gt;insert(new_value);
+        }
+      } else { // if (new_value &gt; value)  Need to insert to the right
+        if (right == nullptr) {
+          right = new Node(new_value);
+          return true;
+        } else {
+          return right-&gt;insert(new_value);
+        }
+      }
+    }
+  };
+
+  Node *root;
+
+public:
+  BinarySearchTree() : root(nullptr) {}
+
+  ~BinarySearchTree() {
+    delete root;
+  }
+
+  void print() {
+    if (root != nullptr) {
+      root-&gt;print();
+    }
+  }
+
+  bool insert(const T&amp; value) {
+    if (root == nullptr) {
+      root = new Node(value);
+      return true;
+    } else {
+      return root-&gt;insert(value);
+    }
+  }
+
+  bool contains(const T&amp; value) {
+    if (root == nullptr) {
+      return false;
+    } else {
+      return root-&gt;contains(value);
+    }
+  }
+};
+
+#endif /* BST_H_ */</code></pre><a href="bst_insert_contains_demo.cpp">bst_insert_contains_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+
+#include &#34;bst.h&#34;
+
+using namespace std;
+
+int main() {
+  BinarySearchTree&lt;int&gt; bst;
+  bst.insert(11);
+  bst.insert(55);
+  bst.insert(99);
+
+  bst.print();
+  cout &lt;&lt; endl;
+
+  for (int x : {0, 11, 33, 55, 88, 99, 1000}) {
+    cout &lt;&lt; &#34;bst.contains(&#34; &lt;&lt; x &lt;&lt; &#34;) == &#34; &lt;&lt; bst.contains(x) &lt;&lt; endl;
+  }
+
+	return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o bst_insert_contains_demo bst_insert_contains_demo.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./bst_insert_contains_demo</kbd></pre>
+<pre><samp>11
+55
+99
+
+bst.contains(0) == 0
+bst.contains(11) == 1
+bst.contains(33) == 0
+bst.contains(55) == 1
+bst.contains(88) == 0
+bst.contains(99) == 1
+bst.contains(1000) == 0
+</samp></pre>
+</p>
+<h3>Thanks</h3>
+<p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
+<p>
+</section>
+</body>
+</html>
