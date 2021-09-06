@@ -1,0 +1,23 @@
+read_lines_array:
+You can't sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
+
+read_lines_string_vector:
+You can't sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
+
+read_lines_template_vector:
+You can't sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
+
+read_lines_std_vector:
+You can't sort in better than O(n * log(n)) time using only comparisons.
+Linked lists are rarely practical even though you can remove or insert an
+  element in O(1) time iff you have a pointer/iterator to the position where you
+  want to remove or insert.
