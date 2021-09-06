@@ -82,7 +82,7 @@ for (int *p = begin; p != end; ++p) {
 <p>So far, we've just looked at <code>int*</code> that point to <code>int</code> but you can have a pointer to any type, including other pointers. For <em>any</em> type and variable, <code>T x</code>, you can have a <code>T* p</code>. When you write <code>*p</code>, that code will read the address that <code>p</code> represents, then go read <code>sizeof(T)</code> bytes from that address and interpret those bytes as representing a <code>T</code>. If <code>T = int*</code>, then... dereferencing that pointer (<code>*p</code>) will go to the address of <code>x</code> (<code>&amp;x</code>) and read those <code>sizeof(T*) == sizeof(int*) == 8</code> bytes and interpret them as an int pointer.</p>
 <h3>Example Program</h3>
 <p>Let's tie all this together with a quick example program to demonstrate:</p>
-<p>pointers_example.cpp<pre><code class="c++">#include &lt;iostream&gt;
+<p><a href="pointers_example.cpp">pointers_example.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 
 using std::cout;
 using std::endl;
@@ -124,45 +124,45 @@ int main(int argc, const char *argv[]) {
   }
   return 0;
 }</code></pre>
-<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o pointers_example pointers_example.cpp</kbd>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o pointers_example pointers_example.cpp</kbd>
 </pre>
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffcb1a5865c)
-y == 7  (at address 0x7ffcb1a58658)
-a == 0x7ffcb1a58640  (at address 0x7ffcb1a58640)
-p == 0x7ffcb1a5865c  (at address 0x7ffcb1a58638)
+x == 5  (at address 0x7ffecde9b40c)
+y == 7  (at address 0x7ffecde9b408)
+a == 0x7ffecde9b3f0  (at address 0x7ffecde9b3f0)
+p == 0x7ffecde9b40c  (at address 0x7ffecde9b3e8)
 
-Now p == 0x7ffcb1a58640 == a == 0x7ffcb1a58640
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffcb1a58640 0x7ffcb1a58640
-*(a + 0) == 11  at 0x7ffcb1a58640
-    a[0] == 11  at 0x7ffcb1a58640
-*(p + 0) == 11  at 0x7ffcb1a58640
-    p[0] == 11  at 0x7ffcb1a58640
-*(a + 1) == 22  at 0x7ffcb1a58644
-    a[1] == 22  at 0x7ffcb1a58644
-*(p + 1) == 22  at 0x7ffcb1a58644
-    p[1] == 22  at 0x7ffcb1a58644
-*(a + 2) == 33  at 0x7ffcb1a58648
-    a[2] == 33  at 0x7ffcb1a58648
-*(p + 2) == 33  at 0x7ffcb1a58648
-    p[2] == 33  at 0x7ffcb1a58648
-*(a + 3) == 44  at 0x7ffcb1a5864c
-    a[3] == 44  at 0x7ffcb1a5864c
-*(p + 3) == 44  at 0x7ffcb1a5864c
-    p[3] == 44  at 0x7ffcb1a5864c
-*(a + 4) == 55  at 0x7ffcb1a58650
-    a[4] == 55  at 0x7ffcb1a58650
-*(p + 4) == 55  at 0x7ffcb1a58650
-    p[4] == 55  at 0x7ffcb1a58650
+Now p == 0x7ffecde9b3f0 == a == 0x7ffecde9b3f0
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffecde9b3f0 0x7ffecde9b3f0
+*(a + 0) == 11  at 0x7ffecde9b3f0
+    a[0] == 11  at 0x7ffecde9b3f0
+*(p + 0) == 11  at 0x7ffecde9b3f0
+    p[0] == 11  at 0x7ffecde9b3f0
+*(a + 1) == 22  at 0x7ffecde9b3f4
+    a[1] == 22  at 0x7ffecde9b3f4
+*(p + 1) == 22  at 0x7ffecde9b3f4
+    p[1] == 22  at 0x7ffecde9b3f4
+*(a + 2) == 33  at 0x7ffecde9b3f8
+    a[2] == 33  at 0x7ffecde9b3f8
+*(p + 2) == 33  at 0x7ffecde9b3f8
+    p[2] == 33  at 0x7ffecde9b3f8
+*(a + 3) == 44  at 0x7ffecde9b3fc
+    a[3] == 44  at 0x7ffecde9b3fc
+*(p + 3) == 44  at 0x7ffecde9b3fc
+    p[3] == 44  at 0x7ffecde9b3fc
+*(a + 4) == 55  at 0x7ffecde9b400
+    a[4] == 55  at 0x7ffecde9b400
+*(p + 4) == 55  at 0x7ffecde9b400
+    p[4] == 55  at 0x7ffecde9b400
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffcb1a58640 is 11 which is 0 ints from address 0x7ffcb1a58640
-int at address 0x7ffcb1a58644 is 22 which is 1 ints from address 0x7ffcb1a58640
-int at address 0x7ffcb1a58648 is 33 which is 2 ints from address 0x7ffcb1a58640
-int at address 0x7ffcb1a5864c is 44 which is 3 ints from address 0x7ffcb1a58640
-int at address 0x7ffcb1a58650 is 55 which is 4 ints from address 0x7ffcb1a58640
+int at address 0x7ffecde9b3f0 is 11 which is 0 ints from address 0x7ffecde9b3f0
+int at address 0x7ffecde9b3f4 is 22 which is 1 ints from address 0x7ffecde9b3f0
+int at address 0x7ffecde9b3f8 is 33 which is 2 ints from address 0x7ffecde9b3f0
+int at address 0x7ffecde9b3fc is 44 which is 3 ints from address 0x7ffecde9b3f0
+int at address 0x7ffecde9b400 is 55 which is 4 ints from address 0x7ffecde9b3f0
 </samp></pre>
 </p>
 <p>

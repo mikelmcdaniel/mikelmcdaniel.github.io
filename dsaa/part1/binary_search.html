@@ -167,7 +167,7 @@ bool contains_word_bs(const vector&lt;string&gt;&amp; words, const string&amp; w
 
 <p><a href="https://en.cppreference.com/w/cpp/algorithm/binary_search"><code>std::binary_search</code>, defined in the <code>&lt;algorithm&gt;</code> header</a> is a more general version of binary search than <code>contains_word_bs</code>.</p>
 <h3>How fast is it?</h3>
-<p>binary_search_timed.cpp<pre><code class="c++">#include &lt;algorithm&gt;
+<p><a href="binary_search_timed.cpp">binary_search_timed.cpp</a><pre><code class="c++">#include &lt;algorithm&gt;
 #include &lt;chrono&gt;
 #include &lt;iostream&gt;
 #include &lt;fstream&gt;
@@ -269,30 +269,30 @@ int main(int argc, const char* argv[]) {
   }
   return 0;
 }</code></pre>
-<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o binary_search_timed binary_search_timed.cpp</kbd>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o binary_search_timed binary_search_timed.cpp</kbd>
 </pre>
 <pre><strong>$</strong> <kbd>./binary_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_bs,std::binary_search
-1,0.0037771,0.0104199
-2,0.0066805,0.0144468
-4,0.00868048,0.0156857
-8,0.0122175,0.0190053
-16,0.016008,0.0227064
-32,0.0197466,0.02744
-64,0.0251212,0.0320691
-128,0.0291346,0.0372225
-256,0.0340458,0.0419161
-512,0.0395196,0.0466497
-1024,0.0458097,0.0529941
-2048,0.122661,0.0570942
-4096,0.0569101,0.0624697
-8192,0.0640538,0.0675506
-16384,0.0716608,0.0751625
-32768,0.0770905,0.0803567
-65536,0.0888817,0.0896871
-124536,0.0925493,0.0933603
-124536,0.0923324,0.0956699
-124536,0.0946835,0.0969992
+1,0.00855827,0.0181438
+2,0.0335881,0.0260057
+4,0.0144266,0.027207
+8,0.0200405,0.0334882
+16,0.0259783,0.0398651
+32,0.0333111,0.0457143
+64,0.0408519,0.0528456
+128,0.0486311,0.0516905
+256,0.0398941,0.0488686
+512,0.065933,0.0623119
+1024,0.0531733,0.0597795
+2048,0.0584787,0.0655831
+4096,0.0644368,0.0710156
+8192,0.0717217,0.0810747
+16384,0.0851656,0.0918523
+32768,0.093964,0.100009
+65536,0.145879,0.124425
+124536,0.111868,0.112774
+124536,0.110097,0.111882
+124536,0.105616,0.113667
 </samp></pre>
 </p>
 <p><img alt="Binary Search Timed" src="binary_search_timed.svg" /></p>

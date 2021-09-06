@@ -51,7 +51,7 @@
 
 <p><a href="https://en.cppreference.com/w/cpp/algorithm/find"><code>std::find</code>, defined in the <code>&lt;algorithm&gt;</code> header</a> is a more general version of linear search than <code>contains_word_linear</code>.</p>
 <h3>How fast is it?</h3>
-<p>linear_search_timed.cpp<pre><code class="c++">#include &lt;algorithm&gt;
+<p><a href="linear_search_timed.cpp">linear_search_timed.cpp</a><pre><code class="c++">#include &lt;algorithm&gt;
 #include &lt;chrono&gt;
 #include &lt;iostream&gt;
 #include &lt;fstream&gt;
@@ -133,30 +133,30 @@ int main(int argc, const char* argv[]) {
   }
   return 0;
 }</code></pre>
-<pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o linear_search_timed linear_search_timed.cpp</kbd>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o linear_search_timed linear_search_timed.cpp</kbd>
 </pre>
 <pre><strong>$</strong> <kbd>./linear_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_linear,std::find
-1,0.000616918,0.000905042
-2,0.000770925,0.00106102
-4,0.000984643,0.00116486
-8,0.00180539,0.00135767
-16,0.00189328,0.00220134
-32,0.0033851,0.00350521
-64,0.00648891,0.00683621
-128,0.0108799,0.0123199
-256,0.0196983,0.0222108
-512,0.0389569,0.0426065
-1024,0.0789857,0.0852215
-2048,0.160133,0.175513
-4096,0.372905,0.349663
-8192,0.628535,0.674472
-16384,1.34209,1.34245
-32768,2.48368,2.09245
-65536,4.8784,4.14151
-124536,9.25811,7.89686
-124536,9.27585,7.88828
-124536,9.28402,7.91882
+1,0.000656463,0.000948179
+2,0.000843233,0.00116542
+4,0.00107061,0.0012976
+8,0.00166834,0.00199752
+16,0.00293073,0.00300339
+32,0.00790622,0.00501117
+64,0.0100953,0.0106073
+128,0.017584,0.0156781
+256,0.0326669,0.0343682
+512,0.0886243,0.0579083
+1024,0.133498,0.119474
+2048,0.271963,0.241167
+4096,0.453136,0.313194
+8192,0.80114,0.611078
+16384,1.46514,1.2539
+32768,2.67974,2.27376
+65536,5.3136,4.54527
+124536,10.0721,9.83446
+124536,9.92928,8.29387
+124536,10.592,9.14446
 </samp></pre>
 </p>
 <p><img alt="Linear Search Timed" src="linear_search_timed.svg" /></p>

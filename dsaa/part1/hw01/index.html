@@ -75,7 +75,8 @@ RandomAccessIt compromise_search(
 <p>If you can find some way to have <code>std::binary_search</code> switch to a Linear Search part-way through (the moment you've narrowed the search down to <code>&lt;= small_size</code> elements), then you can use it but it's probably easier to just implement your own Binary Search that switches to Linear Search part-way through.</p>
 <h3>Simple Manual Test program</h3>
 <p>This program is provided to help you understand how <code>compromise_search</code> should work.</p>
-<p><pre><code class="c++">#include &lt;cmath&gt;
+<p><a href="test_compromise_search.cpp">test_compromise_search.cpp</a>
+<pre><code class="c++">#include &lt;cmath&gt;
 #include &lt;iostream&gt;
 #include &lt;string&gt;
 #include &lt;vector&gt;
@@ -101,7 +102,7 @@ int main() {
   cout &lt;&lt; endl;
   return 0;
 }</code></pre></p>
-<p><pre><strong>$</strong> <kbd>clang -pedantic -Wall -lm -lstdc++ -std=c++20 -o test_compromise_search test_compromise_search.cpp</kbd>
+<p><pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o test_compromise_search test_compromise_search.cpp</kbd>
 </pre>
 <pre><strong>$</strong> <kbd>./test_compromise_search</kbd></pre>
 <pre><samp>apple was found
