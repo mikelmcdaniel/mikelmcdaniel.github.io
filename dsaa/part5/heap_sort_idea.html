@@ -1,0 +1,68 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Heap Sort Idea</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Heap Sort Idea</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Heap Sort Idea</h1>
+  </p>
+<p><a href="https://youtu.be/2ja4FVmyIMg">Heap Sort Idea video (15 minutes) (Spring 2021)</a></p>
+<p>The Max Heap data structure, with its array representation, gives us an opportunity to implement an in-place sorting algorithm.</p>
+<p>This algorithm will accept an array/vector of input.</p>
+<p>Without creating any extra storage, the algorithm will sort the array/vector of inputs into ascending order.</p>
+<p>We will use a MAX Heap, not a Min Heap, to obtain this final sorted order.</p>
+<p><a href="https://www.youtube.com/watch?v=MtQL_ll5KhQ">Heap Sort</a> by GeeksforGeeks is is a good 2 minute visualization.</p>
+<h2>General Algorithm</h2>
+<ol>
+<li>
+<p>Given an array of elements as input, build a Max Heap from the elements.  This can be done in-place, in the input array, swapping elements to achieve the max heap sorting condition.  (The largest element, root of the Max Heap, will be at index 0.)</p>
+</li>
+<li>
+<p>Swap the first element and the last element.  This puts the former root, largest element, at the back of the array.</p>
+</li>
+<li>
+<p>Decrease the heap size.  This "cuts off" the largest element at the back of the array.  This starts to separate elements into a sorted section at the back of the array, and an unsorted or "still to be visited" section in the front of the array.</p>
+</li>
+<li>
+<p>Percolate the new root element down to its proper position in the Max Heap, restoring the Max Heap ordering property</p>
+</li>
+<li>
+<p>Repeat steps 2 - 4 until the array is sorted, in - place.  </p>
+</li>
+</ol>
+<h2>Complexity</h2>
+<p>In phase 1, we insert elements into the Max Heap.  Each insertion is O(log(n)), for the height of the heap tree.  We perform n insertions.  So this phase is O(n(log(n))).</p>
+<p>In phase 2, we swap root element and last element, and percolate down values ("swap, top, pop").  Swap and top are O(1).  Pop is O(log(n)).  We will perform n pops, so this phase is also O(n(log(n)))</p>
+<p>O(heapSort) = O(phase1) + O(phase2) = O(n(log(n))) + O(n(log(n))) = O(n(log(n)))</p>
+<p>Heap Sort is a comparison based sorting algorithm.  We will see other comparison based sorting algorithms that are also O(n(log(n))).</p>
+<h2>Thanks</h2>
+<p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
+<p>
+</section>
+</body>
+</html>
