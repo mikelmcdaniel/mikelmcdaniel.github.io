@@ -31,6 +31,8 @@
 <section>
   <h1 class="visually-hidden">Doubly Linked Lists</h1>
   </p>
+<p>If you haven't read the <a href="singly_linked_list">Singly Linked List notes</a>, read those first.</p>
+<p><a href="https://youtu.be/ta3zbDWBPMc">Simple Doubly Linked Lists video (11 minutes) (Spring 2021)</a> (Overview of the idea and implementation of push_back and iterator)</p>
 <p>By adding another pointer to the <code>LinkedListNode</code> <code>struct</code>, the Singly-Linked List data type can be enhanced, to a Doubly-Linked List. The new pointer points to the previous Node in a List. Nodes now have access to both the previous, and next, Node in the List.</p>
 <h2>Benefits and Drawbacks (compared to Singly-Linked List)</h2>
 <p>With the extra pointer, inserting and deleting nodes is a bit more complicated. This uses more space but allows us to go from a node to the next <em>or</em> previous node. In other words, iterators can be both incremented and decremented.</p>

@@ -31,19 +31,19 @@
 <section>
   <h1 class="visually-hidden">Converting a BST set to a BST map</h1>
   </p>
-<h2>Converting a BST set to a BST map</h2>
-<h3>Motivation</h3>
+<p><a href="https://youtu.be/vDQqXsTke3c">Converting a BST set (values only) to a BST map (keys and values) video (21 minutes) (Spring 2021)</a></p>
+<h2>Motivation</h2>
 <p>The previously shown implementation of a BST was similar to an <code>std::set</code> in that, nodes in the BST only had values. There was no concept of a key-value pair. Values were used to sort the BST, comparisons were based on the value, etc. In a set, the value "is its own key".</p>
 <p>However, there are use cases for having a key/value relationship; where a value is stored, and updated/output as needed, but the key is used for comparison, sorting, lookup, etc. One example of this could be using the name of a color as a key to its hex value. For example, <code>colors_bst["black"] = "#000000"</code>, <code>colors_bst["white"] = "#ffffff"</code>, etc. Another example of this could be values of some complex object type (e.g. a contact in your phone who has a name, email address, phone number, etc.), where a single property of the object type like 'name' could be used as the key.</p>
-<h3>Code changes</h3>
+<h2>Code changes</h2>
 <p>Complete example code is at the bottom.</p>
-<h4>1. Template class changes</h4>
+<h3>1. Template class changes</h3>
 <p>The template class now accepts two types, Key and Value. All references to T in the template code were updated to reflect the new Key and Value types. (In general, the Key type is used for comparisons in the tree, eg, contains, &lt; or &gt;, and Value type is used as the value contained in each node.)</p>
 <pre><code class="c++">template &lt;typename Key, typename Value&gt;
 class BinarySearchTree {...}
 </code></pre>
 
-<h4>2. Node struct properties and constructor</h4>
+<h3>2. Node struct properties and constructor</h3>
 <p>The Node struct now has key and value properties (of type Key and Value, respectively), and its constructors have been updated to reflect that. There is a new Node constructor, that only accepts a key. This constructor will result in a value created by the default constructor of its type.</p>
 <pre><code class="c++">struct Node {
     Key key;
@@ -58,10 +58,10 @@ class BinarySearchTree {...}
 }
 </code></pre>
 
-<h4>3. Changes to .insert() and .contains()</h4>
+<h3>3. Changes to .insert() and .contains()</h3>
 <p>As mentioned above, keys are used for comparison, sorting, etc in the tree. The value is what is actually stored in nodes, and output or inserted as needed.</p>
 <p>The two insert functions below demonstrate the use of key and value in code.</p>
-<h5>BinarySearchTree::insert()</h5>
+<h4>BinarySearchTree::insert()</h4>
 <pre><code class="c++">bool insert(const Key&amp; key, const Value&amp; value) {
     if (root == nullptr) {
       root = new Node(key, value);
@@ -72,7 +72,7 @@ class BinarySearchTree {...}
   }
 </code></pre>
 
-<h5>Node::insert()</h5>
+<h4>Node::insert()</h4>
 <pre><code class="c++">    bool insert(const Key&amp; new_key, const Value&amp; new_value) {
       if (new_key == key) {
         return false;
@@ -94,12 +94,12 @@ class BinarySearchTree {...}
     }
 </code></pre>
 
-<h4>4. Overloaded [] square bracket operator</h4>
+<h3>4. Overloaded [] square bracket operator</h3>
 <p>This operator is present on both the BinarySearchTree class and the Node struct. It uses the same pattern as other functions; called on the root node in the BinarySearchTree class, then recursively called on left/right child as needed, in Node::operator[]</p>
 <p>The [] operator returns a value, given a key.</p>
 <p>The [] operator is used for someBinarySearchTree[someKey] = someValue syntax</p>
 <p>Similarly to <code>std::map</code>, if a nonexistent key is passed in, a new node at that key will be added, containing a default-constructed value.</p>
-<h5>BinarySearchTree::operator[]</h5>
+<h4>BinarySearchTree::operator[]</h4>
 <pre><code class="c++">  Value&amp; operator[](const Key&amp; key) {
     if (root == nullptr) {
       root = new Node(key);
@@ -110,7 +110,7 @@ class BinarySearchTree {...}
   }
 </code></pre>
 
-<h5>Node::operator[]</h5>
+<h4>Node::operator[]</h4>
 <pre><code class="c++">    Value&amp; operator[](const Key&amp; k) {
       if (k == key) {
         return value;
@@ -132,7 +132,7 @@ class BinarySearchTree {...}
     }
 </code></pre>
 
-<h3>Complete Example Code</h3>
+<h2>Complete Example Code</h2>
 <p>These are the complete files after the set to map refactor, which added the concept of a key that maps to a value.</p>
 <p><a href="bst.h">bst.h</a><pre><code class="c++">#ifndef BST_H_
 #define BST_H_
@@ -319,7 +319,7 @@ bst after using operator[]:
 1000: 
 </samp></pre>
 </p>
-<h4>Thanks</h4>
+<h3>Thanks</h3>
 <p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
 <p>
 </section>

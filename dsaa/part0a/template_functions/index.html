@@ -31,6 +31,7 @@
 <section>
   <h1 class="visually-hidden">Template Functions</h1>
   </p>
+<p><a href="https://youtu.be/D2PIuPSQGcs">Template Functions video (17 minutes) (Spring 2021)</a></p>
 <h2>Programming without Templates</h2>
 <p>Let's see what C++ programming might be like without templates, using a simple function that calculates the minimum of two things:</p>
 <pre><code class="c++">#include &lt;iostream&gt;
@@ -162,9 +163,9 @@ double my_max(double x, double y) {
   return (x &gt; y) ? x : y;
 }</code></pre>
 <pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o example bad.cpp bad_my_min.cpp</kbd>
-<pre><samp>/usr/bin/ld: /tmp/bad_my_min-095b21.o: in function `my_max(int, int)&#39;:
-bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-4d2190.o:bad.cpp:(.text+0x0): first defined here
-/usr/bin/ld: /tmp/bad-4d2190.o: in function `main&#39;:
+<pre><samp>/usr/bin/ld: /tmp/bad_my_min-1fb23b.o: in function `my_max(int, int)&#39;:
+bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-aa76d4.o:bad.cpp:(.text+0x0): first defined here
+/usr/bin/ld: /tmp/bad-aa76d4.o: in function `main&#39;:
 bad.cpp:(.text+0xe7): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x15c): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x1eb): undefined reference to `double my_min&lt;double&gt;(double const&amp;, double const&amp;)&#39;
