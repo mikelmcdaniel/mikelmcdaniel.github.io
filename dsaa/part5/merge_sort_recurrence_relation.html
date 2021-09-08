@@ -1,0 +1,252 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Merge Sort: Recurrence Relation</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Merge Sort: Recurrence Relation</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Merge Sort: Recurrence Relation</h1>
+  </p>
+<p><a href="https://youtu.be/rSIXKFYYNng">Merge Sort: Implementation and Recurrence Relation video (41 minutes) (Spring 2021)</a></p>
+<p>Two algorithms are described in this video: Merge, which merges two sorted lists into a new sorted list, and Merge Sort, which uses Merge to sort an unsorted list.</p>
+<h2>Merge</h2>
+<p>The Merge algorithm merges two sorted lists into a new sorted list.</p>
+<p>The heads of the two lists are compared, and lowest value is taken.</p>
+<p>This repeats until one of the lists is depleted.</p>
+<p>Then, the other list is copied into the result list.</p>
+<p>Merge is not a recursive algorithm. It has linear running time, or O(n), where n is "the size of the two lists"</p>
+<pre><code class="c++">// Overall, this algorithm is O(L + R) = O(n)
+vector&lt;string&gt; merge(
+    const vector&lt;string&gt;::iterator left_low, const vector&lt;string&gt;::iterator left_high,
+    const vector&lt;string&gt;::iterator right_low, const vector&lt;string&gt;::iterator right_high) {
+  // O(1)
+  vector&lt;string&gt; result;
+  auto left_position = left_low;
+  auto right_position = right_low;
+  // If L is the size of the left range (left_high - left_low)
+  // and R is the size of the right range (right_high - right_low),
+  // then this loop is O(L + R) = O(n)
+  while (left_position != left_high &amp;&amp; right_position != right_high) {
+    if (*left_position &lt; *right_position) {
+      result.push_back(*left_position);
+      ++left_position;
+    } else {
+      result.push_back(*right_position);
+      ++right_position;
+    }
+  }
+  // O(L)
+  while (left_position != left_high) {
+    result.push_back(*left_position);
+    ++left_position;
+  }
+  // O(R)
+  while (right_position != right_high) {
+    result.push_back(*right_position);
+    ++right_position;
+  }
+  return result;
+}
+</code></pre>
+
+<h2>Merge Sort</h2>
+<p>Merge Sort is a recursive algorithm that uses the Merge algorithm to sort a SINGLE list. It does this by recursively splitting the single list in half, recursively calling itself on the two halves. Then, each call to merge sort (on progressively larger lists, as the recursive stack closes out) merges the left and right halves of its range.</p>
+<pre><code class="c++">// T(0) = 1
+// T(1) = 1
+// T(N) = 1 + N + 2 * T(N / 2)
+void merge_sort(vector&lt;string&gt;::iterator low, vector&lt;string&gt;::iterator high) {
+  // The few lines below are O(1)
+  if (high - low &lt;= 1) {
+    return;
+  }
+  auto middle = low + (high - low) / 2;
+  // The recursive calls to merge_sort add &quot;2 * T(N / 2)&quot; to T(N)
+  merge_sort(low, middle);
+  merge_sort(middle, high);
+  // The merge step below adds O(N) steps to T(N)
+  // Merge the left and right halves.
+  vector&lt;string&gt; merged = merge(low, middle, middle, high); // O(N)
+  // The copy step below adds O(N) steps to T(N)
+  // Copy merged elements into [low, high); O(N)
+  auto it = low;
+  for (const string&amp; value : merged) {
+    *it = value;
+    ++it;
+  }
+}
+</code></pre>
+
+<p>For an empty or single element list, merge_sort simply returns. so T(0) = T(1) = 1.</p>
+<p>In the general recursive case, there is a constant time middle iterator calculation.</p>
+<p>There are two recursive calls, to inputs half the size of original input.</p>
+<p>There is a linear time section, of calling merge (O(n)) and copying the values returned from merge to the original input range, via iterator dereferencing.</p>
+<p>So, T(n) = 1 + n + 2 * T(n / 2)</p>
+<p>Base cases</p>
+<p>T(0) = 1</p>
+<p>T(1) = 1</p>
+<p>General case</p>
+<p>T(n) = N + 2 * T(n / 2) (** in this relation, we dropped the " + 1" constant term for simplicity - it won't be the dominating term.)</p>
+<p>Expanding this relation out a few iterations to spot a pattern:</p>
+<pre><code>T(n) = n + 2T(n / 2)
+T(n) = n + 2((n / 2) + T(n / 2) / 2)
+T(n) = n + n + 4T(n / 4)
+T(n) = 2n + 4T(n / 4)
+T(n) = 2n + 4((n / 4) + 2T((n / 4) / 2))
+T(n) = 2n + n + 8T(n / 8)
+T(n) = 3n + 8T(n / 8)
+T(n) = 3n + 8((n / 8) + 2T((n / 8) / 2))
+T(n) = 3n + n + 16T(n / 16)
+T(n) = 4n + 16T(n / 16)
+T(n) = 4n + 16((n / 16) + 2T((n / 16) / 2))
+T(n) = 4n + n + 32T(n / 32)
+T(n) = 5n + 32T(n / 32)
+</code></pre>
+
+<p>The leading term seems to be increasing with k. The denominator under n seems to be increasing with 2^k.</p>
+<p>T(n) = kn + (2^k)T(n / (2^k))</p>
+<p>Now we try to write T(n) in terms of things we already know, like T(0) or T(1). We can do this by solving for k such that T(n / (2^k)) = T(0) or T(n / (2^k)) = T(1). Solving for n / (2^k) = 1 is easier, so we do that:</p>
+<pre><code>n / (2^k) = 1
+n = (2^k)
+log2(n) = k
+</code></pre>
+
+<p>We can substitute this into the relation:</p>
+<pre><code>T(n) = kn + (2^k)T(n/(2^k))
+T(n) = (log2(n))n + (2^(log2(n)))T(n/(2^(log2(n))))
+(Exponential Identity: 2^(log2(n)) = n)
+T(n) = (log2(n))n + (n)T(n/(n))
+T(n) = (log2(n))n + (n)T(1)
+T(n) = (log2(n))n + (n) * 1
+T(n) = n * log2(n) + n
+O(T(n)) = O(n * log2(n) + n)
+O(T(n)) = O(n * log2(n))
+O(T(n)) = O(nlog(n))
+</code></pre>
+
+<p>So merge sort is O(nlog(n)), or linearithmic complexity.</p>
+<h2>Example code</h2>
+<p>The complete example code, with merge, merge_sort, and client code:</p>
+<p><a href="simple_merge_sort.cpp">simple_merge_sort.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
+
+
+// Overall, this algorithm is O(L + R) = O(n)
+vector&lt;string&gt; merge(
+    const vector&lt;string&gt;::iterator left_low, const vector&lt;string&gt;::iterator left_high,
+    const vector&lt;string&gt;::iterator right_low, const vector&lt;string&gt;::iterator right_high) {
+  // O(1)
+  vector&lt;string&gt; result;
+  auto left_position = left_low;
+  auto right_position = right_low;
+  // If L is the size of the left range (left_high - left_low)
+  // and R is the size of the right range (right_high - right_low),
+  // then this loop is O(L + R) = O(n)
+  while (left_position != left_high &amp;&amp; right_position != right_high) {
+    if (*left_position &lt; *right_position) {
+      result.push_back(*left_position);
+      ++left_position;
+    } else {
+      result.push_back(*right_position);
+      ++right_position;
+    }
+  }
+  // O(L)
+  while (left_position != left_high) {
+    result.push_back(*left_position);
+    ++left_position;
+  }
+  // O(R)
+  while (right_position != right_high) {
+    result.push_back(*right_position);
+    ++right_position;
+  }
+  return result;
+}
+
+
+// T(0) = 1
+// T(1) = 1
+// T(N) = 1 + N + 2 * T(N / 2)
+void merge_sort(vector&lt;string&gt;::iterator low, vector&lt;string&gt;::iterator high) {
+  // The few lines below are O(1)
+  if (high - low &lt;= 1) {
+    return;
+  }
+  auto middle = low + (high - low) / 2;
+  // The recursive calls to merge_sort add &#34;2 * T(N / 2)&#34; to T(N)
+  merge_sort(low, middle);
+  merge_sort(middle, high);
+  // The merge step below adds O(N) steps to T(N)
+  // Merge the left and right halves.
+  vector&lt;string&gt; merged = merge(low, middle, middle, high); // O(N)
+  // The copy step below adds O(N) steps to T(N)
+  // Copy merged elements into [low, high); O(N)
+  auto it = low;
+  for (const string&amp; value : merged) {
+    *it = value;
+    ++it;
+  }
+}
+
+
+int main() {
+  vector&lt;string&gt; words;
+  words.push_back(&#34;cherry&#34;);
+  words.push_back(&#34;durian&#34;);
+  words.push_back(&#34;apple&#34;);
+  words.push_back(&#34;egg plant&#34;);
+  words.push_back(&#34;banana&#34;);
+
+  merge_sort(words.begin(), words.end());
+  for (const string&amp; w : words) {
+    cout &lt;&lt; w &lt;&lt; endl;
+  }
+  cout &lt;&lt; endl;
+  return 0;
+}</code></pre>
+<pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o simple_merge_sort simple_merge_sort.cpp</kbd>
+</pre>
+<pre><strong>$</strong> <kbd>./simple_merge_sort</kbd></pre>
+<pre><samp>apple
+banana
+cherry
+durian
+egg plant
+
+</samp></pre>
+</p>
+<h3>Thanks</h3>
+<p>Thanks to Brian Foster for writing up the initial draft of these notes.</p>
+<p>
+</section>
+</body>
+</html>

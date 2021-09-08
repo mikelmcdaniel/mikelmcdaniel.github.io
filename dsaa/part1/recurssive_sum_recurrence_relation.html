@@ -1,0 +1,137 @@
+<p><!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Recursive Sum: Recurrence Relations</title>
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <span class="fs-4">Recursive Sum: Recurrence Relations</span>
+  </a>
+  <ul class="nav nav-pills">
+    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
+    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+  </ul>
+</header>
+<section>
+  <h1 class="visually-hidden">Recursive Sum: Recurrence Relations</h1>
+  </p>
+<p><a href="https://youtu.be/kEmHN4H-Tuc">Recurrence Relations: Recursive Sum Example video (25 minutes) (Spring 2021)</a></p>
+<h2>Motivation</h2>
+<p>Recurrence relations can aid in determining Big-O complexity of recursive functions. A recurrence relation is a relationship in which a function T(...) occurs on both sides of the = sign. For example, T(n) = 1 + T(n / 2).</p>
+<h2>General steps for solving a recurrence relation</h2>
+<ol>
+<li>Understand what the recursive algorithm is actually doing, and identify base case(s). Identify general recursive case. Identify how the input shrinks as progress is made towards the base case.</li>
+<li>Formalize the recurrence relation. Express the base case(s) and general case in T(n) notation, or running time syntax. (See below example)</li>
+<li>Iterate/expand a few times, plugging in shrinking values of n. Simplify the resulting expression.</li>
+<li>Spot a pattern that emerges, which can be express in terms of "k", the number of iterations taking place.</li>
+<li>Write the recurrence relation in terms of k</li>
+<li>Identify a value of k, given how k and n interact in the relation, such that a base case with a known value can substituted into the relation.</li>
+<li>Finally, solve the relation using the known values.</li>
+</ol>
+<h2>Recursive sum example</h2>
+<pre><code class="c++">template &lt;typename RandomAccessIt&gt;
+long recursive_sum(RandomAccessIt begin, RandomAccessIt end)
+{
+    if (begin == end) {
+        return 0;
+    } else if (end - begin == 1) {
+        return *begin;
+    } else {
+        RandomAccessIt middle = begin + ((end - begin) / 2);
+        return recursive_sum(begin, middle) + recursive_sum(middle, end);
+    }
+}
+</code></pre>
+
+<h3>1. Understand, identify base/general cases</h3>
+<p>This function recursively calculates the sum of a collection of values in the range between two iterators, [<code>begin</code>, <code>end</code>)</p>
+<p>The base case of an empty range, <code>begin == end</code>, simply returns <code>0</code>.</p>
+<p>Returning <code>0</code> is a constant time operation.</p>
+<p>So T(0) = 1.</p>
+<p>The base case of a single element dereferences the iterator to access its value and returns it.</p>
+<p>Dereferencing an iterator and returning the value is a constant time operation</p>
+<p>So T(1) = 1.</p>
+<p>The general recursive case calculates a middle iterator position, then makes 2 recursive calls on ranges half the size of the original range.</p>
+<p>The iterator calculation is a constant time operation.</p>
+<p>The two recursive calls have running time linked to a size that is half that of the original range.</p>
+<p>So T(n) = 1 + 2T(n / 2).</p>
+<h3>2. Formalize recurrence relation</h3>
+<p>We now have our base cases and general recursive case:</p>
+<p>Base: T(0) = 1</p>
+<p>Base: T(1) = 1</p>
+<p>General: T(n) = 1 + 2T(n / 2)</p>
+<h3>3. Iterate/expand/simplify the general case relation</h3>
+<pre><code>T(n) = 1 + 2T(n / 2)
+T(n) = 1 + 2(1 + 2T((n / 2) / 2))
+T(n) = 1 + 2 + 4T(n / 4)
+T(n) = 3 + 4T(n / 4)
+T(n) = 3 + 4(1 + 2T((n / 4) / 2))
+T(n) = 3 + 4 + 8T(n / 8)
+T(n) = 7 + 8T(n / 8)
+T(n) = 7 + 8(1 + 2T((n / 8) / 2))
+T(n) = 7 + 8 + 16T(n / 16)
+T(n) = 15 + 16T(n / 16)
+</code></pre>
+
+<h3>4. Spot a pattern, in terms of "k" iterations</h3>
+<p>There is a useful "Sum of Powers of 2" to be aware of for this step</p>
+<pre><code>1   + 2   + 4   + 8   + ... + 2^k = 2^(k + 1) - 1
+2^0 + 2^1 + 2^2 + 2^3 + ... + 2^k = 2^(k + 1) - 1
+
+2^0                         = 2^(0 + 1) - 1 = 1
+2^0 + 2^1                   = 2^(1 + 1) - 1 = 3
+2^0 + 2^1 + 2^2             = 2^(2 + 1) - 1 = 7
+2^0 + 2^1 + 2^2 + 2^3       = 2^(3 + 1) - 1 = 15
+2^0 + 2^1 + 2^2 + 2^3 + 2^4 = 2^(4 + 1) - 1 = 31
+</code></pre>
+
+<p>In this relation, the leading term seems to be growing from 1 to 3 to 7 in a "sum of powers of 2" manner, or 2^k - 1.</p>
+<p>The multiple of T, and denominator below n, both seem to be growing from 2 to 4 to 8 in a 2^k manner.</p>
+<h3>5. Write the relation in terms of k</h3>
+<pre><code>T(n) = (2^k) - 1 + (2^k)T(n / (2^k))
+</code></pre>
+
+<p>(To double check this, you can expand this relation in a similar way to step
+3. The goal would be to observe k+1 in each location where k is, after one expansion).</p>
+<h3>6. Identify a k value that allows substitution of a base case</h3>
+<p>We know that T(1) = 1. So what value of k will let us substitute in T(1) to this relation?</p>
+<p>We want to rewrite T(n / (2^k)) as T(1), so we solve n / (2^k) = 1:</p>
+<pre><code>n / (2^k) = 1
+n = (2^k)
+log2(n) = k
+</code></pre>
+
+<h3>7. Solve using known values</h3>
+<p>Substituting in log2(n) for k ...</p>
+<pre><code>T(n) = (2^(log2(n))) - 1 + (2^(log2(n)))*T(1)
+(Exponential Identity: 2^(log2(n)) = n)
+T(n) = n - 1 + n * T(1)
+T(n) = n - 1 + n * 1
+T(n) = 2n - 1
+O(T(n)) = O(2n - 1)
+O(T(n)) = O(n)
+</code></pre>
+
+<p>Hopefully this is intuitive: to calculate the sum of elements in a range having size n, we would have to access and add each of the elements once.</p>
+<h3>Thanks</h3>
+<p>Thanks to Brian Foster for writing up the initial draft of these notes.</p>
+<p>
+</section>
+</body>
+</html>
