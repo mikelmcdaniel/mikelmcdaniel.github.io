@@ -31,14 +31,13 @@
 <section>
   <h1 class="visually-hidden">Linear Search</h1>
   </p>
-<h2>Linear Search</h2>
-<h3>Why searching is useful</h3>
+<h2>Why searching is useful</h2>
 <p>Searching shows up a lot in the real world: search engines, online dictionaries, databases, contacts apps, and at least N other things for all N &gt; 0.</p>
 <p>In most searching problems you have some <em>key</em>, such as a word, that you already have and you want to find some <em>value</em>, like the definition. In other searching problems you just have a <em>key</em>, such as a word, and you want to know if that key is in some big list of keys, like if you wanted to know if a word is an English word or if the word is in a list of banned words on a family friendly site.</p>
 <p>To keep things simple, we'll just look at searching for a <code>string</code> in a <code>vector&lt;string&gt;</code>.</p>
-<h3>The idea</h3>
+<h2>The idea</h2>
 <p>If you have a <code>vector&lt;string&gt;</code> with a list of words in it, think of the simplest way you'd search through it; that's linear search. Just look at each word, one at a time, and check that if that word is equal to the word you're looking for.</p>
-<h3>Implementation</h3>
+<h2>Implementation</h2>
 <pre><code class="c++">bool contains_word_linear(const vector&lt;string&gt;&amp; words, const string&amp; word) {
     for (const auto&amp; w : words) {
         if (w == word) {
@@ -50,7 +49,7 @@
 </code></pre>
 
 <p><a href="https://en.cppreference.com/w/cpp/algorithm/find"><code>std::find</code>, defined in the <code>&lt;algorithm&gt;</code> header</a> is a more general version of linear search than <code>contains_word_linear</code>.</p>
-<h3>How fast is it?</h3>
+<h2>How fast is it?</h2>
 <p><a href="linear_search_timed.cpp">linear_search_timed.cpp</a><pre><code class="c++">#include &lt;algorithm&gt;
 #include &lt;chrono&gt;
 #include &lt;iostream&gt;

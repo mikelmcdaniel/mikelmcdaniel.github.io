@@ -31,16 +31,16 @@
 <section>
   <h1 class="visually-hidden">Bloom Filters Lecture</h1>
   </p>
-<h2>Bloom Filters Lecture</h2>
+<p><a href="https://youtu.be/QOA5db0Di0Q">Simple Bloom Filter Idea and Implementation (25 minutes) (Spring 2021)</a></p>
 <p>A Bloom Filter is a data structure designed to tell you, rapidly and memory-efficiently, whether an element is present in a set.</p>
 <p>The price paid for this efficiency is that a Bloom filter is a probabilistic data structure: it tells us that the element either definitely is not in the set or may be in the set.</p>
-<h3>Motivation</h3>
+<h2>Motivation</h2>
 <p>Hash functions reduce potentially large objects to a smaller value.  </p>
 <p>If you have a set of large objects, you could search through that set to see if some other large object exists in the set.</p>
 <p>However, maintaining a set of large objects in memory may be expensive!</p>
 <p>With memory, it doesn't get much smaller than a bit.  This is a 1 or 0 in memory, 1/8th of a byte, and can translate to a boolean value of true or false.</p>
 <p>Bloom Filters allow us to reduce arbitrarily large objects to the presence of a bit in a hash table.</p>
-<h3>General Strategy</h3>
+<h2>General Strategy</h2>
 <p>We will maintain a hash table of bits.  </p>
 <p>We will insert large objects into this data structure by:</p>
 <ol>
@@ -66,32 +66,32 @@
 <p>Since the object may be present, maybe some more expensive lookup is necessary at this time.</p>
 </li>
 </ol>
-<h3>Maybe present vs definitely not present</h3>
+<h2>Maybe present vs definitely not present</h2>
 <p>Remember collisions.  They happen with hash functions.</p>
 <p>The fact that collisions are a real possibility, means that we cannot know, for certain, that the presence of a 1 bit at hashIndex(k) for some object k, means that k is truly stored in our Bloom Filter.  Maybe hashIndex(k) == hashIndex(j).  </p>
 <p>But, if the bit at hashIndex(k) is 0, we know FOR SURE that k is not present in our Bloom Filter.</p>
-<h3>What's the benefit?</h3>
+<h2>What's the benefit?</h2>
 <p>We have identified that it's impossible to know FOR CERTAIN is an object is present in a Bloom Filter.  So what's the point?</p>
 <p>The advantage of a Bloom Filter comes in the very cheap memory usage of bits.  Our data structure will be tiny.</p>
 <p>Another advantage of a Bloom Filter comes in the constant time hash table lookup.  We can quickly identify, for certain, if an object is NOT present in the Bloom Filter.</p>
-<h3>Applications</h3>
+<h2>Applications</h2>
 <p>One application of a Bloom Filter could be a list of blocked websites in a browser.</p>
 <p>Say badSite1 and badSite2 are both included in our Bloom Filter of sites to block, and they both hash to the same hash index.</p>
 <p>When I visit goodSite1, the Bloom Filter very quickly looks up that goodSite1 is DEFINITELY not blocked, and lets me through.  I don't even notice.</p>
 <p>When I visit badSite1, my browser sees a 1 in the blocked site Bloom Filter.  It knows that badSite1 MAY be blocked, so goes and does some other, maybe slower, lookup, say from a datastore or disk, looking to verify whether or not badSite1 is truly blocked.</p>
 <p>The point is that we can quickly rule out, for certain, values that are NOT present in our Bloom Filter.  We can do this quickly and without using much memory.</p>
 <p>Another application could be spellchecking.</p>
-<h3>Implementations</h3>
+<h2>Implementations</h2>
 <p>std::bitset can be used to maintain a fixed-size set of bits.</p>
 <p>We can also use a vector booleans, that will allow us to resize a bit easier.  Vectors of booleans should be optimized into bits by the compiler.</p>
 <pre><code>std::vector&lt;boolean&gt;
 </code></pre>
 
-<h3>Design concerns</h3>
+<h2>Design concerns</h2>
 <p>How many bits should be maintain?</p>
 <p>What is the likelihood of false positives?   (This depends on having a good/uniform hash function)</p>
 <p>Should we hash the same object multiple times with different hash functions, and then check each of those hash indexes on lookup?  Maybe this will improve our probability of false positives.  But there will be a constant time performance decrease.</p>
-<h3>Sources</h3>
+<h2>Sources</h2>
 <p>https://llimllib.github.io/bloomfilter-tutorial/, in addition to lecture video</p>
 <h2>Thanks</h2>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
