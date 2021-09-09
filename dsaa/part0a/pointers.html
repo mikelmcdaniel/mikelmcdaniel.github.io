@@ -1,4 +1,4 @@
-<p><!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -30,7 +30,7 @@
 </header>
 <section>
   <h1 class="visually-hidden">Pointers</h1>
-  </p>
+  
 <p><a href="https://youtu.be/AeJ_ZURroVo">Pointers video (28 minutes) (Spring 2021)</a></p>
 <h2>Pointers</h2>
 <p>Before talking about pointers, we need to talk about what a variables and memory.</p>
@@ -130,43 +130,43 @@ int main(int argc, const char *argv[]) {
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffe018e441c)
-y == 7  (at address 0x7ffe018e4418)
-a == 0x7ffe018e4400  (at address 0x7ffe018e4400)
-p == 0x7ffe018e441c  (at address 0x7ffe018e43f8)
+x == 5  (at address 0x7ffddeb7dddc)
+y == 7  (at address 0x7ffddeb7ddd8)
+a == 0x7ffddeb7ddc0  (at address 0x7ffddeb7ddc0)
+p == 0x7ffddeb7dddc  (at address 0x7ffddeb7ddb8)
 
-Now p == 0x7ffe018e4400 == a == 0x7ffe018e4400
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffe018e4400 0x7ffe018e4400
-*(a + 0) == 11  at 0x7ffe018e4400
-    a[0] == 11  at 0x7ffe018e4400
-*(p + 0) == 11  at 0x7ffe018e4400
-    p[0] == 11  at 0x7ffe018e4400
-*(a + 1) == 22  at 0x7ffe018e4404
-    a[1] == 22  at 0x7ffe018e4404
-*(p + 1) == 22  at 0x7ffe018e4404
-    p[1] == 22  at 0x7ffe018e4404
-*(a + 2) == 33  at 0x7ffe018e4408
-    a[2] == 33  at 0x7ffe018e4408
-*(p + 2) == 33  at 0x7ffe018e4408
-    p[2] == 33  at 0x7ffe018e4408
-*(a + 3) == 44  at 0x7ffe018e440c
-    a[3] == 44  at 0x7ffe018e440c
-*(p + 3) == 44  at 0x7ffe018e440c
-    p[3] == 44  at 0x7ffe018e440c
-*(a + 4) == 55  at 0x7ffe018e4410
-    a[4] == 55  at 0x7ffe018e4410
-*(p + 4) == 55  at 0x7ffe018e4410
-    p[4] == 55  at 0x7ffe018e4410
+Now p == 0x7ffddeb7ddc0 == a == 0x7ffddeb7ddc0
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffddeb7ddc0 0x7ffddeb7ddc0
+*(a + 0) == 11  at 0x7ffddeb7ddc0
+    a[0] == 11  at 0x7ffddeb7ddc0
+*(p + 0) == 11  at 0x7ffddeb7ddc0
+    p[0] == 11  at 0x7ffddeb7ddc0
+*(a + 1) == 22  at 0x7ffddeb7ddc4
+    a[1] == 22  at 0x7ffddeb7ddc4
+*(p + 1) == 22  at 0x7ffddeb7ddc4
+    p[1] == 22  at 0x7ffddeb7ddc4
+*(a + 2) == 33  at 0x7ffddeb7ddc8
+    a[2] == 33  at 0x7ffddeb7ddc8
+*(p + 2) == 33  at 0x7ffddeb7ddc8
+    p[2] == 33  at 0x7ffddeb7ddc8
+*(a + 3) == 44  at 0x7ffddeb7ddcc
+    a[3] == 44  at 0x7ffddeb7ddcc
+*(p + 3) == 44  at 0x7ffddeb7ddcc
+    p[3] == 44  at 0x7ffddeb7ddcc
+*(a + 4) == 55  at 0x7ffddeb7ddd0
+    a[4] == 55  at 0x7ffddeb7ddd0
+*(p + 4) == 55  at 0x7ffddeb7ddd0
+    p[4] == 55  at 0x7ffddeb7ddd0
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffe018e4400 is 11 which is 0 ints from address 0x7ffe018e4400
-int at address 0x7ffe018e4404 is 22 which is 1 ints from address 0x7ffe018e4400
-int at address 0x7ffe018e4408 is 33 which is 2 ints from address 0x7ffe018e4400
-int at address 0x7ffe018e440c is 44 which is 3 ints from address 0x7ffe018e4400
-int at address 0x7ffe018e4410 is 55 which is 4 ints from address 0x7ffe018e4400
+int at address 0x7ffddeb7ddc0 is 11 which is 0 ints from address 0x7ffddeb7ddc0
+int at address 0x7ffddeb7ddc4 is 22 which is 1 ints from address 0x7ffddeb7ddc0
+int at address 0x7ffddeb7ddc8 is 33 which is 2 ints from address 0x7ffddeb7ddc0
+int at address 0x7ffddeb7ddcc is 44 which is 3 ints from address 0x7ffddeb7ddc0
+int at address 0x7ffddeb7ddd0 is 55 which is 4 ints from address 0x7ffddeb7ddc0
 </samp></pre>
 </p>
-<p>
+
 </section>
 </body>
 </html>

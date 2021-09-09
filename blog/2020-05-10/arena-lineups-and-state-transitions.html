@@ -1,4 +1,4 @@
-<p><!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -30,7 +30,7 @@
 </header>
 <section>
   <h1 class="visually-hidden">Arena Lineups and State Transitions - 2020-05-10</h1>
-  </p>
+  
 <p>In <a href="https://www.ssbwiki.com/Super_Smash_Bros._Ultimate">a video game I've played a lot recently</a> there are online arenas where players line up, the two people at the front of the line fight, then the loser goes to the back of the line. Even with a relatively large skill gap between players there's some (non-zero) chance either player could win. How often does the best player get to play? How often does each line up happen?</p>
 <h2>How often do you play if you always have an X% chance of winning?</h2>
 <p>How often does a particular player play, if they have the same chance of winning against any opponent? Let's assume they have a 70% chance of winning each game in an arena with 8 players. The chance of them winning 1 game is 0.7. The chance of them winning 2 games is 0.7<sup>2</sup>. The chance of them winning N games is 0.7<sup>N</sup>. The average number of games they will win in a row is 0.7 + 0.7<sup>2</sup> + 0.7<sup>3</sup> + ... + 0.7<sup>N</sup> for N going all the way to infinity. After winning some games, they'll lose 1 game and go to the back of the line, so the total number of games they play before going to the back of the line is ( 1 + 0.7 + 0.7^2 + ... = 0.7^0 + 0.7^1 + 0.7^2 + ... = \sum_{k=0}^\infty 0.7^k = \frac{1}{1 - 0.7} = 3.\overline{3} ) games. Every time that player loses, they have to sit out 8 - 2 = 6 games before they can play again. On average, our player will play 3.<span style="text-decoration:overline">3</span> games, then wait in line for 6 games, so they are playing 3.<span style="text-decoration:overline">3</span> / (3.<span style="text-decoration:overline">3</span> + 6) &asymp; 0.357 (35.7%) of the time. Now lets generalize, instead of assuming their <code>win_ratio</code> = 0.7 and the <code>arena_capacity</code> = 8. The number of games they play on average is ( \frac{1}{1 - \text{win_ratio}} ) before going to the back of the line. Once they're at the back of the line, they will have to site out of <code>arena_capacity</code> - 2 games until they are one of the two people at the front of the line who get to play again. They play this much on average: [ \frac{\frac{1}{1 - \text{win_ratio}}}{\frac{1}{1 - \text{win_ratio}} + \text{arena_capacity} - 2} ]</p>
@@ -1318,7 +1318,7 @@ x =
 <p>For most of these simulations, I used an arena size of 3 or 8 and a <code>win_ratio</code> of 0.7 but most of this generalizes quite well. For example, the tendency for lineups like (0, 7, 6, 5, 4, 3, 2, 1) to be most common still holds for other <code>win_ratio</code> values.</p>
 <p>I'd be curious to know what it is in practice and to see how the results change with a more realistic matchup table and to know what a real matchup table even looks like. In practice, players have a more loose ordering where even if a good player generally wins against a group of players, they might lose against another player that generally loses more to others.</p>
 <p>In some arenas, the arena owner will enforce a rule that if you win W times in a row, you have to go to the back of the line. I didn't get around to seeing how that affects lineup probabilities or how often particular players get to play. My guess is that if W is coprime with <code>arena_capacity</code>, then it will do a good job of giving players a more equal opportunity to play.</p>
-<p>
+
 </section>
 </body>
 </html>

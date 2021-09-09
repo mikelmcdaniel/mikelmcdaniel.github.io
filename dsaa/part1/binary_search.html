@@ -1,4 +1,4 @@
-<p><!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -30,7 +30,7 @@
 </header>
 <section>
   <h1 class="visually-hidden">Binary Search</h1>
-  </p>
+  
 <p>If you haven't read the <a href="linear_search">Linear Search notes</a>, read those first.</p>
 <ul>
 <li><a href="https://youtu.be/YU2za2t_ABA">Binary Search and Big-O video (1 hour 37 minutes) (Spring 2021)</a></li>
@@ -302,7 +302,7 @@ int main(int argc, const char* argv[]) {
 <p><img alt="Binary Search Timed" src="binary_search_timed.svg" /></p>
 <p>In practice, it looks like it's much faster than Linear Search, at least for larger inputs. It's possible that Binary Search is actually slower for small inputs but by eliminating half of the possible words at every iteration instead of only one word, even a slow Binary Search will beat a Linear Search on large inputs.</p>
 <p>If Linear Search has to iterate for every word in the worse case scenario, how many times does Binary Search have to iterate? We know that in the base cases (when we narrow down the range to 1 word or 0 words), it only takes one iteration. We also know that for the general/recursive case, we cut the range of possible words in half. So basically, if there are N words, the most iterations we might do (the most recursive calls we might do) is the same as the number of times we can divide N by 2: log base 2 of N.</p>
-<p>
+
 </section>
 </body>
 </html>
