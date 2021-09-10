@@ -75,9 +75,13 @@ for (auto it = a.begin(); it != a.end(); ++it) {
 <h3>For-each Loops</h3>
 <p>For-each loops in C++ are actually just using iterators behind the scenes. The following loops are equivalent:</p>
 <pre><code class="c++">std::vector&lt;int&gt; a = {11, 22, 33, 44, 55};
-for (auto it = a.begin(); it != a.end(); ++it) {
-  cout &lt;&lt; *it &lt;&lt; endl;
+{
+  auto it_end = a.end();
+  for (auto it = a.begin(); it != it_end; ++it) {
+    cout &lt;&lt; *it &lt;&lt; endl;
+  }
 }
+
 for (const int x : a) {
   cout &lt;&lt; x &lt;&lt; endl;
 }
