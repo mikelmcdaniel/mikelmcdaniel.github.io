@@ -22,10 +22,10 @@
     <span class="fs-4">Pointers</span>
   </a>
   <ul class="nav nav-pills">
-    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
   </ul>
 </header>
 <section>
@@ -83,7 +83,7 @@ for (int *p = begin; p != end; ++p) {
 <p>So far, we've just looked at <code>int*</code> that point to <code>int</code> but you can have a pointer to any type, including other pointers. For <em>any</em> type and variable, <code>T x</code>, you can have a <code>T* p</code>. When you write <code>*p</code>, that code will read the address that <code>p</code> represents, then go read <code>sizeof(T)</code> bytes from that address and interpret those bytes as representing a <code>T</code>. If <code>T = int*</code>, then... dereferencing that pointer (<code>*p</code>) will go to the address of <code>x</code> (<code>&amp;x</code>) and read those <code>sizeof(T*) == sizeof(int*) == 8</code> bytes and interpret them as an int pointer.</p>
 <h3>Example Program</h3>
 <p>Let's tie all this together with a quick example program to demonstrate:</p>
-<p><a href="pointers_example.cpp">pointers_example.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+<p><a href="https://mikelmcdaniel.github.io/dsaa/part0a/pointers_example.cpp">pointers_example.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 
 using std::cout;
 using std::endl;
@@ -130,40 +130,40 @@ int main(int argc, const char *argv[]) {
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffddeb7dddc)
-y == 7  (at address 0x7ffddeb7ddd8)
-a == 0x7ffddeb7ddc0  (at address 0x7ffddeb7ddc0)
-p == 0x7ffddeb7dddc  (at address 0x7ffddeb7ddb8)
+x == 5  (at address 0x7ffc8220807c)
+y == 7  (at address 0x7ffc82208078)
+a == 0x7ffc82208060  (at address 0x7ffc82208060)
+p == 0x7ffc8220807c  (at address 0x7ffc82208058)
 
-Now p == 0x7ffddeb7ddc0 == a == 0x7ffddeb7ddc0
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffddeb7ddc0 0x7ffddeb7ddc0
-*(a + 0) == 11  at 0x7ffddeb7ddc0
-    a[0] == 11  at 0x7ffddeb7ddc0
-*(p + 0) == 11  at 0x7ffddeb7ddc0
-    p[0] == 11  at 0x7ffddeb7ddc0
-*(a + 1) == 22  at 0x7ffddeb7ddc4
-    a[1] == 22  at 0x7ffddeb7ddc4
-*(p + 1) == 22  at 0x7ffddeb7ddc4
-    p[1] == 22  at 0x7ffddeb7ddc4
-*(a + 2) == 33  at 0x7ffddeb7ddc8
-    a[2] == 33  at 0x7ffddeb7ddc8
-*(p + 2) == 33  at 0x7ffddeb7ddc8
-    p[2] == 33  at 0x7ffddeb7ddc8
-*(a + 3) == 44  at 0x7ffddeb7ddcc
-    a[3] == 44  at 0x7ffddeb7ddcc
-*(p + 3) == 44  at 0x7ffddeb7ddcc
-    p[3] == 44  at 0x7ffddeb7ddcc
-*(a + 4) == 55  at 0x7ffddeb7ddd0
-    a[4] == 55  at 0x7ffddeb7ddd0
-*(p + 4) == 55  at 0x7ffddeb7ddd0
-    p[4] == 55  at 0x7ffddeb7ddd0
+Now p == 0x7ffc82208060 == a == 0x7ffc82208060
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffc82208060 0x7ffc82208060
+*(a + 0) == 11  at 0x7ffc82208060
+    a[0] == 11  at 0x7ffc82208060
+*(p + 0) == 11  at 0x7ffc82208060
+    p[0] == 11  at 0x7ffc82208060
+*(a + 1) == 22  at 0x7ffc82208064
+    a[1] == 22  at 0x7ffc82208064
+*(p + 1) == 22  at 0x7ffc82208064
+    p[1] == 22  at 0x7ffc82208064
+*(a + 2) == 33  at 0x7ffc82208068
+    a[2] == 33  at 0x7ffc82208068
+*(p + 2) == 33  at 0x7ffc82208068
+    p[2] == 33  at 0x7ffc82208068
+*(a + 3) == 44  at 0x7ffc8220806c
+    a[3] == 44  at 0x7ffc8220806c
+*(p + 3) == 44  at 0x7ffc8220806c
+    p[3] == 44  at 0x7ffc8220806c
+*(a + 4) == 55  at 0x7ffc82208070
+    a[4] == 55  at 0x7ffc82208070
+*(p + 4) == 55  at 0x7ffc82208070
+    p[4] == 55  at 0x7ffc82208070
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffddeb7ddc0 is 11 which is 0 ints from address 0x7ffddeb7ddc0
-int at address 0x7ffddeb7ddc4 is 22 which is 1 ints from address 0x7ffddeb7ddc0
-int at address 0x7ffddeb7ddc8 is 33 which is 2 ints from address 0x7ffddeb7ddc0
-int at address 0x7ffddeb7ddcc is 44 which is 3 ints from address 0x7ffddeb7ddc0
-int at address 0x7ffddeb7ddd0 is 55 which is 4 ints from address 0x7ffddeb7ddc0
+int at address 0x7ffc82208060 is 11 which is 0 ints from address 0x7ffc82208060
+int at address 0x7ffc82208064 is 22 which is 1 ints from address 0x7ffc82208060
+int at address 0x7ffc82208068 is 33 which is 2 ints from address 0x7ffc82208060
+int at address 0x7ffc8220806c is 44 which is 3 ints from address 0x7ffc82208060
+int at address 0x7ffc82208070 is 55 which is 4 ints from address 0x7ffc82208060
 </samp></pre>
 </p>
 

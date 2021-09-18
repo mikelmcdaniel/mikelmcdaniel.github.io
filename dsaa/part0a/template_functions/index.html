@@ -22,10 +22,10 @@
     <span class="fs-4">Template Functions</span>
   </a>
   <ul class="nav nav-pills">
-    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
   </ul>
 </header>
 <section>
@@ -109,7 +109,7 @@ int main(int argc, const char *argv[]) {
 <p>Now <code>my_min</code> works for almost any type, as long as the less than operator is overloaded for that type (like <code>std::string</code>).</p>
 <h3>Templates in Header Files</h3>
 <p>If you accidentally define a function inside a header file and you include that header file more than once, your code won't compile because there will be two version of the same function and the compiler (the linker) won't know which one to use.</p>
-<p><a href="bad_my_min.h">bad_my_min.h</a><pre><code class="c++">#pragma once
+<p><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/bad_my_min.h">bad_my_min.h</a><pre><code class="c++">#pragma once
 // Templates should be declared and defined in the header file.
 // If they are declared in the header file and defined in the .cpp file, then
 // the compiler won&#39;t know how to compile the template when it sees it being
@@ -125,7 +125,7 @@ int my_max(int x, int y) {
 
 // This is correct: non-template functions should be declared but not defined in
 // header files.
-double my_max(double x, double y);</code></pre><a href="bad.cpp">bad.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+double my_max(double x, double y);</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/bad.cpp">bad.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 #include &lt;string&gt;
 
 #include &#34;bad_my_min.h&#34;
@@ -146,7 +146,7 @@ int main(int argc, const char* argv[]) {
   cout &lt;&lt; &#34;my_max(100, 200) == &#34; &lt;&lt; my_max(100, 200) &lt;&lt; endl;
   cout &lt;&lt; &#34;my_max(111.111, 222.222) == &#34; &lt;&lt; my_max(111.111, 222.222) &lt;&lt; endl;
   return 0;
-}</code></pre><a href="bad_my_min.cpp">bad_my_min.cpp</a><pre><code class="c++">#include &#34;bad_my_min.h&#34;
+}</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/bad_my_min.cpp">bad_my_min.cpp</a><pre><code class="c++">#include &#34;bad_my_min.h&#34;
 
 // This template function should be defined in the header file so that when the
 // compiler sees this function being used, it can compile it. Since the function
@@ -163,9 +163,9 @@ double my_max(double x, double y) {
   return (x &gt; y) ? x : y;
 }</code></pre>
 <pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o example bad.cpp bad_my_min.cpp</kbd>
-<pre><samp>/usr/bin/ld: /tmp/bad_my_min-644ee1.o: in function `my_max(int, int)&#39;:
-bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-ae6788.o:bad.cpp:(.text+0x0): first defined here
-/usr/bin/ld: /tmp/bad-ae6788.o: in function `main&#39;:
+<pre><samp>/usr/bin/ld: /tmp/bad_my_min-921b3b.o: in function `my_max(int, int)&#39;:
+bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-0a6450.o:bad.cpp:(.text+0x0): first defined here
+/usr/bin/ld: /tmp/bad-0a6450.o: in function `main&#39;:
 bad.cpp:(.text+0xe7): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x15c): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x1eb): undefined reference to `double my_min&lt;double&gt;(double const&amp;, double const&amp;)&#39;
@@ -176,7 +176,7 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)
 </samp></pre></pre>
 </p>
 <p>Behind the scenes, when the compiler sees a template function, it doesn't actually compile it right away. Since the compiler doesn't know what type <code>T</code> is until the template is used, it can't compile it until the first time it sees it being used. This means that template functions should be defined in the header file, so that any file that includes the header can see the full template.</p>
-<p><a href="good_my_min.h">good_my_min.h</a><pre><code class="c++">#pragma once
+<p><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/good_my_min.h">good_my_min.h</a><pre><code class="c++">#pragma once
 
 template &lt;typename T&gt;
 T my_min(const T&amp; x, const T&amp; y) {
@@ -184,7 +184,7 @@ T my_min(const T&amp; x, const T&amp; y) {
 }
 
 int my_max(int x, int y);
-double my_max(double x, double y);</code></pre><a href="good.cpp">good.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+double my_max(double x, double y);</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/good.cpp">good.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 #include &lt;string&gt;
 
 #include &#34;good_my_min.h&#34;
@@ -205,7 +205,7 @@ int main(int argc, const char* argv[]) {
   cout &lt;&lt; &#34;my_max(100, 200) == &#34; &lt;&lt; my_max(100, 200) &lt;&lt; endl;
   cout &lt;&lt; &#34;my_max(111.111, 222.222) == &#34; &lt;&lt; my_max(111.111, 222.222) &lt;&lt; endl;
   return 0;
-}</code></pre><a href="good_my_min.cpp">good_my_min.cpp</a><pre><code class="c++">#include &#34;good_my_min.h&#34;
+}</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part0a/template_functions/good_my_min.cpp">good_my_min.cpp</a><pre><code class="c++">#include &#34;good_my_min.h&#34;
 
 int my_max(int x, int y) {
   return (x &gt; y) ? x : y;

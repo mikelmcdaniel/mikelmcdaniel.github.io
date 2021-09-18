@@ -22,10 +22,10 @@
     <span class="fs-4">Singly Linked Lists</span>
   </a>
   <ul class="nav nav-pills">
-    <li class="nav-item"><a href="/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="/resume" class="nav-link">Resume</a></li>
+    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
   </ul>
 </header>
 <section>
@@ -74,7 +74,7 @@ head = new_node;
 
 <h3>Tail</h3>
 <p>We can make the previous linked list a lot better if we keep track of two things instead of one. <code>head</code> will be used to point to the first node and <code>tail</code> would be used to point to the last node of the linked list. Since we're keeping track of two things for our Linked List, it makes sense to split the Linked List into two classes, one for the node and one for the whole list.</p>
-<p><a href="singly_linked_list.h">singly_linked_list.h</a><pre><code class="c++">#include &lt;exception&gt;
+<p><a href="https://mikelmcdaniel.github.io/dsaa/part2/singly_linked_lists/singly_linked_list.h">singly_linked_list.h</a><pre><code class="c++">#include &lt;exception&gt;
 
 template &lt;typename T&gt;
 struct LinkedListNode {
@@ -145,7 +145,7 @@ public:
   Iterator end() {
     return Iterator(nullptr);
   }
-};</code></pre><a href="singly_linked_list_demo.cpp">singly_linked_list_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+};</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part2/singly_linked_lists/singly_linked_list_demo.cpp">singly_linked_list_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 #include &lt;string&gt;
 
 #include &#34;singly_linked_list.h&#34;
