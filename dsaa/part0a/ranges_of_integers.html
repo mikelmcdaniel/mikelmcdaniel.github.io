@@ -31,12 +31,13 @@
 <section>
   <h1 class="visually-hidden">Ranges of Integers</h1>
   
-<p>In many programming languages, ranges of integers are represented with an inclusive lower bound and an exclusive upper bound. For example, the numbers 0, 1, 2, 3, 4 might be written [0, 5).</p>
-<p>The fact that it's a standard or idiomatic way to represent ranges of integers means that if you were to write code using a different idiom, people reading your code are more likely to get confused, so that by itself is a good reason.</p>
+<p>In many programming languages, it is idiomatic to represent ranges of integers with an inclusive lower bound and an exclusive upper bound. For example, the numbers 0, 1, 2, 3, 4 might be written [0, 5).</p>
+<p>Since it is a standard or idiomatic way to represent ranges of integers means that if you were to write code using a different standard, it will be more difficult for people to read your code.</p>
 <h2>Other advantages</h2>
 <p>There are some minor advantages to writing ranges like this. It doesn't ultimately affect how good your code is. These are just my personal thoughts.</p>
 <p>Consecutive ranges have identical lower and upper bounds. For example, the numbers 0, 1, 2, 3, 4 could be the combined ranges [0, 3) and [3, 5).</p>
-<p>Calculating the number of integers in the range is cleaner. For example, the numbers 7, 8, 9 are written as [7, 10) and have 10 - 7 = 3 numbers.</p>
+<p>There's a clear relationship between the size of the range (number of integers in the range) and the bounds of the range. For example, the numbers 7, 8, 9 are written as [7, 10) and have 10 - 7 = 3 numbers.</p>
+<p>It's cleaner to represent empty ranges. For example [5, 5) and [123, 123) are empty ranges because 5 and 123 are not included. The usual alternative to an inclusive lower bound and exclusive upper bound is for both bounds to be inclusive. When both bounds are inclusive, the best way you can represent an empty range is to have the upper bound actually be smaller (closer to negative infinity), like using [5, 4] or [123, 122] to represent an empty range.</p>
 
 </section>
 </body>
