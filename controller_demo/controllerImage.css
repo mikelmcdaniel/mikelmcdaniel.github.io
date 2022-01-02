@@ -1,0 +1,11 @@
+.controllerImageWrapper {
+  --scaleFactor: 0.5;
+
+  position: relative;
+  transform: scale(var(--scaleFactor));
+}
+.controllerOverlayImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
