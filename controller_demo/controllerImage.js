@@ -27,7 +27,8 @@ class ControllerImage {
   slotImgs = null;
   slotIndices = null;
 
-  constructor(divID) {
+  constructor(divID, imgRootURL="") {
+    this.imgRootURL = imgRootURL;
     this.div = document.getElementById(divID);
     this.baseImg = document.getElementById(divID + ".baseImg");
 
@@ -40,21 +41,32 @@ class ControllerImage {
       let indices = this.indicesFromImgSrc(img.src);
       console.assert(indices.slotNameIndex == sni);
       this.slotIndices.push(indices.slotValueIndex);
+      // Ensure HTML is using the same exact imgSrc, that will be used when the slots are changed!
+      // This isn't necessary but helps catch bugs sooner.
+      console.assert(this.slotImgs[sni].src == this.imgSrc(sni, this.slotIndices[sni]));
     }
   }
 
-  imgSrc(slotNameIndex, slotValueIndex) {
+  imgSrcBaseName(slotNameIndex, slotValueIndex) {
     return this.slotValues[slotNameIndex][slotValueIndex] + this.slotNames[slotNameIndex] + ".png";
   }
 
-  indicesFromImgSrc(imgSrc) {
-    const url = new URL(imgSrc);
+  imgSrc(slotNameIndex, slotValueIndex) {
+    return this.imgRootURL + this.imgSrcBaseName(slotNameIndex, slotValueIndex);
+  }
+
+  static baseName(urlStr) {
+    const url = new URL(urlStr);
     const urlParts = url.pathname.split("/");
-    const baseName = urlParts[urlParts.length - 1];
+    return urlParts[urlParts.length - 1];
+  }
+
+  indicesFromImgSrc(imgSrc) {
+    const imgSrcBaseName = ControllerImage.baseName(imgSrc)
     // TODO: This could be more efficient!
     for (let sni = 0; sni < this.slotValues.length; ++sni) {
       for (let svi = 0; svi < this.slotValues[sni].length; ++svi) {
-        if (this.imgSrc(sni, svi) == baseName) {
+        if (this.imgSrcBaseName(sni, svi) == imgSrcBaseName) {
           return { slotNameIndex: sni, slotValueIndex: svi };
         }
       }
@@ -198,7 +210,7 @@ class ControllerImage {
   }
 }
 
-let controllerImage = new ControllerImage("controllerImageDiv");
+let controllerImage = new ControllerImage("controllerImageDiv", "https://mikelmcdaniel.github.io/controller_demo/");
 controllerImage.div.onmousedown = function (event) { ControllerImage.onClick(controllerImage, event); }
 controllerImage.div.onwheel = function (event) { ControllerImage.onWheel(controllerImage, event); }
 controllerImage.div.onmouseleave = function (event) { ControllerImage.onMouseLeave(controllerImage, event); }
