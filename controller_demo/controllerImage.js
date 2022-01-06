@@ -23,6 +23,8 @@ class ControllerImage {
   // selectedSlot is null when no slot is selected.
   // Any functions using selectedSlot should handle null!
   selectedSlot = null;
+  mode = null;
+  demoTimer = null;
 
   div = null;
   baseImg = null;
@@ -47,6 +49,7 @@ class ControllerImage {
       console.assert(this.slotImgs[sni].src == this.imgSrc(sni, this.slotIndices[sni]));
     }
     this.baseImg = this.slotImgs[0];
+    ControllerImage.setMode(this, 'interactive');
   }
 
   imgSrcBaseName(slotNameIndex, slotValueIndex) {
@@ -93,20 +96,28 @@ class ControllerImage {
 
   // Change what's in a given slot.
   // e.g. incrementSlotValue(0) might change slot 0 from a D-Pad to a Joy Stick.
+  setSlot(slotNameIndex, slotValueIndex) {
+    if (slotNameIndex === null) {
+      return;
+    }
+    this.slotIndices[slotNameIndex] = slotValueIndex;
+    this.slotImgs[slotNameIndex].src = this.imgSrc(slotNameIndex, slotValueIndex);
+  }
+
   incrementSlotValue(slotNameIndex) {
     if (slotNameIndex === null) {
       return;
     }
-    this.slotIndices[slotNameIndex] = (this.slotIndices[slotNameIndex] + 1) % this.slotValues[slotNameIndex].length;
-    this.slotImgs[slotNameIndex].src = this.imgSrc(slotNameIndex, this.slotIndices[slotNameIndex]);
+    const newSlotValueIndex = (this.slotIndices[slotNameIndex] + 1) % this.slotValues[slotNameIndex].length;
+    this.setSlot(slotNameIndex, newSlotValueIndex);
   }
 
   decrementSlotValue(slotNameIndex) {
     if (slotNameIndex === null) {
       return;
     }
-    this.slotIndices[slotNameIndex] = (this.slotIndices[slotNameIndex] + this.slotValues[slotNameIndex].length - 1) % this.slotValues[slotNameIndex].length;
-    this.slotImgs[slotNameIndex].src = this.imgSrc(slotNameIndex, this.slotIndices[slotNameIndex]);
+    const newSlotValueIndex = (this.slotIndices[slotNameIndex] + this.slotValues[slotNameIndex].length - 1) % this.slotValues[slotNameIndex].length;
+    this.setSlot(slotNameIndex, newSlotValueIndex);
   }
 
   pixelCoordsFromMouseEvent(event) {
@@ -159,13 +170,54 @@ class ControllerImage {
   }
 
   decrementSelectedSlot() {
-    const numSlots = this.slotNames.length
     this.setSelectedSlot((this.selectedSlot + numSlots - 1) % numSlots)
+  }
+
+  randomlyChangeARandomSlot() {
+    const numSlots = this.slotNames.length
+    const randomSlot = Math.floor(Math.random() * numSlots);
+    const numSlotValues = this.slotValues[randomSlot].length;
+    const randomSlotValue = (this.slotIndices[randomSlot] + Math.floor(Math.random() * (numSlotValues - 1)) + 1) % numSlotValues;
+    this.setSlot(randomSlot, randomSlotValue);
   }
 
   //
   // Event Handlers
   //
+
+  static setMode(self, mode, modeOptions) {
+    // Disable old mode (if applicable)
+    if (self.mode == 'demo') {
+      clearInterval(self.demoTimer);
+    }
+    // Enable new mode
+    if (mode == 'interactive') {
+      self.div.onmousedown = function (event) { ControllerImage.onClick(controllerImage, event); }
+      self.div.onwheel = function (event) { ControllerImage.onWheel(controllerImage, event); }
+      self.div.onmouseleave = function (event) { ControllerImage.onMouseLeave(controllerImage, event); }
+      self.div.onmousemove = function (event) { ControllerImage.onMouseMove(controllerImage, event); }
+      self.div.onkeydown = function (event) { ControllerImage.onKeyDown(controllerImage, event); }
+    } else if (mode == 'non-interactive') {
+      self.div.onmousedown = null;
+      self.div.onwheel = null;
+      self.div.onmouseleave = null;
+      self.div.onmousemove = null;
+      self.div.onkeydown = null;
+    } else if (mode == 'demo') {
+      const prevMode = self.mode;
+      const returnToPrevMode = function (event) { ControllerImage.setMode(self, prevMode); };
+      self.div.onmousedown = returnToPrevMode;
+      self.div.onwheel = returnToPrevMode;
+      self.div.onmouseleave = returnToPrevMode;
+      self.div.onmousemove = returnToPrevMode;
+      self.div.onkeydown = returnToPrevMode;
+      const interval = modeOptions.interval || 333;
+      self.demoTimer = setInterval(function () { self.randomlyChangeARandomSlot(); }, interval);
+    } else {
+      throw new RangeError("Invalid mode for ControllerImage.setMode: " + mode);
+    }
+    self.mode = mode;
+  }
 
   static onClick(self, event) {
     const coords = self.pixelCoordsFromMouseEvent(event);
@@ -213,8 +265,4 @@ class ControllerImage {
 }
 
 let controllerImage = new ControllerImage("controllerImageDiv", "https://mikelmcdaniel.github.io/controller_demo/");
-controllerImage.div.onmousedown = function (event) { ControllerImage.onClick(controllerImage, event); }
-controllerImage.div.onwheel = function (event) { ControllerImage.onWheel(controllerImage, event); }
-controllerImage.div.onmouseleave = function (event) { ControllerImage.onMouseLeave(controllerImage, event); }
-controllerImage.div.onmousemove = function (event) { ControllerImage.onMouseMove(controllerImage, event); }
-controllerImage.div.onkeydown = function (event) { ControllerImage.onKeyDown(controllerImage, event); }
+ControllerImage.setMode(controllerImage, 'demo', { interval: 700});
