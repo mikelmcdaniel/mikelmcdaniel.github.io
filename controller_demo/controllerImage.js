@@ -1,8 +1,9 @@
 class ControllerImage {
   // slotNames and slotValues are used to map to files.
   // slotValues specifies which types of things can go in that slot.
-  slotNames = ["1", "2", "3", "4"];
+  slotNames = ["Base", "1", "2", "3", "4"];
   slotValues = [
+    ["Controller", "ControllerUglyOrange"],
     ["DP", "FB", "JS"],
     ["DP", "FB", "JS"],
     ["DP", "FB", "JS"],
@@ -11,6 +12,7 @@ class ControllerImage {
   // slotCoords and maxSlotRadius are used for mapping a 2d point to
   // the nearest slot (for UI purposes).
   slotCoords = [
+    { x: null, y: null },
     { x: 336, y: 154 },
     { x: 336, y: 334 },
     { x: 520, y: 456 },
@@ -30,7 +32,6 @@ class ControllerImage {
   constructor(divID, imgRootURL="") {
     this.imgRootURL = imgRootURL;
     this.div = document.getElementById(divID);
-    this.baseImg = document.getElementById(divID + ".baseImg");
 
     // Initialize slot info from HTML.
     this.slotImgs = [];
@@ -45,6 +46,7 @@ class ControllerImage {
       // This isn't necessary but helps catch bugs sooner.
       console.assert(this.slotImgs[sni].src == this.imgSrc(sni, this.slotIndices[sni]));
     }
+    this.baseImg = this.slotImgs[0];
   }
 
   imgSrcBaseName(slotNameIndex, slotValueIndex) {
@@ -86,7 +88,7 @@ class ControllerImage {
         closestDistance = d;
       }
     }
-    return closestDistance <= this.maxSlotRadius ? slotIndex : null;
+    return closestDistance <= this.maxSlotRadius ? slotIndex : 0;
   }
 
   // Change what's in a given slot.
