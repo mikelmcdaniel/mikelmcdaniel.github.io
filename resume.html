@@ -14,12 +14,12 @@
   <!-- Bootstrap core -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <title>Resume</title>
+  <title>Mikel Mcdaniel's Resume</title>
 </head>
 <body>
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
   <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-    <span class="fs-4">Resume</span>
+    <span class="fs-4">Mikel Mcdaniel's Resume</span>
   </a>
   <ul class="nav nav-pills">
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
@@ -29,9 +29,18 @@
   </ul>
 </header>
 <section>
-  <h1 class="visually-hidden">Resume</h1>
+  <h1 class="visually-hidden">Mikel Mcdaniel's Resume</h1>
   
 <h2>Mikel Mcdaniel</h2>
+<h2>Skills and Environment</h2>
+<hr />
+<ul>
+<li>Strong languages: Python, C++</li>
+<li>Weaker languages: Java, JavaScript, WebGL (OpenGL ES)</li>
+<li>Google internal technologies: Kansas, Bigtable, Sawmill, ULS, Monarch, Borg, Borgmon, Monarch, Chubby, BCL, GCL, Piccolo, MapReduce, Flume, Spanner</li>
+<li>Version Control: Git, Perforce, SVN</li>
+<li>Frameworks/Other: GitHub, numpy, pandas, OpenCV, Arduino, Linux, Docker, Flask, CSS, WireShark, FlowBlade</li>
+</ul>
 <h2>Education</h2>
 <hr />
 <ul>
@@ -57,19 +66,20 @@ GPA 3.45</li>
 <ul>
 <li>Led SRE orientation for Australia and west-coast USA for 1.5 years</li>
 <li>Built SSD cache analysis pipeline and saved 10's of petabytes of SSD</li>
-<li>Member of oncall team for large storage systems</li>
+<li>Member of oncall team for multi-million QPS/multi-petabyte scale storage systems (Kansas, Sawmill/ULS)</li>
 <li>Client consulting for internal Google-internal teams</li>
+<li>Reviewed <em>Practical Alerting</em> chapter of <a href="https://sre.google/sre-book/preface/#acknowledgments-8ksNUe">Google SRE Book</a></li>
 </ul>
 <h3>Adjunct Faculty (Computer Science)    January 2016 -- Present</h3>
 <p><strong>Foothill College</strong>, Los Altos Hills, CA</p>
 <!--
 CS 1B (OOP in Java) f18
-CS 2B (OOP in C++)  s16, s17
+CS 2B (OOP in C++)  s16, s17, s22
 CS 2C (DS&A in C++) w16, f16, f17, s21, f21
  -->
 
 <ul>
-<li>Taught Objected Oriented Programming in C++ (2x) and Java (1x)</li>
+<li>Taught Objected Oriented Programming in C++ (3x) and Java (1x)</li>
 <li>Taught Data Structures and Algorithms in C++ (5x)</li>
 </ul>
 <h3>Intro to Programming Instructor   April -- May 2014</h3>
@@ -94,18 +104,21 @@ CS 2C (DS&A in C++) w16, f16, f17, s21, f21
 </ul>
 <h2>Personal Projects</h2>
 <hr />
-<!-- - **Completed over 150 ProjectEuler.net problems**  
-    a collection of math and programming challenges, ranging in difficulty and involving number theory and dynamic programming
+<!--
 - **Instant Messenger (with simple games and a collaborative image editor)**  
     I wrote a simple protocol on top of UDP to get the speed of UDP, and reliability of TCP, except for message ordering. -->
 
 <ul>
+<li><strong><a href="https://github.com/mikelmcdaniel/grade-oven">GradeOven</a></strong>
+  Single-server web server for compiling and running untrusted student code, with customizable HTML output per assignment submission.</li>
+<li><strong><a href="https://projecteuler.net/profile/mikelmcdaniel.png">Completed over 150 ProjectEuler.net problems</a></strong><br />
+    Collection of math and programming challenges, ranging wildy in difficulty. Most problems involve number theory and/or dynamic programming.</li>
+<li><strong><a href="https://docs.google.com/presentation/d/1-PSeHpfF1NpKHMW7vEGZIgsJJpDZrnrzSWVo2c4d52w/edit#slide=id.ga1227cd49f_0_206">Automated drawing on Sketchful.io</a></strong>
+  Sketchful is a pictionary-type game where players draw a word and others guess. My program took a prompt as input, looked up an image of that prompt, then drew it using Sketchful's limited drawing tools.</li>
 <li><strong>Patched Snes9x, an Open-Source Super Nintendo emulator</strong><br />
     The Super Nintendo draws in 2 to 4 distinct layers; my patch draws each layer with a progressively larger <em>separation</em> in red and blue, giving a 3D effect.</li>
 <li><strong><a href="https://github.com/mikelmcdaniel/simple-lisp2bf-v2">Simple Compiler in Python</a></strong><br />
     Written in Python from the ground up, the compiler converts a very simple LiSP-like language to a stack-based assembly languages and then to BrainF***, an esoteric language similar to a Turing Machine.</li>
-<li><strong><a href="https://github.com/mikelmcdaniel/grade-oven">GradeOven</a></strong>
-  Single-server web server for compiling and running untrusted student code, with customizable HTML output per assignment.</li>
 </ul>
 
 </section>
