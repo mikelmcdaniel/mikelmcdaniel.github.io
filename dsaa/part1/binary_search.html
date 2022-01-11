@@ -15,13 +15,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <title>Binary Search</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
   <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
     <span class="fs-4">Binary Search</span>
   </a>
-  <ul class="nav nav-pills">
+  <ul class="do-not-print nav nav-pills">
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
@@ -277,26 +287,26 @@ int main(int argc, const char* argv[]) {
 </pre>
 <pre><strong>$</strong> <kbd>./binary_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_bs,std::binary_search
-1,0.00855827,0.0181438
-2,0.0335881,0.0260057
-4,0.0144266,0.027207
-8,0.0200405,0.0334882
-16,0.0259783,0.0398651
-32,0.0333111,0.0457143
-64,0.0408519,0.0528456
-128,0.0486311,0.0516905
-256,0.0398941,0.0488686
-512,0.065933,0.0623119
-1024,0.0531733,0.0597795
-2048,0.0584787,0.0655831
-4096,0.0644368,0.0710156
-8192,0.0717217,0.0810747
-16384,0.0851656,0.0918523
-32768,0.093964,0.100009
-65536,0.145879,0.124425
-124536,0.111868,0.112774
-124536,0.110097,0.111882
-124536,0.105616,0.113667
+1,0.00612081,0.0158347
+2,0.0102839,0.0221377
+4,0.0133991,0.0252627
+8,0.0180889,0.0289738
+16,0.0229114,0.0347085
+32,0.0283151,0.0346647
+64,0.0259813,0.046052
+128,0.043347,0.056488
+256,0.0503932,0.0628851
+512,0.0398615,0.0472862
+1024,0.0589194,0.0602355
+2048,0.0513273,0.0575354
+4096,0.0678464,0.0853356
+8192,0.0712925,0.102065
+16384,0.103461,0.0961984
+32768,0.0836185,0.0863691
+65536,0.0890513,0.0942502
+124536,0.09483,0.101143
+124536,0.0945337,0.0987811
+124536,0.0998417,0.10623
 </samp></pre>
 </p>
 <p><img alt="Binary Search Timed" src="binary_search_timed.svg" /></p>

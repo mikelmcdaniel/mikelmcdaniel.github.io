@@ -15,13 +15,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <title>Linear Search</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
   <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
     <span class="fs-4">Linear Search</span>
   </a>
-  <ul class="nav nav-pills">
+  <ul class="do-not-print nav nav-pills">
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
@@ -136,26 +146,26 @@ int main(int argc, const char* argv[]) {
 </pre>
 <pre><strong>$</strong> <kbd>./linear_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_linear,std::find
-1,0.000656463,0.000948179
-2,0.000843233,0.00116542
-4,0.00107061,0.0012976
-8,0.00166834,0.00199752
-16,0.00293073,0.00300339
-32,0.00790622,0.00501117
-64,0.0100953,0.0106073
-128,0.017584,0.0156781
-256,0.0326669,0.0343682
-512,0.0886243,0.0579083
-1024,0.133498,0.119474
-2048,0.271963,0.241167
-4096,0.453136,0.313194
-8192,0.80114,0.611078
-16384,1.46514,1.2539
-32768,2.67974,2.27376
-65536,5.3136,4.54527
-124536,10.0721,9.83446
-124536,9.92928,8.29387
-124536,10.592,9.14446
+1,0.00040474,0.000680062
+2,0.000548312,0.000717836
+4,0.00136528,0.00119692
+8,0.0016382,0.00192569
+16,0.00282858,0.00275254
+32,0.00503286,0.00463127
+64,0.0094111,0.00836115
+128,0.0160842,0.0151356
+256,0.0412392,0.0271632
+512,0.0595178,0.0521641
+1024,0.121562,0.105415
+2048,0.228613,0.208701
+4096,0.412007,0.277746
+8192,0.766016,0.545758
+16384,1.37781,1.09718
+32768,2.57756,2.76103
+65536,5.01857,5.48737
+124536,9.48028,9.15306
+124536,9.53389,8.234
+124536,9.54554,8.13942
 </samp></pre>
 </p>
 <p><img alt="Linear Search Timed" src="linear_search_timed.svg" /></p>

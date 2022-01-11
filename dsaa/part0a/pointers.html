@@ -15,13 +15,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <title>Pointers</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
   <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
     <span class="fs-4">Pointers</span>
   </a>
-  <ul class="nav nav-pills">
+  <ul class="do-not-print nav nav-pills">
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
     <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
     <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
@@ -130,40 +140,40 @@ int main(int argc, const char *argv[]) {
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffc8220807c)
-y == 7  (at address 0x7ffc82208078)
-a == 0x7ffc82208060  (at address 0x7ffc82208060)
-p == 0x7ffc8220807c  (at address 0x7ffc82208058)
+x == 5  (at address 0x7ffdc0f1636c)
+y == 7  (at address 0x7ffdc0f16368)
+a == 0x7ffdc0f16350  (at address 0x7ffdc0f16350)
+p == 0x7ffdc0f1636c  (at address 0x7ffdc0f16348)
 
-Now p == 0x7ffc82208060 == a == 0x7ffc82208060
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffc82208060 0x7ffc82208060
-*(a + 0) == 11  at 0x7ffc82208060
-    a[0] == 11  at 0x7ffc82208060
-*(p + 0) == 11  at 0x7ffc82208060
-    p[0] == 11  at 0x7ffc82208060
-*(a + 1) == 22  at 0x7ffc82208064
-    a[1] == 22  at 0x7ffc82208064
-*(p + 1) == 22  at 0x7ffc82208064
-    p[1] == 22  at 0x7ffc82208064
-*(a + 2) == 33  at 0x7ffc82208068
-    a[2] == 33  at 0x7ffc82208068
-*(p + 2) == 33  at 0x7ffc82208068
-    p[2] == 33  at 0x7ffc82208068
-*(a + 3) == 44  at 0x7ffc8220806c
-    a[3] == 44  at 0x7ffc8220806c
-*(p + 3) == 44  at 0x7ffc8220806c
-    p[3] == 44  at 0x7ffc8220806c
-*(a + 4) == 55  at 0x7ffc82208070
-    a[4] == 55  at 0x7ffc82208070
-*(p + 4) == 55  at 0x7ffc82208070
-    p[4] == 55  at 0x7ffc82208070
+Now p == 0x7ffdc0f16350 == a == 0x7ffdc0f16350
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffdc0f16350 0x7ffdc0f16350
+*(a + 0) == 11  at 0x7ffdc0f16350
+    a[0] == 11  at 0x7ffdc0f16350
+*(p + 0) == 11  at 0x7ffdc0f16350
+    p[0] == 11  at 0x7ffdc0f16350
+*(a + 1) == 22  at 0x7ffdc0f16354
+    a[1] == 22  at 0x7ffdc0f16354
+*(p + 1) == 22  at 0x7ffdc0f16354
+    p[1] == 22  at 0x7ffdc0f16354
+*(a + 2) == 33  at 0x7ffdc0f16358
+    a[2] == 33  at 0x7ffdc0f16358
+*(p + 2) == 33  at 0x7ffdc0f16358
+    p[2] == 33  at 0x7ffdc0f16358
+*(a + 3) == 44  at 0x7ffdc0f1635c
+    a[3] == 44  at 0x7ffdc0f1635c
+*(p + 3) == 44  at 0x7ffdc0f1635c
+    p[3] == 44  at 0x7ffdc0f1635c
+*(a + 4) == 55  at 0x7ffdc0f16360
+    a[4] == 55  at 0x7ffdc0f16360
+*(p + 4) == 55  at 0x7ffdc0f16360
+    p[4] == 55  at 0x7ffdc0f16360
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffc82208060 is 11 which is 0 ints from address 0x7ffc82208060
-int at address 0x7ffc82208064 is 22 which is 1 ints from address 0x7ffc82208060
-int at address 0x7ffc82208068 is 33 which is 2 ints from address 0x7ffc82208060
-int at address 0x7ffc8220806c is 44 which is 3 ints from address 0x7ffc82208060
-int at address 0x7ffc82208070 is 55 which is 4 ints from address 0x7ffc82208060
+int at address 0x7ffdc0f16350 is 11 which is 0 ints from address 0x7ffdc0f16350
+int at address 0x7ffdc0f16354 is 22 which is 1 ints from address 0x7ffdc0f16350
+int at address 0x7ffdc0f16358 is 33 which is 2 ints from address 0x7ffdc0f16350
+int at address 0x7ffdc0f1635c is 44 which is 3 ints from address 0x7ffdc0f16350
+int at address 0x7ffdc0f16360 is 55 which is 4 ints from address 0x7ffdc0f16350
 </samp></pre>
 </p>
 
