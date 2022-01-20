@@ -187,7 +187,7 @@ class ControllerImage {
   }
 
   decrementSelectedModule() {
-    this.setSelectedModule((this.selectedModule + numModules - 1) % numModules);
+    this.setSelectedModule((this.selectedModule + this.moduleValues.length - 1) % this.moduleValues.length);
   }
 
   randomlyChangeARandomModule() {
