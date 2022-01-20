@@ -1,63 +1,64 @@
 class ControllerImage {
-  // slotNames and slotValues are used to map to files.
-  // slotValues specifies which types of things can go in that slot.
-  slotNames = ["Base", "1", "2", "3", "4"];
-  slotValues = [
-    ["Controller", "ControllerUglyOrange"],
-    ["DP", "FB", "JS"],
-    ["DP", "FB", "JS"],
-    ["DP", "FB", "JS"],
-    ["DP", "FB", "JS"]];
+  // moduleValues is used to map to files.
+  // moduleValues specifies which types of things can go in that module.
+  moduleValues = [
+    ["CB1", "CB2", "CB3", "CB4", "CB5", "CB6", "CB7", "CB8", "CB9"],
+    ["DP1", "FB1", "JS1"],
+    ["DP2", "FB2", "JS2"],
+    ["DP3", "FB3", "JS3"],
+    ["DP4", "FB4", "JS4"],
+    ["PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9","PC10", "PC11", "PC12"]];
   // TODO: It would be nice if these didn't need to be hard-coded...
-  // slotCoords and maxSlotRadius are used for mapping a 2d point to
-  // the nearest slot (for UI purposes).
-  slotCoords = [
+  // moduleCoords and maxModuleRadius are used for mapping a 2d point to
+  // the nearest module (for UI purposes).
+  moduleCoords = [
     { x: null, y: null },
     { x: 336, y: 154 },
     { x: 336, y: 334 },
     { x: 520, y: 456 },
-    { x: 766, y: 372 }];
-  maxSlotRadius = 150;
+    { x: 766, y: 372 },
+    { x: 520, y: 200 }];
+  maxModuleRadius = 150;
 
   // Stateful UI
-  // selectedSlot is null when no slot is selected.
-  // Any functions using selectedSlot should handle null!
-  selectedSlot = null;
+  // selectedModule is null when no module is selected.
+  // Any functions using selectedModule should handle null!
+  selectedModule = null;
   mode = null;
   demoTimer = null;
 
   div = null;
   baseImg = null;
-  slotImgs = null;
-  slotIndices = null;
+  moduleImgs = null;
+  moduleIndices = null;
 
   constructor(divID, imgRootURL="") {
     this.imgRootURL = imgRootURL;
     this.div = document.getElementById(divID);
 
-    // Initialize slot info from HTML.
-    this.slotImgs = [];
-    this.slotIndices = [];
-    for (let sni = 0; sni < this.slotNames.length; ++sni) {
-      let img = document.getElementById(this.div.id + ".img" + sni);
-      this.slotImgs.push(img);
+    // Initialize module info from HTML.
+    this.moduleImgs = [];
+    this.moduleIndices = [];
+    for (let mi = 0; mi < this.moduleValues.length; ++mi) {
+      let img = document.getElementById(this.div.id + ".module" + mi);
+      this.moduleImgs.push(img);
       let indices = this.indicesFromImgSrc(img.src);
-      console.assert(indices.slotNameIndex == sni);
-      this.slotIndices.push(indices.slotValueIndex);
-      // Ensure HTML is using the same exact imgSrc, that will be used when the slots are changed!
+      console.assert(indices.moduleIndex == mi);
+      this.moduleIndices.push(indices.moduleValueIndex);
+      // Ensure HTML is using the same exact imgSrc, that will be used when the modules are changed!
       // This isn't necessary but helps catch bugs sooner.
-      console.assert(this.slotImgs[sni].src == this.imgSrc(sni, this.slotIndices[sni]));
+      console.assert(this.moduleImgs[mi].src == this.imgSrc(mi, this.moduleIndices[mi]));
     }
-    this.baseImg = this.slotImgs[0];
+    this.baseImg = this.moduleImgs[0];
     ControllerImage.setMode(this, 'interactive');
   }
 
-  imgSrcBaseName(slotNameIndex, slotValueIndex) {
-    return this.slotValues[slotNameIndex][slotValueIndex] + this.slotNames[slotNameIndex] + ".png";
+  imgSrcBaseName(moduleIndex, moduleValueIndex) {
+    return this.moduleValues[moduleIndex][moduleValueIndex] + ".png";
   }
 
-  imgSrc(slotNameIndex, slotValueIndex) {
-    return this.imgRootURL + this.imgSrcBaseName(slotNameIndex, slotValueIndex);
+  imgSrc(moduleIndex, moduleValueIndex) {
+    return this.imgRootURL + this.imgSrcBaseName(moduleIndex, moduleValueIndex);
   }
 
   static baseName(urlStr) {
@@ -69,55 +70,61 @@ class ControllerImage {
   indicesFromImgSrc(imgSrc) {
     const imgSrcBaseName = ControllerImage.baseName(imgSrc)
     // TODO: This could be more efficient!
-    for (let sni = 0; sni < this.slotValues.length; ++sni) {
-      for (let svi = 0; svi < this.slotValues[sni].length; ++svi) {
-        if (this.imgSrcBaseName(sni, svi) == imgSrcBaseName) {
-          return { slotNameIndex: sni, slotValueIndex: svi };
+    for (let mi = 0; mi < this.moduleValues.length; ++mi) {
+      for (let mvi = 0; mvi < this.moduleValues[mi].length; ++mvi) {
+        if (this.imgSrcBaseName(mi, mvi) == imgSrcBaseName) {
+          return { moduleIndex: mi, moduleValueIndex: mvi };
         }
       }
     }
-    throw new RangeError("Could not determine slots for " + imgSrc);
+    throw new RangeError("Could not determine modules for " + imgSrc);
   }
 
-  closestSlot(pixelX, pixelY) {
-    let slotIndex = 0;
+  closestModule(pixelX, pixelY) {
+    let moduleIndex = 0;
     let closestDistance = Infinity;
-    for (let sni = 0; sni < this.slotCoords.length; ++sni) {
-      const cx = this.slotCoords[sni].x;
-      const cy = this.slotCoords[sni].y;
+    for (let mi = 0; mi < this.moduleCoords.length; ++mi) {
+      const cx = this.moduleCoords[mi].x;
+      const cy = this.moduleCoords[mi].y;
       const d = Math.sqrt(Math.pow(pixelX - cx, 2) + Math.pow(pixelY - cy, 2));
       if (d < closestDistance) {
-        slotIndex = sni;
+        moduleIndex = mi;
         closestDistance = d;
       }
     }
-    return closestDistance <= this.maxSlotRadius ? slotIndex : 0;
+    return closestDistance <= this.maxModuleRadius ? moduleIndex : 0;
   }
 
-  // Change what's in a given slot.
-  // e.g. incrementSlotValue(0) might change slot 0 from a D-Pad to a Joy Stick.
-  setSlot(slotNameIndex, slotValueIndex) {
-    if (slotNameIndex === null) {
+  // Change what's in a given module.
+  // e.g. incrementModuleValue(0) might change module 0 from a D-Pad to a Joy Stick.
+  setModule(moduleIndex, moduleValueIndex) {
+    if (moduleIndex === null) {
       return;
     }
-    this.slotIndices[slotNameIndex] = slotValueIndex;
-    this.slotImgs[slotNameIndex].src = this.imgSrc(slotNameIndex, slotValueIndex);
+    this.moduleIndices[moduleIndex] = moduleValueIndex;
+    this.moduleImgs[moduleIndex].src = this.imgSrc(moduleIndex, moduleValueIndex);
+
+    // TODO: Allow face plate and module colors to be selected independently.
+    // This hack keeps them in sync with the controller base color.
+    if (moduleIndex == 0) {
+      document.getElementById(this.div.id + ".moduleColor").src = this.moduleImgs[moduleIndex].src.replace("/CB", "/MC");
+    }
   }
 
-  incrementSlotValue(slotNameIndex) {
-    if (slotNameIndex === null) {
+  incrementModuleValue(moduleIndex) {
+    if (moduleIndex === null) {
       return;
     }
-    const newSlotValueIndex = (this.slotIndices[slotNameIndex] + 1) % this.slotValues[slotNameIndex].length;
-    this.setSlot(slotNameIndex, newSlotValueIndex);
+    const newModuleValueIndex = (this.moduleIndices[moduleIndex] + 1) % this.moduleValues[moduleIndex].length;
+    this.setModule(moduleIndex, newModuleValueIndex);
   }
 
-  decrementSlotValue(slotNameIndex) {
-    if (slotNameIndex === null) {
+  decrementModuleValue(moduleIndex) {
+    if (moduleIndex === null) {
       return;
     }
-    const newSlotValueIndex = (this.slotIndices[slotNameIndex] + this.slotValues[slotNameIndex].length - 1) % this.slotValues[slotNameIndex].length;
-    this.setSlot(slotNameIndex, newSlotValueIndex);
+    const newModuleValueIndex = (this.moduleIndices[moduleIndex] + this.moduleValues[moduleIndex].length - 1) % this.moduleValues[moduleIndex].length;
+    this.setModule(moduleIndex, newModuleValueIndex);
   }
 
   pixelCoordsFromMouseEvent(event) {
@@ -139,46 +146,56 @@ class ControllerImage {
   // Stateful UI
   //
 
-  highlightSelectedSlot() {
-    if (this.selectedSlot === null) {
-      for (let sni = 0; sni < this.slotImgs.length; ++sni) {
-        this.slotImgs[sni].style.opacity = 1.0;
+  highlightSelectedModule() {
+    if (this.selectedModule === null) {
+      for (let mi = 0; mi < this.moduleImgs.length; ++mi) {
+        this.moduleImgs[mi].style.opacity = 1.0;
       }
+      // TODO: Allow face plate and module colors to be selected independently.
+      // This hack keeps them in sync with the controller base color.
+      document.getElementById(this.div.id + ".moduleColor").style.opacity = 1.0;
     } else {
-      for (let sni = 0; sni < this.slotImgs.length; ++sni) {
-        this.slotImgs[sni].style.opacity = 0.5;
+      for (let mi = 0; mi < this.moduleImgs.length; ++mi) {
+        this.moduleImgs[mi].style.opacity = 0.5;
       }
-      this.slotImgs[this.selectedSlot].style.opacity = 1.0;
+      // TODO: Allow face plate and module colors to be selected independently.
+      // This hack keeps them in sync with the controller base color.
+      if (this.selectedModule == 0) {
+        document.getElementById(this.div.id + ".moduleColor").style.opacity = 1.0;
+      } else {
+        document.getElementById(this.div.id + ".moduleColor").style.opacity = 0.5;
+      }
+      this.moduleImgs[this.selectedModule].style.opacity = 1.0;
     }
   }
 
-  setSelectedSlot(selectedSlotIndex) {
-    this.selectedSlot = selectedSlotIndex;
-    this.highlightSelectedSlot();
+  setSelectedModule(selectedModuleIndex) {
+    this.selectedModule = selectedModuleIndex;
+    this.highlightSelectedModule();
   }
 
-  incrementSelectedSlotValue() {
-    this.incrementSlotValue(this.selectedSlot);
+  incrementSelectedModuleValue() {
+    this.incrementModuleValue(this.selectedModule);
   }
 
-  decrementSelectedSlotValue() {
-    this.decrementSlotValue(this.selectedSlot);
+  decrementSelectedModuleValue() {
+    this.decrementModuleValue(this.selectedModule);
   }
 
-  incrementSelectedSlot() {
-    this.setSelectedSlot((this.selectedSlot + 1) % this.slotNames.length)
+  incrementSelectedModule() {
+    this.setSelectedModule((this.selectedModule + 1) % this.moduleValues.length);
   }
 
-  decrementSelectedSlot() {
-    this.setSelectedSlot((this.selectedSlot + numSlots - 1) % numSlots)
+  decrementSelectedModule() {
+    this.setSelectedModule((this.selectedModule + numModules - 1) % numModules);
   }
 
-  randomlyChangeARandomSlot() {
-    const numSlots = this.slotNames.length
-    const randomSlot = Math.floor(Math.random() * numSlots);
-    const numSlotValues = this.slotValues[randomSlot].length;
-    const randomSlotValue = (this.slotIndices[randomSlot] + Math.floor(Math.random() * (numSlotValues - 1)) + 1) % numSlotValues;
-    this.setSlot(randomSlot, randomSlotValue);
+  randomlyChangeARandomModule() {
+    const numModules = this.moduleValues.length;
+    const randomModule = Math.floor(Math.random() * numModules);
+    const numModuleValues = this.moduleValues[randomModule].length;
+    const randomModuleValue = (this.moduleIndices[randomModule] + Math.floor(Math.random() * (numModuleValues - 1)) + 1) % numModuleValues;
+    this.setModule(randomModule, randomModuleValue);
   }
 
   //
@@ -212,7 +229,7 @@ class ControllerImage {
       self.div.onmousemove = returnToPrevMode;
       self.div.onkeydown = returnToPrevMode;
       const interval = modeOptions.interval || 333;
-      self.demoTimer = setInterval(function () { self.randomlyChangeARandomSlot(); }, interval);
+      self.demoTimer = setInterval(function () { self.randomlyChangeARandomModule(); }, interval);
     } else {
       throw new RangeError("Invalid mode for ControllerImage.setMode: " + mode);
     }
@@ -221,48 +238,48 @@ class ControllerImage {
 
   static onClick(self, event) {
     const coords = self.pixelCoordsFromMouseEvent(event);
-    self.setSelectedSlot(self.closestSlot(coords.x, coords.y));
-    self.incrementSelectedSlotValue();
+    self.setSelectedModule(self.closestModule(coords.x, coords.y));
+    self.incrementSelectedModuleValue();
   }
 
   static onWheel(self, event) {
     // TODO: Take the wheel/scroll amount into account...
     const coords = self.pixelCoordsFromMouseEvent(event);
-    const slotIndex = self.closestSlot(coords.x, coords.y);
-    self.setSelectedSlot(slotIndex);
-    self.incrementSelectedSlotValue();
-    if (slotIndex !== null) {
+    const moduleIndex = self.closestModule(coords.x, coords.y);
+    self.setSelectedModule(moduleIndex);
+    self.incrementSelectedModuleValue();
+    if (moduleIndex !== null) {
       event.preventDefault();
     }
   }
 
   static onMouseLeave(self, event) {
-    self.setSelectedSlot(null);
+    self.setSelectedModule(null);
   }
 
   static onMouseMove(self, event) {
     // TODO: Take the wheel/scroll amount into account...
     const coords = self.pixelCoordsFromMouseEvent(event);
-    self.setSelectedSlot(self.closestSlot(coords.x, coords.y));
+    self.setSelectedModule(self.closestModule(coords.x, coords.y));
   }
 
   static onKeyDown(self, event) {
     const k = event.key;
     if (k == " " || k == "Enter" || k == "ArrowDown" || k == "s") {
-      self.incrementSelectedSlotValue();
+      self.incrementSelectedModuleValue();
       event.preventDefault();
     } else if (k == "ArrowUp" || k == "w") {
-      self.decrementSelectedSlotValue();
+      self.decrementSelectedModuleValue();
       event.preventDefault();
     } else if (k == "ArrowLeft" || (k == "Tab" && event.shiftKey) || k == "a") {
-      self.decrementSelectedSlot();
+      self.decrementSelectedModule();
       event.preventDefault();
     } else if (k == "ArrowRight" || (k == "Tab" && !event.shiftKey) || k == "d") {
-      self.incrementSelectedSlot();
+      self.incrementSelectedModule();
       event.preventDefault();
     }
   }
 }
 
-let controllerImage = new ControllerImage("controllerImageDiv", "https://mikelmcdaniel.github.io/controller_demo/");
+let controllerImage = new ControllerImage("controllerImageDiv", "imgs/");
 ControllerImage.setMode(controllerImage, 'demo', { interval: 700});
