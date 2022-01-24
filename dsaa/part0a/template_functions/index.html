@@ -40,7 +40,7 @@
         <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
         <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
         <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
-        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Resume</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Résumé</a></li>
       </ul>
     </div>
   </div>
@@ -193,9 +193,9 @@ double my_max(double x, double y) {
   return (x &gt; y) ? x : y;
 }</code></pre>
 <pre><strong>$</strong> <kbd>clang++ -pedantic -Wall -lm -std=c++20 -o example bad.cpp bad_my_min.cpp</kbd>
-<pre><samp>/usr/bin/ld: /tmp/bad_my_min-bd61e8.o: in function `my_max(int, int)&#39;:
-bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-57793c.o:bad.cpp:(.text+0x0): first defined here
-/usr/bin/ld: /tmp/bad-57793c.o: in function `main&#39;:
+<pre><samp>/usr/bin/ld: /tmp/bad_my_min-9fa47c.o: in function `my_max(int, int)&#39;:
+bad_my_min.cpp:(.text+0x0): multiple definition of `my_max(int, int)&#39;; /tmp/bad-9e63c4.o:bad.cpp:(.text+0x0): first defined here
+/usr/bin/ld: /tmp/bad-9e63c4.o: in function `main&#39;:
 bad.cpp:(.text+0xe7): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x15c): undefined reference to `int my_min&lt;int&gt;(int const&amp;, int const&amp;)&#39;
 /usr/bin/ld: bad.cpp:(.text+0x1eb): undefined reference to `double my_min&lt;double&gt;(double const&amp;, double const&amp;)&#39;
