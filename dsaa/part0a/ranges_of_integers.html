@@ -11,9 +11,8 @@
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <!-- Bootstrap core -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
   <title>Ranges of Integers</title>
   <style>
     @media print {
@@ -26,21 +25,41 @@
     }
   </style>
 </head>
-<body class="px-3">
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-    <span class="fs-4">Ranges of Integers</span>
-  </a>
-  <ul class="do-not-print nav nav-pills">
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
-    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link">LinkedIn</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
-  </ul>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Ranges of Integers</h1>
+          <span class="subheading"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
-<section>
-  <h1 class="visually-hidden">Ranges of Integers</h1>
+
+<section class="px-3">
   
 <p>In many programming languages, it is idiomatic to represent ranges of integers with an inclusive lower bound and an exclusive upper bound. For example, the numbers 0, 1, 2, 3, 4 might be written [0, 5).</p>
 <p>Since it is a standard or idiomatic way to represent ranges of integers means that if you were to write code using a different standard, it will be more difficult for people to read your code.</p>
@@ -51,5 +70,9 @@
 <p>It's cleaner to represent empty ranges. For example [5, 5) and [123, 123) are empty ranges because 5 and 123 are not included. The usual alternative to an inclusive lower bound and exclusive upper bound is for both bounds to be inclusive. When both bounds are inclusive, the best way you can represent an empty range is to have the upper bound actually be smaller (closer to negative infinity), like using [5, 4] or [123, 122] to represent an empty range.</p>
 
 </section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
 </body>
 </html>

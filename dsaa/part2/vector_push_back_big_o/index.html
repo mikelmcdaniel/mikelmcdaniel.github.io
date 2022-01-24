@@ -11,9 +11,8 @@
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <!-- Bootstrap core -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
   <title>Amortized Analysis with Vector push_back Big-O</title>
   <style>
     @media print {
@@ -26,21 +25,41 @@
     }
   </style>
 </head>
-<body class="px-3">
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-    <span class="fs-4">Amortized Analysis with Vector push_back Big-O</span>
-  </a>
-  <ul class="do-not-print nav nav-pills">
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
-    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link">LinkedIn</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
-  </ul>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Amortized Analysis with Vector push_back Big-O</h1>
+          <span class="subheading"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
-<section>
-  <h1 class="visually-hidden">Amortized Analysis with Vector push_back Big-O</h1>
+
+<section class="px-3">
   
 <p><a href="https://youtu.be/2ZSro82czUw">Simple Vector (Amortized) Big-O and Timing video (37 minutes)</a></p>
 <h2>push_back big-O</h2>
@@ -242,110 +261,114 @@ int main(int argc, const char *argv[]) {
 </pre>
 <pre><strong>$</strong> <kbd>./vector_demo</kbd></pre>
 <pre><samp>n,ops_counter,elapsed_seconds
-1,3,2.579e-06
-1001,7145,3.7543e-05
-2001,14246,5.2237e-05
-3001,25443,7.483e-05
-4001,28443,8.364e-05
-5001,47832,0.000109972
-6001,50832,0.000120915
-7001,53832,0.00013212
-8001,56832,0.000141771
-9001,92605,0.000190386
-10001,95605,0.000200256
-11001,98605,0.000210691
-12001,101605,0.000220304
-13001,104605,0.000230169
-14001,107605,0.000240135
-15001,110605,0.000249877
-16001,113605,0.000258622
-17001,182146,0.000331314
-18001,185146,0.000343099
-19001,188146,0.000353451
-20001,191146,0.000363458
-21001,194146,0.000372377
-22001,197146,0.000381988
-23001,200146,0.000390726
-24001,203146,0.000400628
-25001,206146,0.000409426
-26001,209146,0.000419947
-27001,212146,0.000429548
-28001,215146,0.000438162
-29001,218146,0.000449296
-30001,221146,0.000459641
-31001,224146,0.000470474
-32001,227146,0.000481783
-33001,361223,0.000625346
-34001,364223,0.000636501
-35001,367223,0.000644958
-36001,370223,0.000653454
-37001,373223,0.00066378
-38001,376223,0.000672741
-39001,379223,0.000681065
-40001,382223,0.00069052
-41001,385223,0.000699516
-42001,388223,0.000707926
-43001,391223,0.000716308
-44001,394223,0.000724637
-45001,397223,0.000732952
-46001,400223,0.000742607
-47001,403223,0.000751041
-48001,406223,0.000759415
-49001,409223,0.000770103
-50001,412223,0.00077858
-51001,415223,0.000789208
-52001,418223,0.000798707
-53001,421223,0.000808122
-54001,424223,0.000818065
-55001,427223,0.000827711
-56001,430223,0.000837101
-57001,433223,0.000846331
-58001,436223,0.000864658
-59001,439223,0.000874057
-60001,442223,0.0008823
-61001,445223,0.00090023
-62001,448223,0.000908789
-63001,451223,0.000918278
-64001,454223,0.00092768
-65001,457223,0.000936873
-66001,722372,0.00117224
-67001,725372,0.0011837
-68001,728372,0.00119302
-69001,731372,0.00120159
-70001,734372,0.00121113
-71001,737372,0.00122065
-72001,740372,0.00123009
-73001,743372,0.00123959
-74001,746372,0.00124907
-75001,749372,0.00125854
-76001,752372,0.00126805
-77001,755372,0.00127759
-78001,758372,0.00128711
-79001,761372,0.00129658
-80001,764372,0.00130515
-81001,767372,0.00131566
-82001,770372,0.00132528
-83001,773372,0.00133475
-84001,776372,0.0013442
-85001,779372,0.00135379
-86001,782372,0.00136231
-87001,785372,0.00137097
-88001,788372,0.00138043
-89001,791372,0.00138991
-90001,794372,0.00139933
-91001,797372,0.00140879
-92001,800372,0.00141831
-93001,803372,0.00142783
-94001,806372,0.0014373
-95001,809372,0.00144684
-96001,812372,0.00145639
-97001,815372,0.00146678
-98001,818372,0.00147638
-99001,821372,0.00148599
+1,3,3.392e-06
+1001,7145,4.4395e-05
+2001,14246,6.7946e-05
+3001,25443,9.8372e-05
+4001,28443,0.000114383
+5001,47832,0.000151167
+6001,50832,0.000169058
+7001,53832,0.000186073
+8001,56832,0.000201314
+9001,92605,0.000257783
+10001,95605,0.00027644
+11001,98605,0.000293496
+12001,101605,0.000311204
+13001,104605,0.000328045
+14001,107605,0.000345313
+15001,110605,0.000362163
+16001,113605,0.000377368
+17001,182146,0.000476554
+18001,185146,0.000495827
+19001,188146,0.000513302
+20001,191146,0.000530578
+21001,194146,0.000548068
+22001,197146,0.000565059
+23001,200146,0.000582168
+24001,203146,0.000599709
+25001,206146,0.000616899
+26001,209146,0.00063402
+27001,212146,0.000651096
+28001,215146,0.000668057
+29001,218146,0.000685584
+30001,221146,0.000702033
+31001,224146,0.00071727
+32001,227146,0.000734706
+33001,361223,0.00091469
+34001,364223,0.000932864
+35001,367223,0.000951665
+36001,370223,0.000968944
+37001,373223,0.000986215
+38001,376223,0.00100247
+39001,379223,0.00101824
+40001,382223,0.00103429
+41001,385223,0.00105043
+42001,388223,0.00106627
+43001,391223,0.00108141
+44001,394223,0.0010983
+45001,397223,0.00111517
+46001,400223,0.00113134
+47001,403223,0.00114846
+48001,406223,0.00116526
+49001,409223,0.001184
+50001,412223,0.00120132
+51001,415223,0.00121865
+52001,418223,0.00123556
+53001,421223,0.00125238
+54001,424223,0.00126925
+55001,427223,0.00128595
+56001,430223,0.00130206
+57001,433223,0.00131903
+58001,436223,0.00133496
+59001,439223,0.00135205
+60001,442223,0.00136896
+61001,445223,0.00138615
+62001,448223,0.00140258
+63001,451223,0.00141762
+64001,454223,0.00143443
+65001,457223,0.00144944
+66001,722372,0.00177057
+67001,725372,0.00179246
+68001,728372,0.00180832
+69001,731372,0.00182549
+70001,734372,0.00184443
+71001,737372,0.00186072
+72001,740372,0.00187648
+73001,743372,0.00189133
+74001,746372,0.00190703
+75001,749372,0.00192267
+76001,752372,0.00193723
+77001,755372,0.00195206
+78001,758372,0.0019862
+79001,761372,0.00200346
+80001,764372,0.00201918
+81001,767372,0.00203688
+82001,770372,0.00205187
+83001,773372,0.00206892
+84001,776372,0.00208507
+85001,779372,0.00210207
+86001,782372,0.00211743
+87001,785372,0.00213443
+88001,788372,0.00215159
+89001,791372,0.00216922
+90001,794372,0.0021866
+91001,797372,0.00220341
+92001,800372,0.00222096
+93001,803372,0.00223606
+94001,806372,0.00225185
+95001,809372,0.0022692
+96001,812372,0.00228623
+97001,815372,0.00230476
+98001,818372,0.00232285
+99001,821372,0.00233907
 </samp></pre>
 </p>
 <p><img alt="TemplateVector::push_back timing" src="vector_push_back_timing.svg" /></p>
 
 </section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
 </body>
 </html>

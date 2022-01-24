@@ -11,9 +11,8 @@
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <!-- Bootstrap core -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
   <title>Binary Search</title>
   <style>
     @media print {
@@ -26,21 +25,41 @@
     }
   </style>
 </head>
-<body class="px-3">
-<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-    <span class="fs-4">Binary Search</span>
-  </a>
-  <ul class="do-not-print nav nav-pills">
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link">Blog</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link">Data Structures and Algorithms</a></li>
-    <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link">GitHub</a></li>
-    <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link">LinkedIn</a></li>
-    <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link">Resume</a></li>
-  </ul>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel/mikelmcdaniel.github.io" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Binary Search</h1>
+          <span class="subheading"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
-<section>
-  <h1 class="visually-hidden">Binary Search</h1>
+
+<section class="px-3">
   
 <p>If you haven't read the <a href="linear_search">Linear Search notes</a>, read those first.</p>
 <ul>
@@ -288,26 +307,26 @@ int main(int argc, const char* argv[]) {
 </pre>
 <pre><strong>$</strong> <kbd>./binary_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_bs,std::binary_search
-1,0.00612081,0.0158347
-2,0.0102839,0.0221377
-4,0.0133991,0.0252627
-8,0.0180889,0.0289738
-16,0.0229114,0.0347085
-32,0.0283151,0.0346647
-64,0.0259813,0.046052
-128,0.043347,0.056488
-256,0.0503932,0.0628851
-512,0.0398615,0.0472862
-1024,0.0589194,0.0602355
-2048,0.0513273,0.0575354
-4096,0.0678464,0.0853356
-8192,0.0712925,0.102065
-16384,0.103461,0.0961984
-32768,0.0836185,0.0863691
-65536,0.0890513,0.0942502
-124536,0.09483,0.101143
-124536,0.0945337,0.0987811
-124536,0.0998417,0.10623
+1,0.00609926,0.0150932
+2,0.00946512,0.021175
+4,0.0129443,0.024497
+8,0.0179245,0.029156
+16,0.022768,0.033633
+32,0.0287065,0.0369826
+64,0.0371234,0.0491182
+128,0.0322104,0.0504422
+256,0.0491147,0.0736109
+512,0.0577002,0.0621232
+1024,0.0629578,0.0749853
+2048,0.0729468,0.0825659
+4096,0.083335,0.0916521
+8192,0.0947008,0.101883
+16384,0.10958,0.112314
+32768,0.12262,0.116309
+65536,0.126537,0.213209
+124536,0.13117,0.11641
+124536,0.107862,0.113248
+124536,0.0961934,0.0980445
 </samp></pre>
 </p>
 <p><img alt="Binary Search Timed" src="binary_search_timed.svg" /></p>
@@ -315,5 +334,9 @@ int main(int argc, const char* argv[]) {
 <p>If Linear Search has to iterate for every word in the worse case scenario, how many times does Binary Search have to iterate? We know that in the base cases (when we narrow down the range to 1 word or 0 words), it only takes one iteration. We also know that for the general/recursive case, we cut the range of possible words in half. So basically, if there are N words, the most iterations we might do (the most recursive calls we might do) is the same as the number of times we can divide N by 2: log base 2 of N.</p>
 
 </section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
 </body>
 </html>
