@@ -2001,6 +2001,14 @@ progress {
   border-width: 0 1px;
 }
 
+/* Make all tables .table-bordered by default. */
+table > :not(caption) > * {
+  border-width: 1px 0;
+}
+table > :not(caption) > * > * {
+  border-width: 0 1px;
+}
+
 .table-borderless > :not(caption) > * > * {
   border-bottom-width: 0;
 }
