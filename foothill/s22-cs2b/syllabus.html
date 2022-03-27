@@ -69,89 +69,164 @@ Course: CS 2B - Intermediate Software Design in C++</p>
 <a href="mailto:mcdanielmikel@fhda.edu?subject=CS%202B%20">McdanielMikel@fhda.edu</a> (Email any time, as much you want.)<br />
 Office hours: TBD.</p>
 <h2>Texts, Readings, Materials</h2>
-<p>No required textbooks!</p>
+<p>No required textbooks! Most course content will be in the form of video lectures.</p>
 <h2>Detailed Course Information</h2>
 <h3>Tentative Course Schedule and Content</h3>
-<p>The specific content below is <em>tentative</em>. This course will cover everything in the <a href="https://catalog.foothill.edu/course-outlines/C-S-2B/">official CS 2B course outline</a>.</p>
+<p>The specific content below is <em>tentative</em>. This course will cover most of the <a href="https://catalog.foothill.edu/course-outlines/C-S-2B/">official CS 2B course outline</a> and a extra topics.</p>
 <p>Topics will be covered via lecture videos. I recommend taking notes and sharing them with your classmates!</p>
 <table>
 <thead>
 <tr>
 <th>Week</th>
-<th>Topics Covered</th>
+<th>Topics Covered (for the first time)</th>
 <th>Homework</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
-<td>IDEs, Hello World in Detail, Bits, Hexadecimal, File I/O, Using the Command Line</td>
-<td>Hello World, Binary/Hex File Converter</td>
+<td>bits, hexadecimal, file I/O, using the command line, C-strings, git basics</td>
+<td>00. Hello You, 01. Hex: Dumper</td>
 </tr>
 <tr>
 <td>2</td>
-<td></td>
-<td></td>
+<td>2D-arrays, call stack vs heap</td>
+<td>02. Hex: Reverse Dumper</td>
 </tr>
 <tr>
 <td>3</td>
-<td></td>
-<td></td>
+<td>ADTs, inheritance, deep vs. shallow memory copies</td>
+<td>03. Binary Search Tree Map</td>
 </tr>
 <tr>
 <td>4</td>
-<td></td>
-<td></td>
+<td>operator overloading</td>
+<td>04. Huffman: Bits and Encodings</td>
 </tr>
 <tr>
 <td>5</td>
 <td></td>
-<td></td>
+<td>05. Huffman: Encoder and Decoder</td>
 </tr>
 <tr>
 <td>6</td>
-<td></td>
-<td></td>
+<td>templates</td>
+<td>06. TBD 🤷</td>
 </tr>
 <tr>
 <td>7</td>
-<td></td>
-<td></td>
+<td>inheritance</td>
+<td>07. Chess: Simplified</td>
 </tr>
 <tr>
 <td>8</td>
-<td></td>
-<td></td>
+<td>dynamic multi-dimensional arrays</td>
+<td>08. Chess: Arbitrary Board Size and Layout</td>
 </tr>
 <tr>
 <td>9</td>
 <td></td>
-<td></td>
+<td>09. Chess: Serialization</td>
 </tr>
 <tr>
 <td>10</td>
 <td></td>
-<td></td>
+<td>10. Chess: Undo</td>
 </tr>
 <tr>
 <td>11</td>
-<td></td>
-<td></td>
+<td>threads, recursion</td>
+<td>11. Chess: A.I.</td>
 </tr>
 <tr>
 <td>12</td>
 <td></td>
-<td></td>
+<td>12. TBD 🤷</td>
 </tr>
 </tbody>
 </table>
+<h4>Additional topics covered</h4>
+<p>Topics that will be covered from the "Course Content" section of <a href="https://catalog.foothill.edu/course-outlines/C-S-2B/">official course outline</a> throughout the class:</p>
+<ul>
+<li>A. Setting up a complete C++ environment<ol>
+<li>The Standard Template Library (C++ collections)</li>
+<li>Eclipse</li>
+<li>Configuring the IDE for advanced C++ programming</li>
+</ol>
+</li>
+<li>B. The proper use of class members and methods<ol>
+<li>When to use instance members and methods</li>
+<li>When to use static members and methods</li>
+<li>Implicit and explicit use of the "this" pointer</li>
+<li>The context-sensitive meanings of "const"</li>
+</ol>
+</li>
+</ul>
+<p>Topics not in the official course outline, that I hope to teach:</p>
+<ul>
+<li><code>std::move</code> and rvalue references</li>
+<li>recursion</li>
+<li>c-strings</li>
+<li>using the command-line<ul>
+<li>compiling, running code, and <code>argv</code></li>
+</ul>
+</li>
+<li>undefined behavior</li>
+<li>segfaults</li>
+<li>call stack vs heap</li>
+<li><code>std::uniq_ptr</code></li>
+<li><code>std::thread</code> (threads in general)</li>
+<li>iterators</li>
+<li>industry vs university</li>
+<li>unit tests</li>
+<li>git (or any version control)</li>
+</ul>
+<h4>Topics (probably) NOT covered</h4>
+<p>This is a list of things that will (most likely) not be covered from the "Course Content" section of <a href="https://catalog.foothill.edu/course-outlines/C-S-2B/">official course outline</a>.</p>
+<ul>
+<li>E. Function chaining<ol>
+<li>Chaining in constructors using initializers</li>
+<li>Member method chaining</li>
+</ol>
+</li>
+<li>H. Event-driven programming<ul>
+<li><span>5</span>. GUI API (instructor's choice) and event-handling techniques</li>
+</ul>
+</li>
+<li>O. Multiple inheritance<ol>
+<li>Common grandparent classes</li>
+<li>Distinct grandparent classes</li>
+<li>Other combinations</li>
+</ol>
+</li>
+<li>Q. Essential examples and assignment areas<ol>
+<li>String/text processing</li>
+<li>Numeric computation</li>
+<li>User interaction</li>
+<li>Multi-class projects and compound data types</li>
+<li>Inheritance-based projects</li>
+<li>Representative GUI project with event-driven design</li>
+</ol>
+</li>
+<li>R. Applications used throughout course in selected areas<ol>
+<li>Math</li>
+<li>Physics</li>
+<li>Chemistry</li>
+<li>Biology</li>
+<li>Astronomy</li>
+<li>Business and finance</li>
+<li>Internet</li>
+</ol>
+</li>
+</ul>
 <h3>Homeworks</h3>
-<p>You'll have a new homework every week. Homework will involve writing code and reviewing other students' code.</p>
-<p>All <strong>coding</strong> assignments will be submitted to <a href="https://gradeoven.com/courses/CS%202B">gradeoven.com</a>. Grade Oven will compile and run your code, then give you an instant grade. You can submit as many times as you like. Make sure to save your code because Grade Oven only keeps your last submission! Details on how to login will be in your email and/or on Canvas.</p>
+<p>You'll have a new homework almost every week. Homework will involve writing code. Everyone will also review other students' code.</p>
+<p>All <strong>coding</strong> assignments will be submitted to <a href="https://gradeoven.com/courses/CS 2B">gradeoven.com</a>. Grade Oven will compile and run your code, then give you an instant grade. You can submit as many times as you like. Make sure to save your code because Grade Oven only keeps your last submission! Details on how to login will be in your email and/or on Canvas.</p>
 <p>Your code will be reviewed publicly. If you don't want me or other students to know which code is yours, remove your name and other identifiable information from your code!</p>
 <h3>Quizzes</h3>
 <p>There will be weekly quizzes on Canvas. Most questions will be open answer questions, <em>not</em> multiple choice questions.</p>
-<p>You may retry each quiz as many times as you want but I will not share answers until after the due date.</p>
+<p>You may retry each quiz as many times as you want. You have unlimited time (until the due date) on all quizzes.</p>
+<p>I will not share answers until after the due date.</p>
 <h3>Grade Information</h3>
 <p>Homework counts for 60% of your final grade. Quizzes count for 40% of your final grade.</p>
 <p>Your lowest homework score will not be counted.
@@ -166,7 +241,7 @@ Your lowest quiz score will not be counted.</p>
 <tbody>
 <tr>
 <td>96</td>
-<td>A+</td>
+<td>🤩 A+</td>
 </tr>
 <tr>
 <td>93</td>
@@ -202,20 +277,20 @@ Your lowest quiz score will not be counted.</p>
 </tr>
 <tr>
 <td>0</td>
-<td>F</td>
+<td>😭 F</td>
 </tr>
 </tbody>
 </table>
 <h4>Late Policy</h4>
 <p>The late policy is the same for homeworks and quizzes.</p>
 <p>You get all the points that you earned before the due date. Iff you schedule office hours with me, you can retry the assignment as many times as you want after the due date and keep half of the new points you earned.</p>
-<p>For example, if you get 60 points before the due date, then (after the due date) you get 100 points <em>and</em> you schedule office hours with me about this assignment,  you will get 60 + (100 - 60) / 2 == 80 points for that assignment.</p>
+<p>For example, if you get 60 points before the due date, then (after the due date) you get 100 points <em>and</em> you schedule office hours with me about this assignment, you will get 60 + (100 - 60) / 2 == 80 points for that assignment.</p>
 <p>For example, if you get 73 points before the due date, then (after the due date) you get 92 points <em>and</em> you schedule office hours with me about this assignment,  you will get 73 + (92 - 73) / 2 == 82.5 points for that assignment.</p>
 <h3>Class Policies</h3>
 <h4>Cheating and Plagiarism</h4>
 <p>Please discuss all assignments/homework where the whole class can see it, in the Canvas forums or on the Discord server.</p>
 <p>Cite your sources. It's common for professionals and amateurs to copy code from the internet. Copying code without citing your sources is cheating. A simple comment with a URL and date in it are good enough! If you're not copying code directly but got some ideas from a video, website, or book, please cite that too! It's a good way to share ideas.</p>
-<p>Don't cheat. Reporting cheating is tedious. Writing negative letters of recommendation is <em>less</em> tedious.</p>
+<p>Don't cheat. Cheating is <em>less</em> tedious than learning. Writing negative letters of recommendation is <em>less</em> tedious than reporting cheating.</p>
 <h4>Attendance</h4>
 <p>Foothill instructors are required to drop all students who do not complete any coursework the first 2 weeks of class.</p>
 <h2>Academic Support</h2>
