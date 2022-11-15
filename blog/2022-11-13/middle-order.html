@@ -1,0 +1,346 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
+  <title>Middle Order</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Résumé</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Middle Order</h1>
+          <span class="subheading">2022-11-13</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="px-3">
+  
+<p>This post is about solving a very particular and unimportant problem: Given a number, N, efficiently generate the sequence of all the numbers in [0, N) in a "middle order" where each number appears exactly once. The first number in a middle order is N / 2, rounding up or down, and the next numbers would be N / 4 and 3 * N / 4. For example, if N was 16, then a middle order could start as [8, 4, 12, ...] <em>or</em> [8, 12, 4, ...]. Both would be appropriate middle orders.</p>
+<h2>Powers of 2</h2>
+<p>There's a perfect solution for powers of 2 using O(n) time and O(1) space.</p>
+<p><a href="powers_of_2.py">powers_of_2.py</a><pre><code class="python3">from typing import Iterator
+
+def is_power_of_2(n: int) -&gt; bool:
+  return n &amp; (n - 1) == 0
+
+# O(n) time and O(1) space
+def middle_order_power_of_2(n: int) -&gt; Iterator[int]:
+  assert is_power_of_2(n)
+  step = n
+  # This loop runs O(log(n)) times
+  # Each loop yields O(n / step) times
+  # If we up all the numbers yielded, then we get 1 + 2 + 4 + ... + 2**log(n, 2)
+  # which is just n. This also matches what we expect since we should yield each
+  # number in [0, n) exactly once.
+  while step &gt; 1:
+    start = step // 2
+    yield from range(start, n, step)
+    step = start
+  yield 0
+
+if __name__ == &#39;__main__&#39;:
+  for n in (1, 2, 4, 8, 16, 32):
+    order = list(middle_order_power_of_2(n))
+    print(n, &#39;-&gt;&#39;, order)
+    assert sorted(order) == list(range(n))</code></pre>
+<pre><strong>$</strong> <kbd>python3 powers_of_2.py</kbd></pre>
+<pre><samp>1 -&gt; [0]
+2 -&gt; [1, 0]
+4 -&gt; [2, 1, 3, 0]
+8 -&gt; [4, 2, 6, 1, 3, 5, 7, 0]
+16 -&gt; [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15, 0]
+32 -&gt; [16, 8, 24, 4, 12, 20, 28, 2, 6, 10, 14, 18, 22, 26, 30, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 0]
+</samp></pre>
+</p>
+<p>I find it easier to think about the "batches" of ints that are returned. For example, if N = 16, then we want to return [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15, 0] which has these nice batches: [8], [4, 12], [2, 6, 10, 14], [1, 3, 5, 7, 9, 11, 13, 15], [0]. With the exception of the trailing 0, each batch follows a nice pattern, starting at some power of 2 like "2" and skipping by twice that amount until it gets to N = 16. [4, 12] starts at 5 and skips by 8, [2, 6, 10, 14] starts at 2 and skips by 4, and so on.</p>
+<p>The batches also give a nice way generate <em>all</em> middle orders, simply by rearranging the order of the numbers in each batch.</p>
+<h2>Non-Powers-of-2</h2>
+<p>So far, the best big-O performance I've gotten for non-powers-of-2 is O(n) time and O(log(n)) space.</p>
+<p><a href="middle_order.py">middle_order.py</a><pre><code class="python3">import collections
+
+from typing import Iterator, Tuple
+
+
+# O(n) time and O(n) space
+def middle_order_queue(n: int) -&gt; Iterator[int]:
+  &#34;&#34;&#34;Return all the numbers in [0, n) in middle order using a queue.
+
+  The queue contains a list of ranges, starting with [0, n). For each range, we
+  yield the mid-point and add on the left and right subranges of numbers that
+  have not been yielded yet.
+
+  This takes O(n) space because the queue size will have roughly n / 2 elements
+  at it&#39;s peak size.
+  &#34;&#34;&#34;
+  # q is a queue of ranges of numbers that have not been yielded yet.
+  # The lo(wer) bound is inclusive and the hi(gher) bound is exclusive.
+  q = collections.deque([(0, n)])
+  # This loop will iterate at most 2 * n times.
+  # Each iteration is O(1) time.
+  # During the last iterations, q will have O(n / 2) = O(n) pairs in it!
+  while q:
+    lo, hi = q.popleft()
+    if lo == hi:
+      continue
+    mid = (lo + hi) // 2
+    yield mid
+    q.append((lo, mid))
+    q.append((mid + 1, hi))
+
+
+def _middle_order_recursive(lo: int, hi: int) -&gt; Iterator[int]:
+  &#34;&#34;&#34;Return all the numbers in [lo, hi) in middle order using recursion.
+
+  First, we yield the mid point of [lo, hi), then we process the mid points of
+  [lo, mid) and [mid + 1, hi) in an interleaved.
+
+  This uses O(hi - lo) space because each recursive generator call creates 2
+  generators (one for the left half and one for the left half), with a total
+  depth of roughly log(hi - lo, 2).
+  &#34;&#34;&#34;
+  if lo == hi:
+    return
+  mid = (lo + hi) // 2
+  yield mid
+  # Note that because we recure on the left and right halves simultaneously,
+  # this use O(n) space in the worst case!
+  left = _middle_order_recursive(lo, mid)
+  right = _middle_order_recursive(mid + 1, hi)
+  # Note that since len(list(right)) &lt;= len(list(left)), we must put right
+  # in zip first. zip(left, right) would not work because zip would call
+  # next(left) first then call next(right) and realize that there were no
+  # elements next *and* zip would not return the element from left so we would
+  # have no easy way to get that element!
+  for r, l in zip(right, left):
+    yield l
+    yield r
+  yield from left
+
+
+# O(n) time and O(n) space.
+def middle_order_recursive(n: int) -&gt; Iterator[int]:
+  return _middle_order_recursive(0, n)
+
+
+def is_power_of_2(n: int) -&gt; bool:
+  return n &amp; (n - 1) == 0
+
+# O(n) time and O(1) space
+def middle_order_power_of_2(n: int) -&gt; Iterator[int]:
+  assert is_power_of_2(n)
+  step = n
+  # This loop runs O(log(n)) times
+  # Each loop yields O(n / step) times
+  # If we up all the numbers yielded, then we get 1 + 2 + 4 + ... + 2**log(n, 2)
+  # which is just n. This also matches what we expect since we should yield each
+  # number in [0, n) exactly once.
+  while step &gt; 1:
+    start = step // 2
+    yield from range(start, n, step)
+    step = start
+  yield 0
+
+
+def power_of_2_ge(n: int) -&gt; int:
+  x = 1
+  while True:
+    if x &gt;= n:
+      return x
+    x &lt;&lt;= 1
+
+
+# O(n) time and O(n) space
+def middle_order_seen_power_of_2_ge(n: int) -&gt; Iterator[int]:
+  &#34;&#34;&#34;Return all the numbers in [0, n) in middle order.
+
+  Here, we calculate the smallest power of 2 that is &gt;= n, then call
+  middle_order_power_of_2 and use a set to ensure we only yield each number one
+  time.
+
+  This takes O(n) space because the set will contain all numbers in [0, n).
+  &#34;&#34;&#34;
+  seen_nums = set()  # Note: Instead of using a set, we could use a bitset
+  n2 = power_of_2_ge(n)
+  for x in middle_order_power_of_2(n2):
+    x = n * x // n2
+    if x not in seen_nums:
+      yield x
+      seen_nums.add(x)
+
+
+def _middle_order_ranges(n: int) -&gt; Iterator[Tuple[int, int]]:
+  &#34;&#34;&#34;Yield all left and right ranges in [0, n) in middle order using recursion.
+
+  This strategy is actually the same as the queue strategy in disguise! Instead
+  of maintaining a queue in memory, we use recursion to see what our earlier
+  ranges are that we need to process.
+
+  Each range is then processed by yielding the left and right sub-ranges.
+
+  Since we only recurse once *and* only iterate over 1/2 of the numbers in the
+  recursive call as what we yield, this function uses O(n + n/2 + n/4 + ...) =
+  O(n) time and O(log2(n)) space.
+  &#34;&#34;&#34;
+  yield 0, n
+  # This loop will execute at most n / 2 times
+  for lo, hi in _middle_order_ranges(n):
+    mid = (lo + hi) // 2
+    if not mid:  # Without this if-statement, we would recurse infinitely
+      return
+    if mid + 1 != hi:
+      yield mid + 1, hi
+    if lo != mid:
+      yield lo, mid
+
+
+# O(n) time and O(log(n)) space!
+def middle_order_ranges(n: int) -&gt; Iterator[int]:
+  for lo, hi in _middle_order_ranges(n):
+    yield (lo + hi) // 2
+
+
+if __name__ == &#39;__main__&#39;:
+  for n in (5, 8, 9, 10, 20, 21):
+    for middle_order in (
+        middle_order_queue,
+        middle_order_recursive,
+        middle_order_seen_power_of_2_ge,
+        middle_order_ranges):
+      order = list(middle_order(n))
+      print(f&#39;{middle_order.__name__:&gt;31s}({n:&gt;2d}) -&gt; {order}&#39;)
+      assert sorted(order) == list(range(n))</code></pre>
+<pre><strong>$</strong> <kbd>python3 middle_order.py</kbd></pre>
+<pre><samp>             middle_order_queue( 5) -&gt; [2, 1, 4, 0, 3]
+         middle_order_recursive( 5) -&gt; [2, 1, 4, 0, 3]
+middle_order_seen_power_of_2_ge( 5) -&gt; [2, 1, 3, 0, 4]
+            middle_order_ranges( 5) -&gt; [2, 4, 1, 3, 0]
+             middle_order_queue( 8) -&gt; [4, 2, 6, 1, 3, 5, 7, 0]
+         middle_order_recursive( 8) -&gt; [4, 2, 6, 1, 5, 3, 7, 0]
+middle_order_seen_power_of_2_ge( 8) -&gt; [4, 2, 6, 1, 3, 5, 7, 0]
+            middle_order_ranges( 8) -&gt; [4, 6, 2, 7, 5, 3, 1, 0]
+             middle_order_queue( 9) -&gt; [4, 2, 7, 1, 3, 6, 8, 0, 5]
+         middle_order_recursive( 9) -&gt; [4, 2, 7, 1, 6, 3, 8, 0, 5]
+middle_order_seen_power_of_2_ge( 9) -&gt; [4, 2, 6, 1, 3, 5, 7, 0, 8]
+            middle_order_ranges( 9) -&gt; [4, 7, 2, 8, 6, 3, 1, 5, 0]
+             middle_order_queue(10) -&gt; [5, 2, 8, 1, 4, 7, 9, 0, 3, 6]
+         middle_order_recursive(10) -&gt; [5, 2, 8, 1, 7, 4, 9, 0, 6, 3]
+middle_order_seen_power_of_2_ge(10) -&gt; [5, 2, 7, 1, 3, 6, 8, 0, 4, 9]
+            middle_order_ranges(10) -&gt; [5, 8, 2, 9, 7, 4, 1, 6, 3, 0]
+             middle_order_queue(20) -&gt; [10, 5, 15, 2, 8, 13, 18, 1, 4, 7, 9, 12, 14, 17, 19, 0, 3, 6, 11, 16]
+         middle_order_recursive(20) -&gt; [10, 5, 15, 2, 13, 8, 18, 1, 12, 7, 17, 4, 14, 9, 19, 0, 11, 6, 16, 3]
+middle_order_seen_power_of_2_ge(20) -&gt; [10, 5, 15, 2, 7, 12, 17, 1, 3, 6, 8, 11, 13, 16, 18, 0, 4, 9, 14, 19]
+            middle_order_ranges(20) -&gt; [10, 15, 5, 18, 13, 8, 2, 19, 17, 14, 12, 9, 7, 4, 1, 16, 11, 6, 3, 0]
+             middle_order_queue(21) -&gt; [10, 5, 16, 2, 8, 13, 19, 1, 4, 7, 9, 12, 15, 18, 20, 0, 3, 6, 11, 14, 17]
+         middle_order_recursive(21) -&gt; [10, 5, 16, 2, 13, 8, 19, 1, 12, 7, 18, 4, 15, 9, 20, 0, 11, 6, 17, 3, 14]
+middle_order_seen_power_of_2_ge(21) -&gt; [10, 5, 15, 2, 7, 13, 18, 1, 3, 6, 9, 11, 14, 17, 19, 0, 4, 8, 12, 16, 20]
+            middle_order_ranges(21) -&gt; [10, 16, 5, 19, 13, 8, 2, 20, 18, 15, 12, 9, 7, 4, 1, 17, 14, 11, 6, 3, 0]
+</samp></pre>
+</p>
+<h2>The Original Motivation</h2>
+<p>The motivation for this problem, while real, is unrelated to middle orders.</p>
+<p>I was playing with a <a href="https://en.wikipedia.org/wiki/Variational_autoencoder">Variational Autoencoder</a> to transition from one image to another. The more intermediate frames there are, the smoother the transition looks but generating intermediate frames is slow. I knew 100 frames would be enough and I also really wanted to see the animation as it was being produced. In this particular setup, I had my script generating images named "000.png", "001.png", ..., "099.png". Generating them in order meant that I couldn't really see the animation until it was complete. However, if I generated image "050.png" first, then "025.png" and "075.png", etc., I could see a rough version of the animation before it was complete! Solving this little problem was fun and got me thinking about how to do it more efficiently, even though I really didn't need to solve it efficiently.</p>
+<video width="512" height="512" controls>
+ <source src="smooth-transition.mp4" type="video/mp4" loop>
+</video>
+
+<p>After implementing an initial <code>middle_order</code> function, I got so distracted, I wrote a few different versions and wrote this little blog post.</p>
+<h2>A More General Problem</h2>
+<p>I focused specifically on a "middle" order here but that's not the only solution to my 'smooth transition' problem! I wanted to know what order I should generate the images in so that if I stopped generating images at some arbitrary time, I could see a rough version of the animation that was as close to the final smooth version as possible. In other words, a sequence of integers in [0, N) such that if I took the first K numbers, they would be as equally spaced as possible <em>and</em> cover most of the range from 0 to N as possible.</p>
+<p>I've I think there's a solution that might involve the constant phi but I wasn't able to get it to work:</p>
+<p><a href="phailed_attempt.py">phailed_attempt.py</a><pre><code class="python3">from typing import Iterator
+
+def phi_order(n: int) -&gt; Iterator[int]:
+  phi = (5**0.5 + 1) / 2
+  for i in range(n):
+    yield round(i * n * phi) % n
+
+if __name__ == &#39;__main__&#39;:
+  for n in range(1, 30):
+    order = list(phi_order(n))
+    print(f&#39;{n:2d} {str(sorted(order) == list(range(n))):5s} {order}&#39;)</code></pre>
+<pre><strong>$</strong> <kbd>python3 phailed_attempt.py</kbd></pre>
+<pre><samp> 1 True  [0]
+ 2 True  [0, 1]
+ 3 True  [0, 2, 1]
+ 4 True  [0, 2, 1, 3]
+ 5 True  [0, 3, 1, 4, 2]
+ 6 False [0, 4, 1, 5, 3, 1]
+ 7 True  [0, 4, 2, 6, 3, 1, 5]
+ 8 True  [0, 5, 2, 7, 4, 1, 6, 3]
+ 9 False [0, 6, 2, 8, 4, 1, 6, 3, 8]
+10 False [0, 6, 2, 9, 5, 1, 7, 3, 9, 6]
+11 True  [0, 7, 3, 9, 5, 1, 8, 4, 10, 6, 2]
+12 False [0, 7, 3, 10, 6, 1, 8, 4, 11, 7, 2, 10]
+13 True  [0, 8, 3, 11, 6, 1, 9, 4, 12, 7, 2, 10, 5]
+14 False [0, 9, 3, 12, 7, 1, 10, 5, 13, 8, 3, 11, 6, 0]
+15 False [0, 9, 4, 13, 7, 1, 11, 5, 14, 8, 3, 12, 6, 1, 10]
+16 False [0, 10, 4, 14, 8, 1, 11, 5, 15, 9, 3, 13, 7, 1, 10, 4]
+17 False [0, 11, 4, 15, 8, 2, 12, 6, 16, 10, 3, 14, 7, 1, 11, 5, 15]
+18 True  [0, 11, 4, 15, 8, 2, 13, 6, 17, 10, 3, 14, 7, 1, 12, 5, 16, 9]
+19 False [0, 12, 4, 16, 9, 2, 13, 6, 18, 11, 3, 15, 8, 1, 12, 5, 17, 10, 2]
+20 False [0, 12, 5, 17, 9, 2, 14, 7, 19, 11, 4, 16, 8, 1, 13, 5, 18, 10, 2, 15]
+21 True  [0, 13, 5, 18, 10, 2, 15, 7, 20, 12, 4, 17, 9, 1, 14, 6, 19, 11, 3, 16, 8]
+22 False [0, 14, 5, 19, 10, 2, 16, 7, 21, 12, 4, 18, 9, 1, 14, 6, 20, 11, 3, 16, 8, 0]
+23 False [0, 14, 5, 20, 11, 2, 16, 8, 22, 13, 4, 18, 10, 1, 15, 6, 20, 12, 3, 17, 8, 0, 14]
+24 False [0, 15, 6, 20, 11, 2, 17, 8, 23, 13, 4, 19, 10, 1, 16, 6, 21, 12, 3, 18, 9, 23, 14, 5]
+25 False [0, 15, 6, 21, 12, 2, 18, 8, 24, 14, 5, 20, 10, 1, 16, 7, 22, 13, 3, 19, 9, 24, 15, 5, 21]
+26 False [0, 16, 6, 22, 12, 2, 18, 8, 25, 15, 5, 21, 11, 1, 17, 7, 23, 13, 3, 19, 9, 25, 16, 6, 22, 12]
+27 False [0, 17, 6, 23, 13, 2, 19, 9, 25, 15, 5, 22, 11, 1, 18, 7, 24, 14, 3, 20, 10, 26, 16, 6, 22, 12, 2]
+28 False [0, 17, 7, 24, 13, 3, 20, 9, 26, 16, 5, 22, 12, 1, 18, 8, 25, 14, 3, 21, 10, 27, 17, 6, 23, 13, 2, 19]
+29 False [0, 18, 7, 25, 14, 3, 21, 9, 27, 16, 5, 23, 12, 1, 19, 8, 26, 15, 4, 22, 10, 28, 17, 6, 24, 13, 2, 20, 9]
+</samp></pre>
+</p>
+
+</section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
+</body>
+</html>
