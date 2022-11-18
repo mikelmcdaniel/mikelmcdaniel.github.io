@@ -60,7 +60,7 @@
 </header>
 
 <section class="px-3">
-  
+
 <p>This post is about solving a very particular and unimportant problem: Given a number, N, efficiently generate the sequence of all the numbers in [0, N) in a "middle order" where each number appears exactly once. The first number in a middle order is N / 2, rounding up or down, and the next numbers would be N / 4 and 3 * N / 4. For example, if N was 16, then a middle order could start as [8, 4, 12, ...] <em>or</em> [8, 12, 4, ...]. Both would be appropriate middle orders.</p>
 <h2>Powers of 2</h2>
 <p>There's a perfect solution for powers of 2 using O(n) time and O(1) space.</p>
@@ -99,7 +99,7 @@ if __name__ == &#39;__main__&#39;:
 32 -&gt; [16, 8, 24, 4, 12, 20, 28, 2, 6, 10, 14, 18, 22, 26, 30, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 0]
 </samp></pre>
 </p>
-<p>I find it easier to think about the "batches" of ints that are returned. For example, if N = 16, then we want to return [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15, 0] which has these nice batches: [8], [4, 12], [2, 6, 10, 14], [1, 3, 5, 7, 9, 11, 13, 15], [0]. With the exception of the trailing 0, each batch follows a nice pattern, starting at some power of 2 like "2" and skipping by twice that amount until it gets to N = 16. [4, 12] starts at 5 and skips by 8, [2, 6, 10, 14] starts at 2 and skips by 4, and so on.</p>
+<p>I find it easier to think about the "batches" of ints that are returned. For example, if N = 16, then we want to return [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15, 0] which has these nice batches: [8], [4, 12], [2, 6, 10, 14], [1, 3, 5, 7, 9, 11, 13, 15], [0]. With the exception of the trailing 0, each batch follows a nice pattern, starting at some power of 2 like "2" and skipping by twice that amount until it gets to N = 16. [4, 12] starts at 4 and skips by 8, [2, 6, 10, 14] starts at 2 and skips by 4, and so on.</p>
 <p>The batches also give a nice way generate <em>all</em> middle orders, simply by rearranging the order of the numbers in each batch.</p>
 <h2>Non-Powers-of-2</h2>
 <p>So far, the best big-O performance I've gotten for non-powers-of-2 is O(n) time and O(log(n)) space.</p>
