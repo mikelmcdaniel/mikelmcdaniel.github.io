@@ -1159,6 +1159,17 @@ def main():
 <p>Now that we have a much much much faster way to calculate the number of buckets with k elements across all partitions of N elements into B buckets, we can visualize the data for large N and B!</p>
 <p><img alt="approx_ops / num_elements (base 2)" src="approx_ops_base_2_v7.png" width="800" />
 <img alt="approx_ops / num_elements (base e)" src="approx_ops_base_e_v7.png" width="800" /></p>
+<h4>Working on The Ultimate Formula</h4>
+<p>Now we have a formula for <code>num_buckets_with_k_elements</code>: <code>num_buckets * (num_buckets - 1) ** (num_elements - k) * choose(num_elements, k)</code> or \( B (B - 1)^{N - k} {N \choose k} \). We also have a formula for <code>approx_num_ops_to_sort</code>: <code>return 1 if k &lt; 2 else k * math.log2(k)</code> or \( a(n) = \begin{cases} 1,  &amp; \text{if $n$ &lt; 2} \\ n \log_2n, &amp; \text{if $n$ &gt;= 2} \end{cases} \). Finally, we have a forumla for the total number of partitions: <code>num_buckets ** num_elements</code> or \( B^N \). Putting these all together, we can derive a formula for <code>approx_num_ops_to_order</code> based on  <code>num_elements</code> (N) and <code>num_buckets</code> (B).</p>
+<p>$$ \sum_{k = 0}^N \frac{B (B - 1)^{N - k} {N \choose k} a(k)}{B^N} $$</p>
+<p>$$ = \sum_{k = 0}^1 \frac{B (B - 1)^{N - k} {N \choose k}}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
+<p>$$ = \frac{B (B - 1)^{N - 0} {N \choose 0}}{B^N} + \frac{B (B - 1)^{N - 1} {N \choose 1}}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
+<p>$$ = \frac{B (B - 1)^N}{B^N} + \frac{B (B - 1)^{N - 1} N}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
+<p>$$ = \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \sum_{k = 2}^N \frac{(B - 1)^{N - k} {N \choose k} k \log_2k}{B^{N - 1}} $$</p>
+<p>$$ = \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \sum_{k = 2}^N \frac{(B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k}{B^{N - 1}} $$</p>
+<p>$$ \approx \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \int\limits_{k = 2}^N \frac{(B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k}{B^{N - 1}} dk $$</p>
+<p>TO BE CONTINUED!!!</p>
+<p>TODO: Figure out how to solve this integral?</p>
 <h2>Notes and Closing Thoughts</h2>
 <p>Comparing is often faster than hashing: comparing two large strings with different prefixes is faster than hashing the strings. However, if that were the case, we could consider using a "bad" hashing function that doesn't read the entire string. Precomputing hashes can also save us time later, especially if we join/merge the same data repeatedly.</p>
 <p>The Python <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__"><code>hash</code></a> function will return the same hash for the same value per execution <em>but</em> if your program exits and restarts, you <em>may</em> get different hashes from the last time you executed your program! This may be annoying but <a href="http://ocert.org/advisories/ocert-2011-003.html">it prevents DoS attacks</a>.</p>
