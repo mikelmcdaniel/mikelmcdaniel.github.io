@@ -97,7 +97,6 @@ C   P
     K  
 
 </code></pre>
-
 <p>In the above tree, several recursive deletes/replacements would happen if we were to delete the root node, W.
 1. Delete W.  W must be replaced with the largest node in its left subtree, which is P.
 2. P must be replaced with the largest node in its left subtree, which is L.
@@ -120,26 +119,23 @@ C   L
      \
       K
 </code></pre>
-
 <h2>Example code</h2>
 <p>Full code files are attached to the module.</p>
 <p>First, we have a helper function, to identify the largest node in a subtree.</p>
-<pre><code class="c++">const Node* largest_node() {
+<pre><code class="language-c++">const Node* largest_node() {
   Node *largest;
   for (largest = this; largest-&gt;right != nullptr; largest = largest-&gt;right) { }
   return largest;
 }
 </code></pre>
-
 <p>Since we are replacing deleted nodes with the largest node in their LEFT subtree, the below function largest_node() is used as follows in the erase algorithm:</p>
-<pre><code class="c++">const Node* largest = node-&gt;left-&gt;largest_node();
+<pre><code class="language-c++">const Node* largest = node-&gt;left-&gt;largest_node();
 </code></pre>
-
 <p>The complete erase function:</p>
 <p>The initial if/else if/ else if blocks handle key not found cases, as well as recursive calls deeper into the tree.</p>
 <p>Once we have found a key match (in the final top-level else block), we need to handle the cases of 0, 1, or 2 child nodes.  For the case of 1 child, there is additional branching to identify if the single child is the right or left child.</p>
 <p>The last case, 2 children, is the most complex, and involves "largest node in left subtree" logic, with recursive deletes and replacements.</p>
-<pre><code class="c++">static int _erase(const Key&amp; k, Node** node_ptr) {
+<pre><code class="language-c++">static int _erase(const Key&amp; k, Node** node_ptr) {
   Node* node = *node_ptr;
   if (node == nullptr) {
     return 0;
@@ -169,7 +165,6 @@ C   L
   }
 }
 </code></pre>
-
 <h3>Thanks</h3>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

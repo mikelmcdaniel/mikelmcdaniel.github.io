@@ -67,7 +67,7 @@
 <p>Note: I'm going to assume that <code>sizeof(int) == 4</code>, <code>sizeof(long) == 8</code>, and <code>sizeof(T*) == 8</code> (e.g. <code>sizeof(int*) == 8</code>). This is the case on most 64-bit architecture/compiler combinations.</p>
 <h3>Variables In Memory</h3>
 <p>When you declare a variable by saying <code>int x</code>, part of the compiler's job is to decide where in memory that variable should go. On my 64-bit laptop, an <code>int</code> is 4 bytes, so the compiler will need to make sure there's at least 4 bytes for <code>x</code> in memory. If you have multiple variables, the compiler has to plan out where each one goes.</p>
-<pre><code class="c++">// Note: I'm assuming sizeof(int) == 4 for this example.
+<pre><code class="language-c++">// Note: I'm assuming sizeof(int) == 4 for this example.
 // When the compiler sees this code, it might give x an address like 1,024
 // (0x400) and y and address like 1,024 + sizeof(int) = 1,024 + 4 = 1,028
 // (0x404). You don't know where x and y will be stored or if they'll be next to
@@ -75,10 +75,9 @@
 // that all of your variables have some place to be and they aren't overlapping.
 int x = 5, y = 7;
 </code></pre>
-
 <h3>Pointers: Indices into Memory</h3>
 <p>Memory is basically a giant array of bytes where pointers are like indices into memory. When you write code like <code>int *p = &amp;x;</code>, the compiler sets aside <code>sizeof(int*)</code> bytes of memory for <code>p</code> and then sets the value of those bytes to represent the address of <code>x</code>, which in our example is 0x400 (1,024). In a practical example, the address will probably be some very large number like 0x7fff1394fa1c (140733521918492).</p>
-<pre><code class="c++">// Note: I'm assuming sizeof(int) == 4 for this example.
+<pre><code class="language-c++">// Note: I'm assuming sizeof(int) == 4 for this example.
 // When the compiler sees this code, it might give p an address like 2,048
 // (0x800), x and address like 2,048 + sizeof(int*) = 2,048 + 8 = 2,056
 // (0x808), and y an address like 2,068. You don't know where x, y, and p will
@@ -90,12 +89,11 @@ int x = 5, y = 7;
 int x = 5, y = 7;
 int* p = &amp;x;
 </code></pre>
-
 <h3>Arrays</h3>
 <p>If you have an array, <code>int a[] = {11, 22, 33, 44, 55};</code>, then the compiler will set aside <code>5 * sizeof(int) == 20</code> bytes somewhere. Since it's an array, you are guaranteed that the <code>int</code>s are stored right after each other in memory. You don't know where <code>&amp;a[0]</code> is but you do know that <code>&amp;a[1]</code> is <code>sizeof(int) == 4</code> bytes after <code>&amp;a[0]</code> and in general that <code>&amp;a[i + d]</code> is <code>d * sizeof(int) == d * 4</code> bytes after <code>&amp;a[i]</code>.</p>
 <p>The variable <code>a</code> actually behaves almost identically to a pointer and represents the address of the 0th element in the array; in basically every way, you can treat it as a pointer and it will work the same. If you have <code>int *p = a; // same as p = &amp;a[0]</code>, then <code>p</code> and <code>a</code> will behave in almost the same way. You can actually write code like <code>p[i]</code> and get the same exact result as <code>a[i]</code> because in both cases, what you're <em>really</em> doing is taking the address that <code>a</code> or <code>p</code> is pointing to, then adding <code>i * sizeof(int)</code> to it, then reading those <code>sizeof(int) == 4</code> bytes from memory.</p>
 <p><code>*p</code> and <code>*a</code> also do the same thing and more interestingly, <code>*(p + 4)</code> and <code>*(a + 4)</code> also do the same thing, but it might not be exactly what you expect. The <code>+ 4</code> doesn't add 4 bytes to the address, it adds <code>4 * sizeof(int)</code> bytes to the address. Since the compiler knows that <code>a</code> is an <code>int[]</code> and <code>p</code> is an <code>int*</code>, it knows that <code>+ d</code> means it should add <code>d * sizeof(int)</code> to the address, not just <code>d</code> to the address. If I wanted to do a for loop over <code>a</code> using just pointers, I could write code like this:</p>
-<pre><code class="c++">int a[] = {11, 22, 33, 44, 55};
+<pre><code class="language-c++">int a[] = {11, 22, 33, 44, 55};
 int *begin = a, *end = a + 5;
 
 // If &amp;a[0] is 0x800 and sizeof(int) == 4, then this would print:
@@ -107,13 +105,12 @@ for (int *p = begin; p != end; ++p) {
   cout &lt;&lt; p &lt;&lt; &quot;  &quot; &lt;&lt; *p &lt;&lt; endl;
 }
 </code></pre>
-
 <h3>Pointers to Pointers</h3>
 <p>I might make more detailed notes on pointers to pointers later but I'll just say this short bit for now:</p>
 <p>So far, we've just looked at <code>int*</code> that point to <code>int</code> but you can have a pointer to any type, including other pointers. For <em>any</em> type and variable, <code>T x</code>, you can have a <code>T* p</code>. When you write <code>*p</code>, that code will read the address that <code>p</code> represents, then go read <code>sizeof(T)</code> bytes from that address and interpret those bytes as representing a <code>T</code>. If <code>T = int*</code>, then... dereferencing that pointer (<code>*p</code>) will go to the address of <code>x</code> (<code>&amp;x</code>) and read those <code>sizeof(T*) == sizeof(int*) == 8</code> bytes and interpret them as an int pointer.</p>
 <h3>Example Program</h3>
 <p>Let's tie all this together with a quick example program to demonstrate:</p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part0a/pointers_example.cpp">pointers_example.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+<p><a href="pointers_example.cpp">pointers_example.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 
 using std::cout;
 using std::endl;
@@ -160,40 +157,40 @@ int main(int argc, const char *argv[]) {
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffc82d52adc)
-y == 7  (at address 0x7ffc82d52ad8)
-a == 0x7ffc82d52ac0  (at address 0x7ffc82d52ac0)
-p == 0x7ffc82d52adc  (at address 0x7ffc82d52ab8)
+x == 5  (at address 0x7ffee445f4ac)
+y == 7  (at address 0x7ffee445f4a8)
+a == 0x7ffee445f490  (at address 0x7ffee445f490)
+p == 0x7ffee445f4ac  (at address 0x7ffee445f488)
 
-Now p == 0x7ffc82d52ac0 == a == 0x7ffc82d52ac0
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffc82d52ac0 0x7ffc82d52ac0
-*(a + 0) == 11  at 0x7ffc82d52ac0
-    a[0] == 11  at 0x7ffc82d52ac0
-*(p + 0) == 11  at 0x7ffc82d52ac0
-    p[0] == 11  at 0x7ffc82d52ac0
-*(a + 1) == 22  at 0x7ffc82d52ac4
-    a[1] == 22  at 0x7ffc82d52ac4
-*(p + 1) == 22  at 0x7ffc82d52ac4
-    p[1] == 22  at 0x7ffc82d52ac4
-*(a + 2) == 33  at 0x7ffc82d52ac8
-    a[2] == 33  at 0x7ffc82d52ac8
-*(p + 2) == 33  at 0x7ffc82d52ac8
-    p[2] == 33  at 0x7ffc82d52ac8
-*(a + 3) == 44  at 0x7ffc82d52acc
-    a[3] == 44  at 0x7ffc82d52acc
-*(p + 3) == 44  at 0x7ffc82d52acc
-    p[3] == 44  at 0x7ffc82d52acc
-*(a + 4) == 55  at 0x7ffc82d52ad0
-    a[4] == 55  at 0x7ffc82d52ad0
-*(p + 4) == 55  at 0x7ffc82d52ad0
-    p[4] == 55  at 0x7ffc82d52ad0
+Now p == 0x7ffee445f490 == a == 0x7ffee445f490
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffee445f490 0x7ffee445f490
+*(a + 0) == 11  at 0x7ffee445f490
+    a[0] == 11  at 0x7ffee445f490
+*(p + 0) == 11  at 0x7ffee445f490
+    p[0] == 11  at 0x7ffee445f490
+*(a + 1) == 22  at 0x7ffee445f494
+    a[1] == 22  at 0x7ffee445f494
+*(p + 1) == 22  at 0x7ffee445f494
+    p[1] == 22  at 0x7ffee445f494
+*(a + 2) == 33  at 0x7ffee445f498
+    a[2] == 33  at 0x7ffee445f498
+*(p + 2) == 33  at 0x7ffee445f498
+    p[2] == 33  at 0x7ffee445f498
+*(a + 3) == 44  at 0x7ffee445f49c
+    a[3] == 44  at 0x7ffee445f49c
+*(p + 3) == 44  at 0x7ffee445f49c
+    p[3] == 44  at 0x7ffee445f49c
+*(a + 4) == 55  at 0x7ffee445f4a0
+    a[4] == 55  at 0x7ffee445f4a0
+*(p + 4) == 55  at 0x7ffee445f4a0
+    p[4] == 55  at 0x7ffee445f4a0
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffc82d52ac0 is 11 which is 0 ints from address 0x7ffc82d52ac0
-int at address 0x7ffc82d52ac4 is 22 which is 1 ints from address 0x7ffc82d52ac0
-int at address 0x7ffc82d52ac8 is 33 which is 2 ints from address 0x7ffc82d52ac0
-int at address 0x7ffc82d52acc is 44 which is 3 ints from address 0x7ffc82d52ac0
-int at address 0x7ffc82d52ad0 is 55 which is 4 ints from address 0x7ffc82d52ac0
+int at address 0x7ffee445f490 is 11 which is 0 ints from address 0x7ffee445f490
+int at address 0x7ffee445f494 is 22 which is 1 ints from address 0x7ffee445f490
+int at address 0x7ffee445f498 is 33 which is 2 ints from address 0x7ffee445f490
+int at address 0x7ffee445f49c is 44 which is 3 ints from address 0x7ffee445f490
+int at address 0x7ffee445f4a0 is 55 which is 4 ints from address 0x7ffee445f490
 </samp></pre>
 </p>
 

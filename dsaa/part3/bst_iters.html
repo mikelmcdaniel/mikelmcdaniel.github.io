@@ -73,7 +73,6 @@
            /
           c
 </code></pre>
-
 <h2>In-Order Traversal</h2>
 <p>The goal of the iterator we are making is to traverse a sorted collection in-order.  As the iterator is incremented (++it), bigger or "higher value" elements are visited.  Eg, with characters, the iterator will visit a, b, c, ...then finally, z.</p>
 <p>For a BST of Nodes, each having a Left (smaller) subtree and Right (bigger) subtree, In-Order Traversal can be thought of as:</p>
@@ -84,7 +83,7 @@
 </ol>
 <p>(This algorithm applies recursively to all nodes and subtrees)</p>
 <p>We have already seen an example of In-Order Traversal of a BST, in the print() method that has been defined for BST.</p>
-<pre><code class="c++">    void print() {
+<pre><code class="language-c++">    void print() {
       if (left != nullptr) {
         left-&gt;print();
       }
@@ -94,7 +93,6 @@
       }
     }
 </code></pre>
-
 <p>For the example tree, the output of this print() method would be:</p>
 <pre><code>a
 b
@@ -103,7 +101,6 @@ d
 e
 f
 </code></pre>
-
 <h2>Recursive Call Stacks</h2>
 <p>The above print() method is recursive.  It starts off by  "drilling down" in the BST to the left-most node, which, having no left child, prints its own value and returns.  This results in the printing of "a".</p>
 <p>The recursive call stack is just that, a Stack.  When a function recursively calls itself, several things may be stored in a recursive stack frame.</p>
@@ -121,47 +118,38 @@ f
            /
           c
 </code></pre>
-
 <p>For our example tree, it would be (writing the stack upside down or "from the top":)
 (** This represents only a small part of the recursive call stack frames.  We are only considering the "this" pointers, aka, the Nodes we are visiting.  Other things like an instruction pointer and other local variables may exist in each stack frame.)</p>
 <pre><code>e
 b
 a
 </code></pre>
-
 <p>Then, the a node is processed (printed), and popped off the stack, which is now:</p>
 <pre><code>e
 b
 </code></pre>
-
 <p>At this point, the print() function, scoped to b, will print its value ("b"), pop b off the recursive call stack, and then, visit its own right subtree.  The root of this subtree is d.  D is added to the stack, but not printed yet -- we need to visit D's left subtree first!</p>
 <pre><code>e
 d
 </code></pre>
-
 <p>Once print() is called, scoped to d, it will visit its own left subtree, adding c to the stack.</p>
 <pre><code>e
 d
 c
 </code></pre>
-
 <p>C node has no children, so its value is printed. C is popped off the stack.</p>
 <pre><code>e
 d
 </code></pre>
-
 <p>D node has no right subtree, so its value is then printed, and D is popped off the stack.</p>
 <pre><code>e
 </code></pre>
-
 <p>We are now back at E, the root!  E's left subtree has been processed.  So, time to print the node's value ('e'), pop e off the stack, and then visit the right subtree.  Once e is popped off the stack, it's empty.</p>
 <pre><code>(empty stack!)
 </code></pre>
-
 <p>Time to visit the right subtree.  F is e's right child, so f is pushed onto the stack.</p>
 <pre><code>f
 </code></pre>
-
 <p>F node has no children, so its value would be printed, and f is popped off the stack.  The print() function is done, and all its recursive calls are closed out.</p>
 <h2>Extracting an algorithm out of the print() recursive call stack</h2>
 <p>We have just seen how print() function traverses a BST in-order.  Similar to the recursive call stack, we can traverse the tree, starting at the root, and maintain a stack of pointers, representing "nodes still to be processed".  As long as we have an algorithm for how to push node pointers onto this stack, and pop them off as they are processed, we will be in good shape.</p>
@@ -186,7 +174,7 @@ d
 <p>In the Iterator(Node* root) constructor, you can see that it travels left, adding nodes to the stack, until it hits a nullptr.  This sets the iterator up in a begin() position.</p>
 <p>In the operator++ method, you can see that we add the right child to the stack, remove the current node (popping it off the stack), and then travel as far left as possible, in the right subtree that we are now located in, pushing nodes onto the stack along the way.</p>
 <p>Also note, we capture the current node's right child BEFORE popping it off of the stack.  This way, we don't lose our place.</p>
-<pre><code class="c++">  class Iterator {
+<pre><code class="language-c++">  class Iterator {
     vector&lt;Node*&gt; stack;
   public:
     // constructor
@@ -224,7 +212,6 @@ d
     }
   };
 </code></pre>
-
 <h3>Thanks</h3>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

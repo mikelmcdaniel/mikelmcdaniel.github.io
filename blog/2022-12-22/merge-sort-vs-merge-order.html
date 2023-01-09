@@ -935,9 +935,12 @@ def plot(approx_ops, out_filename, sub_title=&#34;&#34;):
     x = num_elementss
     y = num_bucketss
     fig, ax = plt.subplots()
-    ax.set_title(f&#34;approx_ops / num_elements ({sub_title}) (min={z.min():.4f})&#34;)
-    ax.set_xlabel(&#34;num_elements&#34;)
-    ax.set_ylabel(&#34;num_buckets&#34;)
+    # ax.set_title(f&#34;approx_ops / num_elements ({sub_title}) (min={z.min():.4f})&#34;)
+    # ax.set_xlabel(&#34;num_elements&#34;)
+    # ax.set_ylabel(&#34;num_buckets&#34;)
+    ax.set_title(f&#34;O(f(N, B)) / N (min={z.min():.4f})&#34;)
+    ax.set_xlabel(&#34;N  (number of elements)&#34;)
+    ax.set_ylabel(&#34;B  (number of buckets)&#34;)
 
     sorted_z = sorted(z.flat)
     boundaries = [sorted_z[(len(sorted_z) - 1) * i // 256] for i in range(256 + 1)]
@@ -1170,6 +1173,12 @@ def main():
 <p>$$ \approx \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \int\limits_{k = 2}^N \frac{(B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k}{B^{N - 1}} dk $$</p>
 <p>TO BE CONTINUED!!!</p>
 <p>TODO: Figure out how to solve this integral?</p>
+<p>It doesn't look like there's a nice way to integrate the Gamma function based on my forum searching. Wolfram Alpha spits out a giant paragraph of terms when I ask for the integral of the Gamma function.</p>
+<p>I asked in https://math.stackexchange.com/questions/4608002/big-o-of-sum-k-2n-b-1n-k-n-choose-k-k-log-2k</p>
+<p>$$ \sum_{k = 2}^N (B - 1)^{N - k} {N \choose k} k \log_2k $$</p>
+<p>$$ \int\limits_{k = 2}^N ((B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k) dk $$</p>
+<p>https://en.wikipedia.org/wiki/Stirling%27s_approximation</p>
+<p><code>sqrt(2 * pi * n) * (n / e)**n * e**(1 / (12 * n + 1)) &lt; fact(n) &lt; sqrt(2 * pi * n) * (n / e)**n * e**(1 / (12 * n))</code></p>
 <h2>Notes and Closing Thoughts</h2>
 <p>Comparing is often faster than hashing: comparing two large strings with different prefixes is faster than hashing the strings. However, if that were the case, we could consider using a "bad" hashing function that doesn't read the entire string. Precomputing hashes can also save us time later, especially if we join/merge the same data repeatedly.</p>
 <p>The Python <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__"><code>hash</code></a> function will return the same hash for the same value per execution <em>but</em> if your program exits and restarts, you <em>may</em> get different hashes from the last time you executed your program! This may be annoying but <a href="http://ocert.org/advisories/ocert-2011-003.html">it prevents DoS attacks</a>.</p>

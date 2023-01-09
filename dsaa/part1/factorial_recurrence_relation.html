@@ -75,7 +75,7 @@
 <li>Finally, solve the relation using the known values.</li>
 </ol>
 <h2>Factorial example</h2>
-<pre><code class="c++">long factorial(long n) {
+<pre><code class="language-c++">long factorial(long n) {
     if (n == 0) {
         return 1;
     } else {
@@ -83,7 +83,6 @@
     }
 }
 </code></pre>
-
 <ol>
 <li>Understand, identify base/general cases</li>
 </ol>
@@ -109,7 +108,6 @@ T(n) = 2 + T(n - 2)
 T(n) = 2 + (1 + T((n - 2) - 1))
 T(n) = 3 + T(n - 3)
 </code></pre>
-
 <ol>
 <li>Spot a pattern, in terms of "k" iterations</li>
 </ol>
@@ -119,7 +117,6 @@ T(n) = 3 + T(n - 3)
 </ol>
 <pre><code>T(n) = k + T(n - k)
 </code></pre>
-
 <ol>
 <li>Identify a k value that allows substitution of a base case</li>
 </ol>
@@ -129,7 +126,6 @@ T(n) = 3 + T(n - 3)
 <pre><code>T(n) = n + T(n - n)
 T(n) = n + T(0)
 </code></pre>
-
 <ol>
 <li>Solve using known values</li>
 </ol>

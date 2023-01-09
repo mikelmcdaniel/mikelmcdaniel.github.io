@@ -187,7 +187,7 @@
 
 <h2>What if every player has an X% chance against players below them?</h2>
 <p>What if every player has an X% chance against players below them? How often does everyone get to play? For the best player, this is the same situation as before: they always have an X% chance of winning. For everyone else, we have to care about the order of players: the entire lineup/state is important. Let's use a quick little simulation: start with an arbitrary lineup and just play the games out, keeping track of how many games each player gets to play. Since there's no player that always wins (or always loses), all possible lineups can be reached and eventually will get reached if the simulation runs long enough.</p>
-<pre><code class="python3">import random
+<pre><code class="language-python3">import random
 
 win_ratio = 0.7
 arena_capacity = 8
@@ -219,7 +219,6 @@ total_games = sum(games_per_player) // 2
 for player in sorted(lineup):
   print(f'Player {p} played {games_per_player[p] / total_games} of total games')
 </code></pre>
-
 <pre><output>Player 0 played 0.357041 of total games
 Player 1 played 0.304571 of total games
 Player 2 played 0.26735 of total games
@@ -349,7 +348,7 @@ Player 7 played 0.192094 of total games</output></pre>
 </table>
 
 <p>Here's an implementation of the more complex but accurate simulation for 8 players:</p>
-<pre><code class="python3">import collections
+<pre><code class="language-python3">import collections
 import itertools
 
 win_ratio = 0.7
@@ -391,7 +390,6 @@ for iteration in range(1000):
     next_lineup_probs[p2_wins_lineup] += prob * prob_p2_wins
   lineup_probabilities = next_lineup_probs
 </code></pre>
-
 <pre><output>In a an arena with 8 players,
 where better players have a 0.7 chance of winning...
 Each player has this chance of playing game 0:
@@ -454,10 +452,9 @@ Each player has this chance of playing game 999:
 <p>After simulating 100 games worth of all the possible outcomes, the predicted ratio of games the best player plays matches theoretical ratio to 6 decimal places (0.357142) and after 999 games, it matches up to 13 decimal places (0.35714285714285). However, it requires keeping track of every possible lineup after every game and since all lineups are eventually possible, there are S = <code>factorial(arena_capacity)</code> = 8! = 40,320 lineups/states to keep track of as opposed to the simple simulation from earlier that only has to keep track of the 'current' lineup/state. It takes on the order of S N time to simulate S games simultaneously N times, so it arguably takes "on the order of N time to simulate N total games".</p>
 <h3>Lineup Probabilities</h3>
 <p>Adding on a small bit of code to the end to print out the lineups sorted by probability shows that the most popular lineup is [0, 7, 6, 5, 4, 3, 2, 1] and the least popular is it's opposite, [7, 0, 1, 2, 3, 4, 5, 6].</p>
-<pre><code class="python3">for lineup, prob in sorted(lineup_probabilities.items(), key=lambda lup: -lup[1]):
+<pre><code class="language-python3">for lineup, prob in sorted(lineup_probabilities.items(), key=lambda lup: -lup[1]):
   print(lineup, prob)
 </code></pre>
-
 <pre><output>(0, 7, 6, 5, 4, 3, 2, 1) 0.00045499913594621743
 (0, 6, 5, 4, 3, 2, 1, 7) 0.00039031801930242854
 (1, 0, 7, 6, 5, 4, 3, 2) 0.00037512030572818024
@@ -493,7 +490,7 @@ Each player has this chance of playing game 999:
 
 <h3>Rock-Paper-Scissors</h3>
 <p>This method has the side effect that it perfectly captures how often each lineup has come up (on average) after N games (given the probabilities of the starting lineup), so if you had a set of players that played like rock-paper-scissors, the simulation would never converge (unless the starting lineup probabilities are already converged).</p>
-<pre><code class="python3">import collections
+<pre><code class="language-python3">import collections
 import itertools
 
 # The probability of being in a particular lineup
@@ -532,7 +529,6 @@ for iteration in range(1000):
     next_lineup_probs[p2_wins_lineup] += prob * prob_p2_wins
   lineup_probabilities = next_lineup_probs
 </code></pre>
-
 <pre><output>Each player has this chance of playing game 0
 paper 1
 rock 1
@@ -997,7 +993,7 @@ scissors 0
 </tbody>
 </table>
 
-<pre><code class="python3">import itertools
+<pre><code class="language-python3">import itertools
 
 import numpy
 import numpy.linalg
@@ -1053,7 +1049,6 @@ for i in range(20):
   lineup_transition_matrix = numpy.linalg.matrix_power(lineup_transition_matrix, 2)
   transitions_per_multiplication *= 2
 </code></pre>
-
 <pre><output>Transition matrix (for 1 games):
 [[ 0.   0.7  0.   0.   0.7  0. ]
  [ 0.7  0.   0.7  0.   0.   0. ]
@@ -1281,7 +1276,7 @@ After playing 524287 games each player has played:
 </table>
 
 <p>Unfortunately, these aren't enough constraints to solve the problem because \( x = (0, 0, 0, ...) \) is a solution: if the probability of being in any given state is 0, then it would satisfy all those relationships. For example, if \( P([0, 2, 1]) = 0, P([2, 0, 1]) = 0 \) then \( 0 = P([0, 1, 2]) = 0.7 P([0, 2, 1]) + 0.7 P([2, 0, 1]) \) is valid. We have to add an additional constaint that the probability of being in one of our states must be 1. In other words, \( P([0, 1, 2]) + P([0, 2, 1]) + P([1, 0, 2]) + P([1, 2, 0]) + P([2, 0, 1]) + P([2, 1, 0]) = 1 \). This is equivalent to adding a row of all 1's to A and appending 1 to b. In practice, the library I use for soving the system of linear equations requires a square matrix, making adding a row impossible, so I add 1 to every cell of A and b. Adding 1 to an arbitrary row of A and corresponding value in b should also work in practice.</p>
-<pre><code class="python3">import itertools
+<pre><code class="language-python3">import itertools
 
 import numpy
 import numpy.linalg
@@ -1324,7 +1319,6 @@ print('x = ')
 for lineup, prob in sorted(zip(lineups, lineup_probs), key=lambda lup: -lup[1]):
   print(' ', lineup, prob)
 </code></pre>
-
 <pre><output>A =
 [[ 0.   1.7  1.   1.   1.7  1. ]
  [ 1.7  0.   1.7  1.   1.   1. ]

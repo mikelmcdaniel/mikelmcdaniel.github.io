@@ -71,7 +71,7 @@
 <p>If the Comparator was switched to returning "leftSide less than rightSide" (similar to std::less), then it would behave like a Max Heap Priority Queue.  Larger elements would have priority.</p>
 <h2>Type Definition, and Comparator behavior</h2>
 <p>As you can see below, the elements we pass into the Priority Queue are of type "int string pair".  Since the comparator compares the first element, the int is the priority index/key.</p>
-<pre><code class="c++">typedef pair&lt;int, string&gt; PriorityString;
+<pre><code class="language-c++">typedef pair&lt;int, string&gt; PriorityString;
 
 struct PriorityStringComparator {
   constexpr bool operator()(const PriorityString&amp; lhs, const PriorityString&amp; rhs) const {
@@ -79,10 +79,9 @@ struct PriorityStringComparator {
   }
 };
 </code></pre>
-
 <h2>Priority Queue Operations and Interface</h2>
 <p>As you can see below, push(), pop(), top(), and empty() are used to add elements to the Priority Queue, then output elements in priority order until the Priority Queue is empty.  Using an implementation that is written for you is easy!</p>
-<pre><code class="c++">#include &lt;iostream&gt;
+<pre><code class="language-c++">#include &lt;iostream&gt;
 #include &lt;string&gt;
 #include &lt;utility&gt;
 #include &lt;vector&gt;
@@ -120,7 +119,6 @@ int main() {
 }
 
 </code></pre>
-
 <h2>Thanks</h2>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

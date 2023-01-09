@@ -81,7 +81,6 @@
           /
          3
 </code></pre>
-
 <p>This tree is NOT an AVL tree.  The root node 7, has a left subtree of height 1, and a right subtree of height 3.  3 - 1 = 2.  The difference in subtree heights is more than 1.</p>
 <pre><code>            7
           /   \
@@ -91,7 +90,6 @@
           / \
          3   5
 </code></pre>
-
 <h2>Cases of Imbalance</h2>
 <p>Since each node has two children, there are a total of 4 cases of imbalance that may occur.  We will demonstrate two cases.  The other cases are mirror symmetrical versions of these two.</p>
 <p>In these pictures, consider a, b, and c as nodes.  Consider 1, 2, 3, and 4 as entire subtrees, from size 1 (a single node) to size n.</p>
@@ -101,7 +99,6 @@ a &lt; 2 &lt; b
 b &lt; 3 &lt; c
 c &lt; 4
 </code></pre>
-
 <p>In other words, <code>1 &lt; a &lt; 2 &lt; b &lt; 3 &lt; c &lt; 4</code>.</p>
 <h3>The "Left-Left" case (left subtree of left child grows)</h3>
 <p>In this case, c's left subtree has a height of 3, and c's right subtree has a height of 1.  This is imbalanced. C is the node at which the imbalance occurs.  B is the left child.  A is the left subtree of B.  Hence, left-left case.</p>
@@ -113,7 +110,6 @@ c &lt; 4
    / \
   1   2
 </code></pre>
-
 <h3>The "Left-Right" case (right subtree of left child grows)</h3>
 <p>In this case, c's left subtree has a height of 3, and c's right subtree has a height of 1.  This is imbalanced. C is the node at which the imbalance occurs.  A is the left child.  B is the right subtree of A.  Hence, left-right case.</p>
 <pre><code>        c
@@ -124,7 +120,6 @@ c &lt; 4
        / \
       2   3
 </code></pre>
-
 <h3>The balanced end goal for both cases:</h3>
 <pre><code>        b
       /   \
@@ -132,7 +127,6 @@ c &lt; 4
    / \     / \
   1   2   3   4
 </code></pre>
-
 <p>The other two cases of imbalance are:</p>
 <p>"Right Right" case (right subtree of right child grows)</p>
 <p>This mirrors the left-left case</p>

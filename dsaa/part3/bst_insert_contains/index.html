@@ -86,7 +86,7 @@
 <p><code>.print()</code>, <code>.contains()</code>, and <code>.insert()</code> follow a common pattern. For the BinarySearchTree class itself, there is an entry point function, that calls a Node-scoped version of the function, on the root node of the tree.</p>
 <p><code>.contains()</code> and <code>.insert()</code> use a pre-order processing order. Data in the node is examined first. If needed, recursive calls to the left, then right, subtrees are made.</p>
 <p><code>.print()</code> prints the values in a BST out in order. Thus, <code>.print()</code> uses an in-order processing order. First, the left subtree is recursively examined. Then, data in the node is examined. Finally, the right subtree is recursively examined.</p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part3/bst_insert_contains/bst.h">bst.h</a><pre><code class="c++">#ifndef BST_H_
+<p><a href="bst.h">bst.h</a><pre><code class="c++">#ifndef BST_H_
 #define BST_H_
 
 #include &lt;iostream&gt;
@@ -183,7 +183,7 @@ public:
   }
 };
 
-#endif /* BST_H_ */</code></pre><a href="https://mikelmcdaniel.github.io/dsaa/part3/bst_insert_contains/bst_insert_contains_demo.cpp">bst_insert_contains_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+#endif /* BST_H_ */</code></pre><a href="bst_insert_contains_demo.cpp">bst_insert_contains_demo.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 
 #include &#34;bst.h&#34;
 

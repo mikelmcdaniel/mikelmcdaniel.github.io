@@ -67,14 +67,13 @@
 <p>Min Heaps have the smallest element at the root of the heap.  This gives the smallest element the highest priority in the Priority Queue.</p>
 <h2>The MinHeap class</h2>
 <p>We will implement a non-template heap, using vector<char> as the array container.</p>
-<pre><code class="c++">class MinHeap {
+<pre><code class="language-c++">class MinHeap {
   vector&lt;char&gt; heap;
   //... to be continued, see below
 </code></pre>
-
 <h3>Helper Functions</h3>
 <p>Parent and Child node index helpers are static, since they don't depend on the state of any certain instance of the MinHeap class.</p>
-<pre><code class="c++">  static int parent_index(int index) {
+<pre><code class="language-c++">  static int parent_index(int index) {
     return (index - 1) / 2;
   }
 
@@ -86,10 +85,9 @@
     return 2 * index + 2;
   }
 </code></pre>
-
 <p>Helpers for "if a child exists" for a certain node in the heap.  A node will never have a right child without having a left child, due to the left-right filling in a full tree.</p>
 <p>Comparing the possible index of a left/right child against the heap's array size is an easy way to tell if the index is valid, aka, if the child exists.</p>
-<pre><code class="c++">  bool has_children(int index) const {
+<pre><code class="language-c++">  bool has_children(int index) const {
     return has_left_child(index);
   }
 
@@ -101,9 +99,8 @@
     return right_index(index) &lt; heap.size();
   }
 </code></pre>
-
 <p>There's no guarantee that a certain child is smaller or larger than the other.  Just that they're both larger then the parent node, in a Min Heap.  </p>
-<pre><code class="c++">  int smallest_child_index(int index) const noexcept {
+<pre><code class="language-c++">  int smallest_child_index(int index) const noexcept {
     if (has_right_child(index)) {
       int l = left_index(index), r = l + 1;
       return heap[l] &lt; heap[r] ? l : r;
@@ -112,12 +109,11 @@
     }
   }
 </code></pre>
-
 <h2>Heap Operations</h2>
 <h3>push()</h3>
 <p>Insert new element into the next available spot, aka back of the vector, aka bottom-right of the heap tree.</p>
 <p>Then, percolate the new element up, swapping with parent, until the min-heap order property is valid again.</p>
-<pre><code class="c++">  void push(char c) {
+<pre><code class="language-c++">  void push(char c) {
     heap.push_back(c);
     // Note: We don't have to check if i != 0 because parent_index(0) == 0 and
     //   heap[0] is never less than heap[parent_index(0)]
@@ -129,12 +125,11 @@
     }
   }
 </code></pre>
-
 <h3>pop()</h3>
 <p>Remove the root of the heap tree, aka the smallest element in a Min Heap, aka the element with highest priority in a Priority Queue.</p>
 <p>Put the last element in the heap at the empty root position.</p>
 <p>Then, percolate the new root down, swapping with the smaller child, until the min-heap order property is valid again.</p>
-<pre><code class="c++">  void pop() {
+<pre><code class="language-c++">  void pop() {
     swap(heap.front(), heap.back());
     heap.pop_back();
 
@@ -146,11 +141,10 @@
     }
   }
 </code></pre>
-
 <h3>top() and empty()</h3>
 <p>Easy implementation of top, using std::vector<char>::front(), aka, 0th index of the "array"/vector</p>
 <p>Also using std::vector<char>::empty() to determine empty().</p>
-<pre><code class="c++">  char top() const {
+<pre><code class="language-c++">  char top() const {
     return heap.front();
   }
 
@@ -158,10 +152,9 @@
     return heap.empty();
   }
 </code></pre>
-
 <h2>Complete Example Code</h2>
 <p>This is also available, attached to the module.</p>
-<pre><code class="c++">#include &lt;iostream&gt;
+<pre><code class="language-c++">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;utility&gt;
 
@@ -256,7 +249,6 @@ int main() {
     return 0;
 }
 </code></pre>
-
 <h2>Thanks</h2>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

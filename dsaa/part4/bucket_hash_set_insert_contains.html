@@ -63,9 +63,8 @@
   
 <p><a href="https://youtu.be/adnTGP2wDVo">Simple Hash Set Implementation (insert and contains, with buckets) (28 minutes) (Spring 2021)</a></p>
 <p>This lecture covers a chaining hash table.  A hash index is calculated, and elements at that hash index are added to a set.  This gives our hash table a "collection of collections", or "vector of sets" characteristic.</p>
-<pre><code class="c++">  vector&lt;set&lt;string&gt; &gt; names;
+<pre><code class="language-c++">  vector&lt;set&lt;string&gt; &gt; names;
 </code></pre>
-
 <h2>Load Factor</h2>
 <p>The number of buckets in a hash table needs to scale with the number of elements, n.  </p>
 <p>Load Factor is defined as the (number of elements) / (number of buckets).</p>
@@ -86,7 +85,7 @@
 <p>Since the size of a hash table is increased (doubled) during a Rehash, elements may end up in different buckets.</p>
 <p>This is because the hash index of an element is calculated by hashFunction(element) % tableSize.  Since the tableSize changes, the hash index may change.</p>
 <p>We can implement a rehash function modelled after std::unordered_map::rehash.</p>
-<pre><code class="c++">  void rehash(int new_num_buckets) {
+<pre><code class="language-c++">  void rehash(int new_num_buckets) {
     vector&lt;set&lt;string&gt; &gt; new_names;
     new_names.resize(new_num_buckets);
     for (const set&lt;string&gt;&amp; bucket : names) {
@@ -97,7 +96,6 @@
     names = move(new_names);
   }
 </code></pre>
-
 <h2>Contains</h2>
 <p>The general algorithm for contains() in a chaining hash table is:</p>
 <ol>
@@ -111,12 +109,11 @@
 <p>"Not found" would be an empty hash index, or reaching the end() iterator, in the collection at that hash index.</p>
 </li>
 </ol>
-<pre><code class="c++">  bool contains(const string&amp; name) {
+<pre><code class="language-c++">  bool contains(const string&amp; name) {
     const set&lt;string&gt;&amp; subset = names[name_hash(name) % names.size()];
     return subset.find(name) != subset.end();
   }
 </code></pre>
-
 <h2>Insert</h2>
 <p>The general algorithm for insert() in a chaining hash table is:</p>
 <ol>
@@ -130,7 +127,7 @@
 <p>If the element/key is already in the collection at that hash index, there's nothing to do!</p>
 </li>
 </ol>
-<pre><code class="c++">  bool insert(const string&amp; name) {
+<pre><code class="language-c++">  bool insert(const string&amp; name) {
     ++size_;
     if (size_ &gt; names.size() * max_load_factor) {
       rehash(2 * names.size());
@@ -138,10 +135,9 @@
     return names[name_hash(name) % names.size()].insert(name).second;
   }
 </code></pre>
-
 <h2>Full Example Code</h2>
 <p>This is also available attached to the module.</p>
-<pre><code class="c++">#include &lt;iostream&gt;
+<pre><code class="language-c++">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
 #include &lt;set&gt;
@@ -227,7 +223,6 @@ int main() {
   return 0;
 }
 </code></pre>
-
 <h2>Thanks</h2>
 <p>Thanks for Brian Foster for writing up these notes based on the video lectures.</p>
 

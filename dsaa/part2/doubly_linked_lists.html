@@ -68,7 +68,7 @@
 <p>With the extra pointer, inserting and deleting nodes is a bit more complicated. This uses more space but allows us to go from a node to the next <em>or</em> previous node. In other words, iterators can be both incremented and decremented.</p>
 <h2>Changes to LinkedListNode struct</h2>
 <p>A second pointer is added, pointing to the <em>previous</em> Node in a list. Each node in a Doubly-Linked List now has 2 pointers, or links, hence "Doubly-Linked". The constructor is updated, to initialize both pointers to nullptr.</p>
-<pre><code class="c++">template &lt;typename T&gt;
+<pre><code class="language-c++">template &lt;typename T&gt;
 struct LinkedListNode {
   T value;
   LinkedListNode&lt;T&gt; *prev;
@@ -77,12 +77,11 @@ struct LinkedListNode {
   LinkedListNode(const T&amp; value) : value(value), prev(nullptr), next(nullptr) {}
 };
 </code></pre>
-
 <h2>Changes to pop_front()</h2>
 <p>The <code>pop_front()</code> function removes the Node at the head of a List. To account for the extra prev pointer that Nodes in a Doubly-Linked List have, some extra code is necessary.</p>
 <p>The <code>head-&gt;prev</code> pointer is similar to the <code>tail-&gt;next</code> pointer. A doubly-linked list is symmetrical, so just as tail has nothing AFTER it, head has nothing BEFORE it.</p>
 <p>To ensure that the new head has an appropriate <code>prev</code> pointer, pointing to nothing, we make the assignment <code>head-&gt;next-&gt;prev = nullptr</code>.</p>
-<pre><code class="c++">  void pop_front() {
+<pre><code class="language-c++">  void pop_front() {
     // Let's assume head != nullptr
     // TODO: Subclass std::exception and throw an exception with a proper error message.
     if (head == nullptr) {
@@ -96,10 +95,9 @@ struct LinkedListNode {
     delete old_head;
   }
 </code></pre>
-
 <h2>Changes to push_back()</h2>
 <p>The <code>push_back()</code> function adds a Node to the end of a List, after the current tail. Code for push_back in a Singly-Linked List was already making the assignment <code>tail-&gt;next = new_node</code>. Now that <code>new_node</code> has a <code>prev</code> pointer, we need to assign that to the Node in front of our newly inserted node. This assignment is: <code>new_node-&gt;prev = tail</code>.</p>
-<pre><code class="c++">  void push_back(const T&amp; value) {
+<pre><code class="language-c++">  void push_back(const T&amp; value) {
     LinkedListNode&lt;T&gt; *new_node = new LinkedListNode&lt;T&gt;(value);
     if (empty()) {
       head = tail = new_node;
@@ -110,19 +108,17 @@ struct LinkedListNode {
     }
   }
 </code></pre>
-
 <h2>New Iterator Operator: -- (Decrement)</h2>
 <p>Now that nodes have a <code>prev</code> pointer, and "know about the node in front of them", iterators can go both forwards (incrementing, e.g. ++it) through the List, and backwards (decrementing, e.g. --it) through the list.</p>
 <p>The -- operator, to decrement, is very similar to the ++ operator, to increment. Instead of advancing to a Node's next pointer, <code>cur = cur-&gt;next</code>, it advances to a node's previous pointer, <code>cur = cur-&gt;prev</code>.</p>
-<pre><code class="c++">    Iterator&amp; operator--() {
+<pre><code class="language-c++">    Iterator&amp; operator--() {
       cur = cur-&gt;prev;
       return *this;
     }
 </code></pre>
-
 <h2>Reminder: existing Iterator locations to support forwards/increment iteration</h2>
 <p>Forwards iteration through a List starts at the head of a list, with the begin() Iterator, and increments until it is equal to an Iterator location AFTER the tail of the list, or end(). This covers the entire list, forwards, from head to tail.</p>
-<pre><code class="c++">  Iterator begin() {
+<pre><code class="language-c++">  Iterator begin() {
     return Iterator(head);
   }
 
@@ -134,11 +130,10 @@ struct LinkedListNode {
       cout &lt;&lt; *it &lt;&lt; endl;
   }
 </code></pre>
-
 <h2>New Iterator locations to support backwards/decrement iteration</h2>
 <p>Backwards iteration is similar but opposite: we need an Iterator at the tail of the list, or tail_iterator(), and also an Iterator location <strong>before</strong> the head of the list, or before_begin_iterator().</p>
 <p>This will enable us to iterate backward, starting at the tail, and ending when our decremented iterator is equal to a location one place <em>before</em> the head, which covers the entire list, backwards, from tail to head.</p>
-<pre><code class="c++">  Iterator tail_iterator() {
+<pre><code class="language-c++">  Iterator tail_iterator() {
     return Iterator(tail);
   }
 
@@ -150,10 +145,9 @@ struct LinkedListNode {
       cout &lt;&lt; *it &lt;&lt; endl;
   }
 </code></pre>
-
 <h2>All together:</h2>
 <p>Here's the complete code incorporating everything we've just covered:</p>
-<pre><code class="c++">#include &lt;exception&gt;
+<pre><code class="language-c++">#include &lt;exception&gt;
 
 template &lt;typename T&gt;
 struct LinkedListNode {
@@ -249,7 +243,6 @@ public:
   }
 };
 </code></pre>
-
 <h3>Thanks</h3>
 <p>Thanks to Brian Foster for typing up the rough draft of these notes based on the lecture video.</p>
 

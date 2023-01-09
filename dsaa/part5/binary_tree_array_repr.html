@@ -78,7 +78,6 @@
  /
 H
 </code></pre>
-
 <p>This tree is NOT full.  B is missing a right child.  C also has a right child but no left child.  The bottom layer isn't being filled in from left to right.</p>
 <pre><code>      A
      / \
@@ -86,7 +85,6 @@ H
    /     \
   D       E
 </code></pre>
-
 <h2>Example</h2>
 <p>Consider the following tree.</p>
 <pre><code>      D
@@ -95,13 +93,11 @@ H
    / \   / \
   A   C  E  G
 </code></pre>
-
 <p>If it was stored in an array, it could look something like this.</p>
 <pre><code>D  B  F  A  C  E  G
 
 0  1  2  3  4  5  6
 </code></pre>
-
 <p>The root is at index 0.  The root's children are at index 1 and 2.  Node 1 has children at index 3 and 4.  Node 2 has children at index 5 and 6.  Etc.</p>
 <h2>Parent and Child relationships</h2>
 <p>Formulas for determining the index of children/parent nodes, for a given node i, are as follows:</p>
@@ -111,7 +107,6 @@ right child = 2i + 2
 
 parent = (i - 1) / 2 (using integer division!)
 </code></pre>
-
 <p>The size of the array (tree) must be tracked.</p>
 <p>The size can be used to answer the question, "does some node have a left/right child?"</p>
 <p>To answer this question, the above formulas would be used to calculate the child index.  If the index &lt; array size, then the child exists!</p>

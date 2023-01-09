@@ -69,7 +69,7 @@
 <p>This repeats until one of the lists is depleted.</p>
 <p>Then, the other list is copied into the result list.</p>
 <p>Merge is not a recursive algorithm. It has linear running time, or O(n), where n is "the size of the two lists"</p>
-<pre><code class="c++">// Overall, this algorithm is O(L + R) = O(n)
+<pre><code class="language-c++">// Overall, this algorithm is O(L + R) = O(n)
 vector&lt;string&gt; merge(
     const vector&lt;string&gt;::iterator left_low, const vector&lt;string&gt;::iterator left_high,
     const vector&lt;string&gt;::iterator right_low, const vector&lt;string&gt;::iterator right_high) {
@@ -102,10 +102,9 @@ vector&lt;string&gt; merge(
   return result;
 }
 </code></pre>
-
 <h2>Merge Sort</h2>
 <p>Merge Sort is a recursive algorithm that uses the Merge algorithm to sort a SINGLE list. It does this by recursively splitting the single list in half, recursively calling itself on the two halves. Then, each call to merge sort (on progressively larger lists, as the recursive stack closes out) merges the left and right halves of its range.</p>
-<pre><code class="c++">// T(0) = 1
+<pre><code class="language-c++">// T(0) = 1
 // T(1) = 1
 // T(N) = 1 + N + 2 * T(N / 2)
 void merge_sort(vector&lt;string&gt;::iterator low, vector&lt;string&gt;::iterator high) {
@@ -129,7 +128,6 @@ void merge_sort(vector&lt;string&gt;::iterator low, vector&lt;string&gt;::iterat
   }
 }
 </code></pre>
-
 <p>For an empty or single element list, merge_sort simply returns. so T(0) = T(1) = 1.</p>
 <p>In the general recursive case, there is a constant time middle iterator calculation.</p>
 <p>There are two recursive calls, to inputs half the size of original input.</p>
@@ -155,7 +153,6 @@ T(n) = 4n + 16((n / 16) + 2T((n / 16) / 2))
 T(n) = 4n + n + 32T(n / 32)
 T(n) = 5n + 32T(n / 32)
 </code></pre>
-
 <p>The leading term seems to be increasing with k. The denominator under n seems to be increasing with 2^k.</p>
 <p>T(n) = kn + (2^k)T(n / (2^k))</p>
 <p>Now we try to write T(n) in terms of things we already know, like T(0) or T(1). We can do this by solving for k such that T(n / (2^k)) = T(0) or T(n / (2^k)) = T(1). Solving for n / (2^k) = 1 is easier, so we do that:</p>
@@ -163,7 +160,6 @@ T(n) = 5n + 32T(n / 32)
 n = (2^k)
 log2(n) = k
 </code></pre>
-
 <p>We can substitute this into the relation:</p>
 <pre><code>T(n) = kn + (2^k)T(n/(2^k))
 T(n) = (log2(n))n + (2^(log2(n)))T(n/(2^(log2(n))))
@@ -176,11 +172,10 @@ O(T(n)) = O(n * log2(n) + n)
 O(T(n)) = O(n * log2(n))
 O(T(n)) = O(nlog(n))
 </code></pre>
-
 <p>So merge sort is O(nlog(n)), or linearithmic complexity.</p>
 <h2>Example code</h2>
 <p>The complete example code, with merge, merge_sort, and client code:</p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part5/simple_merge_sort.cpp">simple_merge_sort.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
+<p><a href="simple_merge_sort.cpp">simple_merge_sort.cpp</a><pre><code class="c++">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 
 using std::cout;

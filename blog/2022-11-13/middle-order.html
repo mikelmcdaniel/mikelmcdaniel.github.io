@@ -60,7 +60,7 @@
 </header>
 
 <section class="px-3">
-
+  
 <p>This post is about solving a very particular and unimportant problem: Given a number, N, efficiently generate the sequence of all the numbers in [0, N) in a "middle order" where each number appears exactly once. The first number in a middle order is N / 2, rounding up or down, and the next numbers would be N / 4 and 3 * N / 4. For example, if N was 16, then a middle order could start as [8, 4, 12, ...] <em>or</em> [8, 12, 4, ...]. Both would be appropriate middle orders.</p>
 <h2>Powers of 2</h2>
 <p>There's a perfect solution for powers of 2 using O(n) time and O(1) space.</p>
@@ -83,7 +83,6 @@ def middle_order_power_of_2(n: int) -&gt; Iterator[int]:
     yield from range(start, n, step)
     step = start
   yield 0
-
 
 if __name__ == &#39;__main__&#39;:
   for n in (1, 2, 4, 8, 16, 32):

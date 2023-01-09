@@ -66,7 +66,6 @@
 <p>The Balance Factor of an AVL node is the Right Subtree Height minus the Left Subtree Height.</p>
 <pre><code>Balance Factor = Height(Right Subtree) - Height(Left Subtree)
 </code></pre>
-
 <h2>Visual Examples</h2>
 <pre><code>    O balanceFactor = 2
      \
@@ -74,17 +73,14 @@
        \
         O balanceFactor = 0
 </code></pre>
-
 <pre><code>    O balanceFactor = -1
    /
   O balanceFactor = 0
 </code></pre>
-
 <pre><code>    O balanceFactor = 0
    / \
   O   O
 </code></pre>
-
 <h2>Tracking Balance Factor as the tree changes</h2>
 <p>A balance factor integer is maintained at each node in an AVL tree.</p>
 <p>Balance factor changes if the height of a node's subtree changes.</p>
@@ -96,7 +92,7 @@
 <p>Our BinarySearchTree class has been updated to implement balance factor.</p>
 <p>Node struct changes</p>
 <p>int balance_factor added to Node struct, to track this info at each Node</p>
-<pre><code class="c++">...
+<pre><code class="language-c++">...
 struct Node {
     Key key;
     Value value;
@@ -104,9 +100,8 @@ struct Node {
     Node *left, *right;
 ...
 </code></pre>
-
 <p>Node::insert() function is updated, to increment or decrement balance factor depending on if insert affects height of a subtree.</p>
-<pre><code class="c++">    bool insert(const Key&amp; new_key, const Value&amp; new_value) {
+<pre><code class="language-c++">    bool insert(const Key&amp; new_key, const Value&amp; new_value) {
       if (new_key == key) {
         return false;
       } else if  (new_key &lt; key) {  // Need to insert to the left
@@ -142,7 +137,6 @@ struct Node {
       }
     }
 </code></pre>
-
 <h2>Thanks</h2>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

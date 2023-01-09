@@ -64,12 +64,12 @@
 <p><a href="https://youtu.be/eKAXxzVn2ik">Simple Vector Implementation video (36 minutes) (Spring 2021)</a></p>
 <h2>Before Vectors</h2>
 <p>Before we had vectors, we had arrays and they were good enough. Just kidding. Arrays are useful but they're not great when you don't know (at compile time) how many things you're going to store in the array (at run time). Imagine implementing a function that takes a filename as input and returns an array of all the lines...</p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/data/truth.txt">../../data/truth.txt</a>
+<p><a href="../../data/truth.txt">../../data/truth.txt</a>
 <pre><code class="language-plaintext">You can&#39;t sort in better than O(n * log(n)) time using only comparisons.
 Linked lists are rarely practical even though you can remove or insert an
   element in O(1) time iff you have a pointer/iterator to the position where you
   want to remove or insert.</code></pre></p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part2/vector_of_string_impl/read_lines_array1.cpp">read_lines_array1.cpp</a><pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
+<p><a href="read_lines_array1.cpp">read_lines_array1.cpp</a><pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
 #include &lt;exception&gt;  // std::exception
 #include &lt;fstream&gt;  // std::ifstream
 #include &lt;utility&gt;  // std::pair, std::make_pair
@@ -172,7 +172,7 @@ Linked lists are rarely practical even though you can remove or insert an
 </samp></pre>
 </p>
 <p>That's really tedious compared to the vector version that does the same thing:</p>
-<pre><code class="c++">vector&lt;string&gt; read_lines_std_vector(const string&amp; filepath) {
+<pre><code class="language-c++">vector&lt;string&gt; read_lines_std_vector(const string&amp; filepath) {
   ifstream f(filepath);
   vector&lt;string&gt; lines;
   if (f.fail()) {
@@ -195,10 +195,9 @@ for (const string&amp; line : read_lines_string_vector(filepath)) {
 cout &lt;&lt; endl;
 // ...
 </code></pre>
-
 <h2>Building our own simple vector</h2>
 <p>Let's start out by just building what we need in a <code>StringVector</code> class, implementing just the operations that are used in <code>read_lines_string_vector</code> and the for-loop that prints the lines (<code>for (const string&amp; line : read_lines_string_vector(filepath))</code>).</p>
-<pre><code class="c++">class StringVector {
+<pre><code class="language-c++">class StringVector {
   // We need to keep track of how much room is in the array (capacity)
   // and the number of elements in the array (size_).
   int capacity, size_;
@@ -255,13 +254,12 @@ StringVector read_lines_string_vector(const string&amp; filepath) {
   return lines;
 }
 </code></pre>
-
 <p>Most of the <code>push_back</code> method is just copy-pasted from <code>read_lines_array</code>.
 There are lots of other things that a <code>std::vector</code> does, like <code>pop_back</code>, <code>insert</code>, <code>remove</code>, <code>erase</code>, <code>operator[]</code>, etc. but we're just starting with putting things in our vector class and iterating over it.</p>
 <p><code>pop_back</code> actually behaves similarly to <code>push_back</code> in reverse: when the array array size gets small relative to the capacity, it actually creates a new <em>smaller</em> array, copies the elements over, then deletes the old <em>larger</em> array.</p>
 <p>Exercise for the reader: Try writing a short program that creates an <code>std::vector</code>, then calls <code>push_back</code> many times and measure when <code>your_vector.capacity()</code> changes and what it changes to. How does that compare to <code>your_vector.size()</code>? How does it change when you do many calls to <code>pop_back</code>?</p>
 <p>This <code>StringVector</code> is nice but it only works for <code>std::string</code>. What if our program has other types of data? We use templates! Switching to templates in this example is easy since we only have one type that we need to change, so all we do is rename the class to <code>TemplateVector</code>, rename <code>strs</code> to <code>values</code> since it might not have strings in it, and replace <code>string</code> with our template typename, <code>T</code>.</p>
-<pre><code class="c++">
+<pre><code class="language-c++">
 template&lt;typename T&gt;
 class TemplateVector {
   int capacity, size_;
@@ -324,9 +322,8 @@ TemplateVector&lt;string&gt; read_lines_template_vector(const string&amp; filepa
   return lines;
 }
 </code></pre>
-
 <p>Here's a program that shows each implementation as a demo:</p>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part2/vector_of_string_impl/read_lines_array.cpp">read_lines_array.cpp</a><pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
+<p><a href="read_lines_array.cpp">read_lines_array.cpp</a><pre><code class="c++">#include &lt;iostream&gt;  // std::cout, std::endl
 #include &lt;exception&gt;  // std::exception
 #include &lt;fstream&gt;  // std::ifstream
 #include &lt;string&gt;  // std::string

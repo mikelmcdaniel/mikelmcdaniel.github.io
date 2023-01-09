@@ -174,7 +174,7 @@
 </tbody>
 </table>
 <h3>Implementation</h3>
-<pre><code class="c++">bool _contains_word_bs(
+<pre><code class="language-c++">bool _contains_word_bs(
         const vector&lt;string&gt;&amp; words, const string&amp; word, int low, int high) {
     // Base case: Could not find the word
     if (low == high) {
@@ -198,10 +198,9 @@ bool contains_word_bs(const vector&lt;string&gt;&amp; words, const string&amp; w
     return _contains_word_bs(words, word, 0, words.size());
 }
 </code></pre>
-
 <p><a href="https://en.cppreference.com/w/cpp/algorithm/binary_search"><code>std::binary_search</code>, defined in the <code>&lt;algorithm&gt;</code> header</a> is a more general version of binary search than <code>contains_word_bs</code>.</p>
 <h3>How fast is it?</h3>
-<p><a href="https://mikelmcdaniel.github.io/dsaa/part1/binary_search_timed.cpp">binary_search_timed.cpp</a><pre><code class="c++">#include &lt;algorithm&gt;
+<p><a href="binary_search_timed.cpp">binary_search_timed.cpp</a><pre><code class="c++">#include &lt;algorithm&gt;
 #include &lt;chrono&gt;
 #include &lt;iostream&gt;
 #include &lt;fstream&gt;
@@ -307,26 +306,26 @@ int main(int argc, const char* argv[]) {
 </pre>
 <pre><strong>$</strong> <kbd>./binary_search_timed</kbd></pre>
 <pre><samp>&#34;Number of words&#34;,contains_word_bs,std::binary_search
-1,0.00609926,0.0150932
-2,0.00946512,0.021175
-4,0.0129443,0.024497
-8,0.0179245,0.029156
-16,0.022768,0.033633
-32,0.0287065,0.0369826
-64,0.0371234,0.0491182
-128,0.0322104,0.0504422
-256,0.0491147,0.0736109
-512,0.0577002,0.0621232
-1024,0.0629578,0.0749853
-2048,0.0729468,0.0825659
-4096,0.083335,0.0916521
-8192,0.0947008,0.101883
-16384,0.10958,0.112314
-32768,0.12262,0.116309
-65536,0.126537,0.213209
-124536,0.13117,0.11641
-124536,0.107862,0.113248
-124536,0.0961934,0.0980445
+1,0.0056199,0.0173886
+2,0.010135,0.024675
+4,0.0137802,0.0302772
+8,0.0197854,0.035572
+16,0.0264409,0.0417622
+32,0.0343236,0.0433392
+64,0.0321582,0.039424
+128,0.0349039,0.045379
+256,0.0411828,0.0516638
+512,0.0461718,0.0578878
+1024,0.0534536,0.0639551
+2048,0.0597787,0.0686268
+4096,0.0674313,0.076616
+8192,0.0732493,0.0819305
+16384,0.0841993,0.0913133
+32768,0.0985319,0.106697
+65536,0.110652,0.122715
+124536,0.123997,0.141723
+124536,0.122756,0.139681
+124536,0.115488,0.130762
 </samp></pre>
 </p>
 <p><img alt="Binary Search Timed" src="binary_search_timed.svg" /></p>

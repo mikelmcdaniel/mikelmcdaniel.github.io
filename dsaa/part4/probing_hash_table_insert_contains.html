@@ -81,7 +81,7 @@
 <p>Probing and searching continues, until either the key/element is found at a probed hash index, or an empty hash index is found.</p>
 </li>
 </ol>
-<pre><code class="c++">  bool contains(const Key&amp; key) const {
+<pre><code class="language-c++">  bool contains(const Key&amp; key) const {
     const size_t h = hash&lt;Key&gt;{}(key);
     for (
         size_t i = 0, bucket_index = (h + probe_amount(key, i)) % buckets.size();
@@ -94,7 +94,6 @@
     return false;
   }
 </code></pre>
-
 <h2>Insert</h2>
 <p>In a Probing Hash Table, the main algorithm for insert() is:</p>
 <ol>
@@ -114,7 +113,7 @@
 <p>Insert the key/element at that empty hash index.</p>
 </li>
 </ol>
-<pre><code class="c++">  static bool _insert(
+<pre><code class="language-c++">  static bool _insert(
       const Key&amp; key,
       const Value&amp; value,
       vector&lt;Bucket&gt;* buckets) {
@@ -131,7 +130,6 @@
     return true;
   }
 </code></pre>
-
 <p>Notice that both insert() and rehash() call the _insert() helper function.  </p>
 <p>This allows us to use the general algorithm</p>
 <ol>
@@ -145,7 +143,7 @@
 <p>Then, insert the key/element into the new, larger hash table</p>
 </li>
 </ol>
-<pre><code class="c++">  bool insert(const Key&amp; key, const Value&amp; value) {
+<pre><code class="language-c++">  bool insert(const Key&amp; key, const Value&amp; value) {
     if (load_factor() &gt;= max_load_factor) {
       ++bucket_size_index_;
       rehash(bucket_sizes[bucket_size_index_]);
@@ -158,8 +156,7 @@
     return inserted;
   }
 </code></pre>
-
-<pre><code class="c++">  void rehash(int new_num_buckets) {
+<pre><code class="language-c++">  void rehash(int new_num_buckets) {
     vector&lt;Bucket&gt; new_buckets(new_num_buckets);
     for (const Bucket&amp; b : buckets) {
       if (!b.empty) {
@@ -169,13 +166,12 @@
     buckets = move(new_buckets);
   }
 </code></pre>
-
 <h2>Complete Example Code</h2>
 <p>NOTE: This code is slightly different than the end result of this lecture video.  </p>
 <p>It includes work done in the following lecture, "Probing Hash Table Implementation (Probing) Lecture".</p>
 <p>The main difference is use of a probing helper to implement quadratic probing.</p>
 <p>The main general algorithms of insert and contains are similar.</p>
-<pre><code class="c++">#ifndef HASH_TABLE_PROBING_H_
+<pre><code class="language-c++">#ifndef HASH_TABLE_PROBING_H_
 #define HASH_TABLE_PROBING_H_
 
 #include &lt;cstddef&gt;
@@ -320,7 +316,6 @@ public:
 #endif /* HASH_TABLE_PROBING_H_ */
 
 </code></pre>
-
 <h2>Thanks</h2>
 <p>Thanks to Brian Foster for writing up these notes based on the video lectures.</p>
 

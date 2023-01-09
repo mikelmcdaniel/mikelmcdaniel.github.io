@@ -41,9 +41,12 @@ def plot(approx_ops, out_filename, sub_title=""):
     x = num_elementss
     y = num_bucketss
     fig, ax = plt.subplots()
-    ax.set_title(f"approx_ops / num_elements ({sub_title}) (min={z.min():.4f})")
-    ax.set_xlabel("num_elements")
-    ax.set_ylabel("num_buckets")
+    # ax.set_title(f"approx_ops / num_elements ({sub_title}) (min={z.min():.4f})")
+    # ax.set_xlabel("num_elements")
+    # ax.set_ylabel("num_buckets")
+    ax.set_title(f"O(f(N, B)) / N (min={z.min():.4f})")
+    ax.set_xlabel("N  (number of elements)")
+    ax.set_ylabel("B  (number of buckets)")
 
     sorted_z = sorted(z.flat)
     boundaries = [sorted_z[(len(sorted_z) - 1) * i // 256] for i in range(256 + 1)]

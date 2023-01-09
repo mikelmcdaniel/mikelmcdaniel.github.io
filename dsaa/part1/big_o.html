@@ -75,7 +75,7 @@
 <li>the same, no matter which computer we're talking about</li>
 </ul>
 <p>When we looked at Linear Search, we saw that when there were n words in our input list, we might have to search through all n words one at a time. In the best case scenario, the word we're looking for is right at the beginning of the list but in the worst case scenario, the word we're looking for is all the way at the end or not in the list at all so we have to loop n times.</p>
-<pre><code class="c++">bool contains_word_linear(const vector&lt;string&gt;&amp; words, const string&amp; word) {
+<pre><code class="language-c++">bool contains_word_linear(const vector&lt;string&gt;&amp; words, const string&amp; word) {
   // In the worse case, this loop runs n == words.size() times.
   // Inside the loop, the only thing that happens is this comparison.
   // If comparing takes constant time, then this algorithm takes
@@ -88,9 +88,8 @@
     return false;
 }
 </code></pre>
-
 <p>When we looked at Binary Search, we saw that when there were n words in our input list, we might have to eliminate half of the possible words until we get to 0 or 1 words. If there are n words, that's log base 2 of n (rounded up) times in the worst case scenario.</p>
-<pre><code class="c++">bool _contains_word_bs(
+<pre><code class="language-c++">bool _contains_word_bs(
         const vector&lt;string&gt;&amp; words, const string&amp; word, int low, int high) {
     // Base case: Could not find the word
     if (low == high) {
@@ -114,11 +113,10 @@ bool contains_word_bs(const vector&lt;string&gt;&amp; words, const string&amp; w
     return _contains_word_bs(words, word, 0, words.size());
 }
 </code></pre>
-
 <p>We could time each algorithm on a particular computer but the timing on my computer might be different than your computer.</p>
 <p>Let's try counting the number of different steps by looking at the code. For example, in the worst case <code>contains_word_linear</code> loops n times (so even if there's nothing in the loop, that's still n steps) and checks <code>if (w == word)</code> n times (once per loop) for a total of n loop iterations and n equality checks.</p>
 <p>For a more complicated example, let's approximate the number of steps in <code>contains_word_bs</code>:</p>
-<pre><code class="c++">bool _contains_word_bs(
+<pre><code class="language-c++">bool _contains_word_bs(
         const vector&lt;string&gt;&amp; words, const string&amp; word, int low, int high) {
   // 1 comparison
     if (low == high) {
@@ -156,7 +154,6 @@ bool contains_word_bs(const vector&lt;string&gt;&amp; words, const string&amp; w
     return _contains_word_bs(words, word, 0, words.size());
 }
 </code></pre>
-
 <p>For the worst case I counted 2 steps plus 12, for every call to <code>_contains_word_bs</code>. We also know that <code>_contains_word_bs</code> will be called at most ceil(log2(n)) times for n words so our total number of steps should be &le; 12 * ceil(log2(n)) + 2. There are "on the order of" log(n) or O(log(n)) steps. This is really tedious <em>and</em> if we actually count up all the different kinds of steps it would be difficult to describe how fast Binary Search is or to compare it to other searching algorithms. We can make things a little better by just counting the number of steps. Additionally, we'd like some way to ignore the "+ 2" since those steps won't have a big impact when we're searching through large inputs.</p>
 <p>The best solution so far is to count the number of steps but it is still tedious and has more information than we need. The thing that makes Binary Search so much better than Linear Search is how it cuts the number of possible words in half and we'd like to describe that somehow.</p>
 <p>Even if Binary Search took 1,000 * ceil(log2(n)) + 1,000 steps, it would still be faster than Linear Search's 2 * n steps when n is large enough (specifically when n &gt; 7,000).</p>
@@ -170,43 +167,38 @@ bool contains_word_bs(const vector&lt;string&gt;&amp; words, const string&amp; w
 <p>First thing's first: O(1). Any code that takes the same amount of time, no matter what, is O(1). This includes things like adding or multiplying two <code>int</code>s or comparing two <code>double</code>s. Note that if you have some constant number of O(1) operations done one after another, they're still O(1). For example, for a couple <code>int</code>s, <code>x</code> and <code>y</code>, <code>x + y</code> is O(1) and <code>x * y</code> is O(1) and so is <code>x + y - x * y</code>. O(2) = O(1) and O(1) + O(1) = O(1).</p>
 <p>Next is loops. It's very common to have a loop that loops n times. In that case, the big-O of the whole loop is O(n * <em>whatever is in the loop</em>). For example, a loop like <code>for(int i = 0; i &lt; n; ++i) {}</code> by itself is already O(n) because there's still some O(1) stuff happening (e.g. <code>++i</code>) even though there's "nothing" in the loop.</p>
 <p>What do you think the big-O is for the following code snippets?</p>
-<pre><code class="c++">int sum = 0;
+<pre><code class="language-c++">int sum = 0;
 for (int i = 0; i &lt; n; ++i) {
   ++sum;
 }
 </code></pre>
-
-<pre><code class="c++">int sum = 0;
+<pre><code class="language-c++">int sum = 0;
 for (int i = 0; i &lt; n; ++i) {
   for (int j = 0; j &lt; 4; ++j) {
     ++sum;
   }
 }
 </code></pre>
-
-<pre><code class="c++">int sum = 0;
+<pre><code class="language-c++">int sum = 0;
 for (int i = 0; i &lt; n; ++i) {
   for (int j = 0; j &lt; n; ++j) {
     ++sum;
   }
 }
 </code></pre>
-
-<pre><code class="c++">int sum = 0;
+<pre><code class="language-c++">int sum = 0;
 for (int i = 0; i &lt; n; ++i) {
   for (int j = 0; j &lt; i; ++j) {
     ++sum;
   }
 }
 </code></pre>
-
-<pre><code class="c++">vector&lt;string&gt; words = ...;
+<pre><code class="language-c++">vector&lt;string&gt; words = ...;
 const int n = words.size();
 for (int i = 0; i &lt; n; ++i) {
   std::binary_search(words.begin(), words.end(), words[i]);
 }
 </code></pre>
-
 <h3>Formal Definition</h3>
 <p>f(n) &isin; O(g(n)) if there exists some constants c and n0 such that f(n) &le; c * g(n) for all n &gt; n0.</p>
 <p>Please read through <a href="https://developerinsider.co/big-o-notation-explained-with-examples/">Big-O Notation Explained with Examples</a> by Vineet Choudhary.</p>

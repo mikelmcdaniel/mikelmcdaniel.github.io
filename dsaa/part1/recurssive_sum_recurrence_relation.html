@@ -75,7 +75,7 @@
 <li>Finally, solve the relation using the known values.</li>
 </ol>
 <h2>Recursive sum example</h2>
-<pre><code class="c++">template &lt;typename RandomAccessIt&gt;
+<pre><code class="language-c++">template &lt;typename RandomAccessIt&gt;
 long recursive_sum(RandomAccessIt begin, RandomAccessIt end)
 {
     if (begin == end) {
@@ -88,7 +88,6 @@ long recursive_sum(RandomAccessIt begin, RandomAccessIt end)
     }
 }
 </code></pre>
-
 <h3>1. Understand, identify base/general cases</h3>
 <p>This function recursively calculates the sum of a collection of values in the range between two iterators, [<code>begin</code>, <code>end</code>)</p>
 <p>The base case of an empty range, <code>begin == end</code>, simply returns <code>0</code>.</p>
@@ -118,7 +117,6 @@ T(n) = 7 + 8(1 + 2T((n / 8) / 2))
 T(n) = 7 + 8 + 16T(n / 16)
 T(n) = 15 + 16T(n / 16)
 </code></pre>
-
 <h3>4. Spot a pattern, in terms of "k" iterations</h3>
 <p>There is a useful "Sum of Powers of 2" to be aware of for this step</p>
 <pre><code>1   + 2   + 4   + 8   + ... + 2^k = 2^(k + 1) - 1
@@ -130,13 +128,11 @@ T(n) = 15 + 16T(n / 16)
 2^0 + 2^1 + 2^2 + 2^3       = 2^(3 + 1) - 1 = 15
 2^0 + 2^1 + 2^2 + 2^3 + 2^4 = 2^(4 + 1) - 1 = 31
 </code></pre>
-
 <p>In this relation, the leading term seems to be growing from 1 to 3 to 7 in a "sum of powers of 2" manner, or 2^k - 1.</p>
 <p>The multiple of T, and denominator below n, both seem to be growing from 2 to 4 to 8 in a 2^k manner.</p>
 <h3>5. Write the relation in terms of k</h3>
 <pre><code>T(n) = (2^k) - 1 + (2^k)T(n / (2^k))
 </code></pre>
-
 <p>(To double check this, you can expand this relation in a similar way to step
 3. The goal would be to observe k+1 in each location where k is, after one expansion).</p>
 <h3>6. Identify a k value that allows substitution of a base case</h3>
@@ -146,7 +142,6 @@ T(n) = 15 + 16T(n / 16)
 n = (2^k)
 log2(n) = k
 </code></pre>
-
 <h3>7. Solve using known values</h3>
 <p>Substituting in log2(n) for k ...</p>
 <pre><code>T(n) = (2^(log2(n))) - 1 + (2^(log2(n)))*T(1)
@@ -157,7 +152,6 @@ T(n) = 2n - 1
 O(T(n)) = O(2n - 1)
 O(T(n)) = O(n)
 </code></pre>
-
 <p>Hopefully this is intuitive: to calculate the sum of elements in a range having size n, we would have to access and add each of the elements once.</p>
 <h3>Thanks</h3>
 <p>Thanks to Brian Foster for writing up the initial draft of these notes.</p>
