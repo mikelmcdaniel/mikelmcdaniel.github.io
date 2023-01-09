@@ -68,15 +68,16 @@
 Your browser does not support the HTML5 canvas tag.
 </canvas>
 
-<p><label for="min_speed">Minimum Speed:</label><input id="min_speed" type="text" value="46" oninput="handleParamChange()"></p>
-<p><label for="max_speed">Maximum Speed:</label><input id="max_speed" type="text" value="52" oninput="handleParamChange()"></p>
-<p><label for="min_power">Minimum Power:</label><input id="min_power" type="text" value="45" oninput="handleParamChange()"></p>
-<p><label for="max_power">Maximum Power:</label><input id="max_power" type="text" value="65" oninput="handleParamChange()"></p>
+<p><label for="min_speed">Speed:</label><input id="min_speed" type="number" min="0" step="1" value="46" oninput="handleParamChange()">
+<label for="max_speed"> to </label><input id="max_speed" type="number" min="0" step="1" value="52" oninput="handleParamChange()"></p>
+
+<p><label for="min_power">Power:</label><input id="min_power" type="number" min="0" max="100" step="1" value="45" oninput="handleParamChange()">
+<label for="max_power"> to </label><input id="max_power" type="number" min="0" max="100" step="1" value="65" oninput="handleParamChange()"></p>
 <p><label for="text">Text:</label><textarea id="text" type="text" oninput="handleParamChange()">Materials Test:
 6mm
 Birch
 Air Assist
-Jan 8, 2021</textarea></p>
+Today's Date</textarea></p>
 
 <p><button onclick="downloadCutTestFile()">Download LightBurn Cut Test File</button>
 <a hidden id="downloadCutTestFileLink" href=""></a></p>
@@ -137,9 +138,8 @@ function drawAll() {
   ctx.font = line_height + "px Arial";
   ctx.textAlign = "left";
   let lines = text.split('\n');
-
   for (let i = 0; i < lines.length; i++) {
-    ctx.fillText(lines[i], 770 / CARD_WIDTH * canvas.width, 143 / CARD_HEIGHT * canvas.height + (i * 1.2 * line_height));
+    ctx.fillText(lines[i], 760 / CARD_WIDTH * canvas.width, 143 / CARD_HEIGHT * canvas.height + (i * 1.2 * line_height));
   }
 }
 
@@ -170,11 +170,15 @@ function updateSelfLink() {
     "&max_speed=" + document.getElementById("max_speed").value +
     "&min_power=" + document.getElementById("min_power").value +
     "&max_power=" + document.getElementById("max_power").value +
-    "&text=" + document.getElementById("text").value);
+    "&text=" + document.getElementById("text").value.replaceAll("\n", "%0A"));
 }
 
 
 function init() {
+  var todays_date = new Date();
+  var todays_date_str = todays_date.toLocaleString("en-US", { month: "short" }) + " " + todays_date.getFullYear();
+  document.getElementById("text").value = document.getElementById("text").value.replaceAll("Today's Date", todays_date_str);
+
   var urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has("min_speed")) {
     document.getElementById("min_speed").value = urlParams.get("min_speed");
@@ -188,6 +192,10 @@ function init() {
   if (urlParams.has("max_power")) {
     document.getElementById("max_power").value = urlParams.get("max_power");
   }
+  if (urlParams.has("text")) {
+    document.getElementById("text").value = urlParams.get("text");
+  }
+
 
   var baseImage = document.getElementById("base");
   var canvas = document.getElementById("canvas");
