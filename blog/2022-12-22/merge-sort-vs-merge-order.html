@@ -13,7 +13,7 @@
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <!-- Bootstrap core plus theme -->
   <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
-  <title>ROUGH DRAFT: Merge Order vs Merge Sort</title>
+  <title>Merge Order vs Merge Sort</title>
   <style>
     @media print {
       .do-not-print {
@@ -51,7 +51,7 @@
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="site-heading">
-          <h1>ROUGH DRAFT: Merge Order vs Merge Sort</h1>
+          <h1>Merge Order vs Merge Sort</h1>
           <span class="subheading">Efficiently Joining Data, Maybe... 2022-12-22</span>
         </div>
       </div>
@@ -61,7 +61,9 @@
 
 <section class="px-3">
   
-<p>This post is about replacing the traditional Merge Sort merge step when joining/merging large datasets with a sort of "Merge Order" merge <em>and</em> my journey to calculating the big-O of Merge Order's runtime.</p>
+<p>This post is about replacing the traditional Merge Sort merge step when joining/merging large datasets with a sort of "Merge Order" merge and <strong>attempt</strong> to calculate the big-O of Merge Order's runtime.</p>
+<p>If you can calculate the big-O of Merge Order's runtime, I'd love to hear from you!:</p>
+<p>$$ O \left(\sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} \right) $$</p>
 <h2>Recommended Background Knowledge</h2>
 <p>If you're reading this and aren't familiar with Merge Sort, Merge Join, or cache locality, I recommend reading up on those topics first:</p>
 <ul>
@@ -406,7 +408,7 @@ if __name__ == &#34;__main__&#34;:
 Ordering 3 elements in 2 buckets takes 3.6887218755408675 operations on average.
 </samp></pre>
 </p>
-<h3>Looking for Patterns <strong>and</strong> Checking that Ordering is Empirically</h3>
+<h3>Looking for Patterns</h3>
 <p>I don't know how to calculate the big-O of <code>order</code> and it's possible that I'm not able to calculate it. Even if I can't calculate the big-O, I'd still like to know how much better ordering is over sorting. Either way, I need to look for patterns!</p>
 <h4>Speeding Up!</h4>
 <p><code>approx_ops_to_order_simple.py</code> works but... it's too slow to calculate <code>approx_num_ops_to_order</code> for large values, which makes it hard to look for patterns. When I replace the <code>main</code> with some code that outputs <code>approx_num_ops_to_order</code> for various N = 1..7 and B = 1..7, it takes about 2.5 seconds on my laptop. Going up to N = 8 and B = 8, takes about 54 seconds. Going up to N = 9 and B = 9, would probably take about 20 minutes. I don't know that it's take 20 minutes but I can make an educated guess based on the big-O for <code>num_partitions</code>. <code>num_partitions = num_buckets ** num_elements</code> so simply computing all <code>partitions(8, 8)</code> should take about <code>8 ** 8 / 7 ** 7 ~= 20.37</code> times as long, which is pretty close to the 54 seconds / 2.5 seconds = 21.6 ratio that we saw in code. I'd really like to calculate the average number of operations for millions or at least thousands of elements and buckets but the current code would probably take about <code>54 * (15**15 / 8**8) / (60 * 60 * 24 * 365) ~= 44692.65</code> years just to calculate up to N = B = 15.</p>
@@ -695,7 +697,7 @@ def main():
    247838    0.028    0.000    0.028    0.000 {method 'values' of 'dict' objects}
 </code></pre>
 <p>Replacing all of the large ints with their log float versions had no noticable effect on the code! The code is just slightly more complicated. It's possible that this will still speed up the code for much larger numbers like <code>num_elements = num_buckets = 100000</code> but we can't easily test that now.</p>
-<h5>Using a Different Partition Format</h5>
+<h5>Compact Partition Format</h5>
 <p>At this point, the bulk of the time is being spent just generating partitions. We may be able to speed that up by going to a more compact format: instead of a partition being represented as a list of how many elements are in each bucket, we can represent it as a list of (number of elements in a bucket, number of buckets with that many elements). For example, the partition [4, 3, 3] represents 3 buckets where 1 bucket has 4 elements and 2 buckets have 3 elements. In our new representation, that would be [(4, 1), (3, 2)].</p>
 <p><a href="approx_ops_to_order_v4.py">approx_ops_to_order_v4.py</a><pre><code class="python3">import cProfile
 import collections
@@ -1162,24 +1164,16 @@ def main():
 <p>Now that we have a much much much faster way to calculate the number of buckets with k elements across all partitions of N elements into B buckets, we can visualize the data for large N and B!</p>
 <p><img alt="approx_ops / num_elements (base 2)" src="approx_ops_base_2_v7.png" width="800" />
 <img alt="approx_ops / num_elements (base e)" src="approx_ops_base_e_v7.png" width="800" /></p>
-<h4>Working on The Ultimate Formula</h4>
+<h4>Where the Journey Ends... For Now</h4>
 <p>Now we have a formula for <code>num_buckets_with_k_elements</code>: <code>num_buckets * (num_buckets - 1) ** (num_elements - k) * choose(num_elements, k)</code> or \( B (B - 1)^{N - k} {N \choose k} \). We also have a formula for <code>approx_num_ops_to_sort</code>: <code>return 1 if k &lt; 2 else k * math.log2(k)</code> or \( a(n) = \begin{cases} 1,  &amp; \text{if $n$ &lt; 2} \\ n \log_2n, &amp; \text{if $n$ &gt;= 2} \end{cases} \). Finally, we have a forumla for the total number of partitions: <code>num_buckets ** num_elements</code> or \( B^N \). Putting these all together, we can derive a formula for <code>approx_num_ops_to_order</code> based on  <code>num_elements</code> (N) and <code>num_buckets</code> (B).</p>
 <p>$$ \sum_{k = 0}^N \frac{B (B - 1)^{N - k} {N \choose k} a(k)}{B^N} $$</p>
 <p>$$ = \sum_{k = 0}^1 \frac{B (B - 1)^{N - k} {N \choose k}}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
 <p>$$ = \frac{B (B - 1)^{N - 0} {N \choose 0}}{B^N} + \frac{B (B - 1)^{N - 1} {N \choose 1}}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
 <p>$$ = \frac{B (B - 1)^N}{B^N} + \frac{B (B - 1)^{N - 1} N}{B^N} + \sum_{k = 2}^N \frac{B (B - 1)^{N - k} {N \choose k} k \log_2k}{B^N} $$</p>
-<p>$$ = \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \sum_{k = 2}^N \frac{(B - 1)^{N - k} {N \choose k} k \log_2k}{B^{N - 1}} $$</p>
-<p>$$ = \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \sum_{k = 2}^N \frac{(B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k}{B^{N - 1}} $$</p>
+<p>Unfortunately, this is where I'm stuck and if you can solve it, I'd love to hear from you!</p>
+<p>One approach is to convert this discreet formula into a similar continuous version, but I've learned that \( \Gamma \) does not have a nice integral. Similarly, trying to approximate factorial with <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's approximation</a> yielded an integral so unweildy that Wolfram Alpha refuses to solve it (for free at least) and <a href="https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html#integrals">sympy</a> crashes after a while. <a href="https://math.stackexchange.com/questions/4608002/big-o-of-sum-k-2n-b-1n-k-n-choose-k-k-log-2k">Asking on math.stackexchange.com</a> hasn't yielded any results yet, though that's probably because the question itself needs improvement.</p>
 <p>$$ \approx \frac{(B - 1)^N}{B^{N - 1}} + \frac{(B - 1)^{N - 1} N}{B^{N - 1}} + \int\limits_{k = 2}^N \frac{(B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k}{B^{N - 1}} dk $$</p>
-<p>TO BE CONTINUED!!!</p>
-<p>TODO: Figure out how to solve this integral?</p>
-<p>It doesn't look like there's a nice way to integrate the Gamma function based on my forum searching. Wolfram Alpha spits out a giant paragraph of terms when I ask for the integral of the Gamma function.</p>
-<p>I asked in https://math.stackexchange.com/questions/4608002/big-o-of-sum-k-2n-b-1n-k-n-choose-k-k-log-2k</p>
-<p>$$ \sum_{k = 2}^N (B - 1)^{N - k} {N \choose k} k \log_2k $$</p>
-<p>$$ \int\limits_{k = 2}^N ((B - 1)^{N - k} \frac{\Gamma(N + 1)}{\Gamma(N - k + 1)\Gamma(k + 1)} k \log_2k) dk $$</p>
-<p>https://en.wikipedia.org/wiki/Stirling%27s_approximation</p>
-<p><code>sqrt(2 * pi * n) * (n / e)**n * e**(1 / (12 * n + 1)) &lt; fact(n) &lt; sqrt(2 * pi * n) * (n / e)**n * e**(1 / (12 * n))</code></p>
-<h2>Notes and Closing Thoughts</h2>
+<h2>Miscellaneous Notes</h2>
 <p>Comparing is often faster than hashing: comparing two large strings with different prefixes is faster than hashing the strings. However, if that were the case, we could consider using a "bad" hashing function that doesn't read the entire string. Precomputing hashes can also save us time later, especially if we join/merge the same data repeatedly.</p>
 <p>The Python <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__"><code>hash</code></a> function will return the same hash for the same value per execution <em>but</em> if your program exits and restarts, you <em>may</em> get different hashes from the last time you executed your program! This may be annoying but <a href="http://ocert.org/advisories/ocert-2011-003.html">it prevents DoS attacks</a>.</p>
 <p>This algorithm is similar to the Shuffle Join algorithm <em>but</em> with the same cache locality benefits that Merge Join has!</p>
