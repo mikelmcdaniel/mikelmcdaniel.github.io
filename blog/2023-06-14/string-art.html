@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
+  <title>String Art Portraits</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Résumé</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>String Art Portraits</h1>
+          <span class="subheading">2023-02-19</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="px-3">
+  
+<p>This post is a high-level overview of how I wrote code generate instructions that turns an image into instructions to make string art portraits:</p>
+<p><img src="qtip-original.jpg" alt="My tiny dog, Q-Tip, sleeping on our couch." width="1024"/></p>
+<p><img src="qtip-finished.jpg" alt="String art of my tiny dog, Q-Tip, sleeping on our couch." width="1024"/></p>
+<p>Many others have done this and taken it well beyond what I do! Here are a few representative samples:</p>
+<ul>
+<li><a href="http://artof01.com/vrellis/works/knit.html">A new way to knit (2016) by petros vrellis</a> which also features images in color</li>
+<li><a href="https://hackaday.com/2019/02/23/polar-platform-spins-out-intricate-string-art-portraits/">Polar Platform Spins Out Intricate String Art Portraits by Dan Maloney</a> showing a simple robot to automate the threading process</li>
+<li>Greedy <a href="https://github.com/MarginallyClever/weaving_algorithm">weaving_algorithm by MarginallyClever</a>, which outlines a greedy algorithm:</li>
+<li>find the darkest line between any two of the 200 points around the edge of the circle.</li>
+<li>add that line to the output image.</li>
+<li>subtract that line from the input image.</li>
+<li>Repeat 2000 times.</li>
+<li>An interactive <a href="https://github.com/halfmonty/StringArtGenerator">Web based string art generator by halfmonty</a></li>
+</ul>
+<p>Compared to other algorithms, mine is distinct in a few ways:</p>
+<ul>
+<li>not just a greedy algorithm</li>
+<li>you can pass an extra gray-scale "mask" image to indicate which parts of the image are more important (and how much more important)</li>
+<li>arbitrary nail/notch locations</li>
+</ul>
+<h2>A simple non-greedy algorithm</h2>
+<p>Here's how a simple algorithm might work, given a list of nail positions and a target image:</p>
+<ul>
+<li>Convert target image to gray scale and blur it</li>
+<li>Create a list of points that form lines. For example, if <code>a</code>, <code>b</code>, and <code>c</code> are points, then the list <code>[a, b, c]</code> represents the two lines <code>(a, b)</code>, <code>(b, c)</code>.</li>
+<li>Repeatedly:</li>
+<li>Randomly try removing some of the points and replacing them with other points. For example, with <code>[a, b, c]</code>, try removing <code>b</code> and replacing with other points like <code>y, r</code>, <code>d</code>, or <code></code> (no points).</li>
+<li>Create a blurred image of what the lines look like<ul>
+<li>Create a blank temporary image</li>
+<li>Draw all the lines</li>
+<li>Blur the temporary image</li>
+<li>Compare each pixel of the temporary image against the target image and add up how different each pixel is to calculate a "difference score"</li>
+</ul>
+</li>
+<li>If the "difference score" is smaller, use the newly generated points</li>
+</ul>
+<p>That's it! This algorithm works surprisingly well <em>and</em> it guarantees that all of the lines are connected to each other, like a single long thread.</p>
+<p>Compared to a greedy algorithm, this one is much slower but will work with any set of nails/notches since you know all of the lines will be connected.</p>
+<h2>A more flexible algorithm</h2>
+<p>In practice, the simple non-greedy algorithm tends to create lots of extra lines that don't actually contribute much to the image. By removing the constraint that each line segment must be connected to the next line, we can add a step that removes lines that contribute too little to the image. This allows us to generate an image with much less string, so it's easier to assemble.</p>
+<p>Unfortunately, this creates a new problem of needing to connect the lines but it's easy to address: after generating a list of lines, we can greedily try to connect the lines to each other and then connect the remaining lines by adding a few new ones.</p>
+<h2>Using a mask</h2>
+<p>No matter what algorithm you use, there are always trade-offs. Drawing a line will usually make some part of your generated image more similar to your target image in some areas <strong>and</strong> more different in other areas. -- The only change to the algorithm is to multiply the brightness of the mask image by the difference of the generated and target image at each pixel. Another equivalent way to use the mask is to always multiply the mask brightness by the generated and target images before calculating their difference. Parts of the generated/target images where the mask image is are dark (close to zero) will not contribute much to the difference score</p>
+<p><img src="qtip-mask.png" alt="Mask of the 'important' parts of my tiny dog, Q-Tip, sleeping on our couch." width="1024"/></p>
+<h2>Optimizing</h2>
+<p>There are a <em>lot</em> of optimizations that make the non-greedy algorithm run faster! I only talk about a couple of them here:</p>
+<h3>Representing the generated image as a matrix</h3>
+<p>Drawing thousands or millions of lines can be pretty slow, at least on my CPU. A lot of the algorithm is spent redrawing the same lines over and over again since only a few are removed and a few are added each iteration. -- Instead of creating a new image and redrawing all of the lines, we can maintain 2D array (matrix) where each cell represents the number of lines that pass through that pixel. Then removing a line is as each as subtracting 1 from each cell in the matrix and drawing a line is just adding 1 to each corresponding cell.</p>
+<p>Comparing the generated image to the target image is still expensive since you need to convert that matrix to an image but it's much faster, at least on a CPU.</p>
+<h3>Multiple Scales</h3>
+<p>Calculating the best string art on a large image can be slow but calculating it on an image with 1/2 the width and 1/2 the height is much faster, so that's what we do! As a bonus, we can recursively apply this approach to calculate string art for a smaller version of the image, then scale it up again and adjust the string art to have finer detail.</p>
+<p>At the usual scale, e.g. 800 by 800 pixels, I assume that each string that overlaps with a pixel contributes about 0.25 (out of 1) to that pixel's darkness. In other words, the code allows for up to 4 strings to overlap a pixel and darken it but any more strings overlapping that pixel don't make the pixel any darker. For an image that's 1/4 the size (1/2 the width and 1/2 the height), we simply decrease the amount a string darkens a pixel from 1/4 to 1/16.</p>
+<h2>Future Work</h2>
+<ul>
+<li>Try using a graphics library (something that uses GPU acceleration) to draw lines and do image operations</li>
+</ul>
+
+</section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
+</body>
+</html>
