@@ -37,7 +37,6 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ms-auto py-4 py-lg-0">
         <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
-        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/dsaa" class="nav-link px-lg-3 py-3 py-lg-4">Data Structures and Algorithms</a></li>
         <li class="nav-item"><a href="https://github.com/mikelmcdaniel" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
         <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
         <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Résumé</a></li>
@@ -157,40 +156,40 @@ int main(int argc, const char *argv[]) {
 <pre><strong>$</strong> <kbd>./pointers_example</kbd></pre>
 <pre><samp>sizeof(int) == 4
 sizeof(int*) == 8
-x == 5  (at address 0x7ffee445f4ac)
-y == 7  (at address 0x7ffee445f4a8)
-a == 0x7ffee445f490  (at address 0x7ffee445f490)
-p == 0x7ffee445f4ac  (at address 0x7ffee445f488)
+x == 5  (at address 0x7ffc9aa3a88c)
+y == 7  (at address 0x7ffc9aa3a888)
+a == 0x7ffc9aa3a870  (at address 0x7ffc9aa3a870)
+p == 0x7ffc9aa3a88c  (at address 0x7ffc9aa3a868)
 
-Now p == 0x7ffee445f490 == a == 0x7ffee445f490
-*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffee445f490 0x7ffee445f490
-*(a + 0) == 11  at 0x7ffee445f490
-    a[0] == 11  at 0x7ffee445f490
-*(p + 0) == 11  at 0x7ffee445f490
-    p[0] == 11  at 0x7ffee445f490
-*(a + 1) == 22  at 0x7ffee445f494
-    a[1] == 22  at 0x7ffee445f494
-*(p + 1) == 22  at 0x7ffee445f494
-    p[1] == 22  at 0x7ffee445f494
-*(a + 2) == 33  at 0x7ffee445f498
-    a[2] == 33  at 0x7ffee445f498
-*(p + 2) == 33  at 0x7ffee445f498
-    p[2] == 33  at 0x7ffee445f498
-*(a + 3) == 44  at 0x7ffee445f49c
-    a[3] == 44  at 0x7ffee445f49c
-*(p + 3) == 44  at 0x7ffee445f49c
-    p[3] == 44  at 0x7ffee445f49c
-*(a + 4) == 55  at 0x7ffee445f4a0
-    a[4] == 55  at 0x7ffee445f4a0
-*(p + 4) == 55  at 0x7ffee445f4a0
-    p[4] == 55  at 0x7ffee445f4a0
+Now p == 0x7ffc9aa3a870 == a == 0x7ffc9aa3a870
+*a == 11 &amp;&amp; a[0] == 11 &amp;&amp; *p == 11 &amp;&amp; p[0] == 11  at address 0x7ffc9aa3a870 0x7ffc9aa3a870
+*(a + 0) == 11  at 0x7ffc9aa3a870
+    a[0] == 11  at 0x7ffc9aa3a870
+*(p + 0) == 11  at 0x7ffc9aa3a870
+    p[0] == 11  at 0x7ffc9aa3a870
+*(a + 1) == 22  at 0x7ffc9aa3a874
+    a[1] == 22  at 0x7ffc9aa3a874
+*(p + 1) == 22  at 0x7ffc9aa3a874
+    p[1] == 22  at 0x7ffc9aa3a874
+*(a + 2) == 33  at 0x7ffc9aa3a878
+    a[2] == 33  at 0x7ffc9aa3a878
+*(p + 2) == 33  at 0x7ffc9aa3a878
+    p[2] == 33  at 0x7ffc9aa3a878
+*(a + 3) == 44  at 0x7ffc9aa3a87c
+    a[3] == 44  at 0x7ffc9aa3a87c
+*(p + 3) == 44  at 0x7ffc9aa3a87c
+    p[3] == 44  at 0x7ffc9aa3a87c
+*(a + 4) == 55  at 0x7ffc9aa3a880
+    a[4] == 55  at 0x7ffc9aa3a880
+*(p + 4) == 55  at 0x7ffc9aa3a880
+    p[4] == 55  at 0x7ffc9aa3a880
 
 You can iterate using indices in an array or with pointers:
-int at address 0x7ffee445f490 is 11 which is 0 ints from address 0x7ffee445f490
-int at address 0x7ffee445f494 is 22 which is 1 ints from address 0x7ffee445f490
-int at address 0x7ffee445f498 is 33 which is 2 ints from address 0x7ffee445f490
-int at address 0x7ffee445f49c is 44 which is 3 ints from address 0x7ffee445f490
-int at address 0x7ffee445f4a0 is 55 which is 4 ints from address 0x7ffee445f490
+int at address 0x7ffc9aa3a870 is 11 which is 0 ints from address 0x7ffc9aa3a870
+int at address 0x7ffc9aa3a874 is 22 which is 1 ints from address 0x7ffc9aa3a870
+int at address 0x7ffc9aa3a878 is 33 which is 2 ints from address 0x7ffc9aa3a870
+int at address 0x7ffc9aa3a87c is 44 which is 3 ints from address 0x7ffc9aa3a870
+int at address 0x7ffc9aa3a880 is 55 which is 4 ints from address 0x7ffc9aa3a870
 </samp></pre>
 </p>
 
