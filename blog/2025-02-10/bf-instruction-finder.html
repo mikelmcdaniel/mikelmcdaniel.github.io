@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Mikel Mcdaniel">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Source Code highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Bootstrap core plus theme -->
+  <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
+  <title>UNFINISHED DRAFT BrainFuck Instruction Finder</title>
+  <style>
+    @media print {
+      .do-not-print {
+        display: none;
+        position: fixed;
+        top: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="do-not-print navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="https://mikelmcdaniel.github.io/">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/blog" class="nav-link px-lg-3 py-3 py-lg-4">Blog</a></li>
+        <li class="nav-item"><a href="https://github.com/mikelmcdaniel" class="nav-link px-lg-3 py-3 py-lg-4">GitHub</a></li>
+        <li class="nav-item"><a href="https://www.linkedin.com/in/mikel-mcdaniel-14ba74164/" class="nav-link px-lg-3 py-3 py-lg-4">LinkedIn</a></li>
+        <li class="nav-item"><a href="https://mikelmcdaniel.github.io/resume" class="nav-link px-lg-3 py-3 py-lg-4">Résumé</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="do-not-print masthead" style="background-image: url('https://mikelmcdaniel.github.io/static/imgs/code-background.png') ">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>UNFINISHED DRAFT BrainFuck Instruction Finder</h1>
+          <span class="subheading">Searching through trillions of code snippets in minutes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="px-3">
+  
+<h1>THIS IS AN UNFINISHED DRAFT... DO NOT READ IT YET ;)</h1>
+<p>This is a post about... writing code to generate BF code that can do any computation... and my goal is to make this post as short and understandable as possible, regardless of your background in math or computers. Some things will be oversimplified for the sake of making it easier to understand.</p>
+<p>If you've ever written BF code, then you know its hard to do anything but the most simple tasks with it. Its like having a machine that can assemble atoms together and using it to make an omelet. My idea of a good time.</p>
+<h2>What is BF?</h2>
+<p>First and foremost, its a way for me to avoid saying BrainFuck because I need you to know that I'm a serious professional and adult who doesn't say F*** too much. I'll refer to it as BF from now on.</p>
+<p>If you're already familiar with BF, you can safely skip this section.</p>
+<p>Secondly, BF is a very simple programming language that consists of just 8 instructions. The <a href="https://en.wikipedia.org/wiki/Brainfuck">BF Wikipedia article</a>. If you're familiar with Turing machines, BF programs get pretty close and, like a Turing machine, can perform any computation a regular computer can... if you're willing to wait long enough <em>and</em> have enough memory.</p>
+<p>BF programs are text-based programs. They can't display pictures and buttons; they can read text you type in (one character at a time) and they can print out text (one character at a time).</p>
+<h3>How does BF code work?</h3>
+<p>A byte can represent any whole number between 0 and 255. Some numbers are used to represent characters, for example the numbers 48, 65, and 97 represent <code>'0'</code>, <code>'A'</code>, and <code>'a'</code> respectively. As a very nice convenience, the other digits and letters like <code>'1'</code>, <code>'B'</code>, and <code>'c'</code> all have numbers that are just 1, 2, and 3 more than <code>'0'</code>, <code>'A'</code>, and <code>'a'</code>. So... if you wanted to know what number represents <code>'h'</code>, its 97 + 7 = 104.</p>
+<h4>Saying "hello" / The first 3 instructions</h4>
+<p>When a BF program starts, all bytes it has access to are set to 0 <strong>and</strong> the program starts out only operating on just the 1st byte. Lets say that we wanted to print out "hello". First we have to get our byte from the value 0 to the value 104 so we can print out the "H". We do that with the increment instruction, <code>+</code>, which just adds 1 to our current byte. To get from 0 to 104, we need to repeat <code>+</code> 104 times.</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+</code></pre>
+<p>Before the code ran, the bytes in memory looked like [0, 0, 0, ...] but after, they contain [104, 0, 0, ...]</p>
+<p>Now we can output our byte using the <code>.</code> instruction.</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.
+</code></pre>
+<p>Outputs:</p>
+<pre><code>h
+</code></pre>
+<p>Great! Now we just need to output the remaining letters "ello", which are represented with 101, 108, 108, and 111. To go from 104 to 101, we use the decrement instruction, <code>-</code>,  which subtracts 1 from the current byte. Note that the increment and decrement instructions wrap-around, meaning that incrementing a 255 byte sets it to 0 and decrementing a 0 byte sets is to 255.</p>
+<p>Note also that the <code>+</code>s being on the first line and <code>.</code> on the second line is just to make the program easier to read. Any characters in a BF program that are not an instruction, are simply ignored by the BF program.</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.
+---
+.
+</code></pre>
+<p>Outputs:</p>
+<pre><code>he
+</code></pre>
+<p>Now we can finish the rest of the "hello" program!</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.
+---
+.
++++++++
+.
+.
++++
+.
+</code></pre>
+<p>Outputs:</p>
+<pre><code>hello
+</code></pre>
+<h4>A useless calculator / The rest of the instructions</h4>
+<p>Now, lets say we want to write a program that reads 2 digits for the user, then outputs their sum. Something like this:</p>
+<pre><code>Digits to add: 23
+2+3=5
+</code></pre>
+<p>First, we print "Digits to add: "</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
++++++++++++++++++++++++++++++++++++++ .
+-- .
+++ .
++++++++++++ .
+- .
+----------------------------------------------------------------------------------- .
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
+----- .
+------------------------------------------------------------------------------- .
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
++++ .
+ .
+------------------------------------------ .
+-------------------------- .
+</code></pre>
+<p>Once the code above has run, our memory contains the value of the last character printed and a lot of 0's: [32, 0, 0, ...].</p>
+<p>Next, we read the 1st digit using the read instruction, <code>,</code>. This instruction will read a single character ant set the current byte to that value. In our example, the user enters <code>2</code> so the byte will have the value 50 = 48 + 2. Our memory looks like [50, 0, 0, ...]</p>
+<p>After that, we need to read the next digit... into a different byte. For that, we use the <code>&gt;</code> instruction to go one byte to the right, then read into that byte via <code>,</code>. Once we've done that, the memory contains [50, 51, 0, 0, 0, ...]</p>
+<p>Excellent! Now we can print out the <code>2+3=</code> one character at a time</p>
+<ul>
+<li>print out the 1st byte in memory</li>
+<li>print out the '+'</li>
+<li>go to the 3rd byte in memory</li>
+<li>increment by the ASCII value for '+' (43)</li>
+<li>print that byte</li>
+<li>print out the 2nd byte in memory</li>
+<li>print out the '='</li>
+<li>go to the 3rd byte in memory</li>
+<li>increment by difference in ASCII value for '=' (61) minus the ASCII value for '+' (61 - 43 = 18)</li>
+<li>print that byte</li>
+</ul>
+<pre><code>&lt;.
+&gt;&gt; +++++++++++++++++++++++++++++++++++++++++++ .
+&lt;.
+&gt; ++++++++++++++++++ .
+</code></pre>
+<p>Our next step is to calculate the digit we want to print. We're so close! Right now our first 2 bytes in memory have the ASCII value for the digits we want to add and what we need to compute is the ASCII value of the resulting digit. (Note: We're not going to worry about the digits adding up to more than <code>9</code> for now...)</p>
+<p>For that we'll need the loop instructions, <code>[</code> which starts a loop and <code>]</code> which ends a loop. <code>[</code> will skip to the corresponding <code>]</code> instruction if the current byte is 0, otherwise the program will just run whatever code is between the <code>[</code> and <code>]</code>. Let's take some time to understand loops before we use them: The <code>]</code> will jump backwards to the corresponding <code>[</code>. The simplest loop you can write is just <code>[]</code> which will either loop infinitely or do nothing. Perhaps the next simplest loop you can write is <code>[-]</code> which will decrement the current byte until its 0 <em>or</em> maybe the next simplest loop is <code>[&gt;]</code> which will go to the next byte in memory that is 0.</p>
+<p>Ok, now coming back to our task, the first 2 bytes in memory contain the ASCII values of the digits we want to add, e.g. 50 and 51. We want to calculate the ASCII value for the sum of those digits, e.g. 50-48 + 51-48 + 48 = 53. First, lets subtract 48 from both bytes in memory.</p>
+<pre><code>&lt;&lt; ------------------------------------------------
+&gt; ------------------------------------------------
+</code></pre>
+<p>Now memory looks like [2, 3, 0, 0, 0, ...].</p>
+<p>Lastly, we can loop on the 2nd byte, which we'll call <code>memory[1]</code> and decrement by 1 then increment the first byte, <code>memory[0]</code>, by 1. Since the loop will execute that code until <code>memory[1]</code> is 0, it will run 3 times (or more or less if the user entered a different digit).</p>
+<pre><code>[-&lt;+&gt;]
+</code></pre>
+<p>Now the memory looks like [5, 0, 0, 0, 0, ...].</p>
+<p>Finally, we add 48 back to <code>memory[0]</code> and print it!</p>
+<pre><code>&lt; ++++++++++++++++++++++++++++++++++++++++++++++++ .
+</code></pre>
+<p>Combining that all together, here's our full BF program:</p>
+<pre><code>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
++++++++++++++++++++++++++++++++++++++ .
+-- .
+++ .
++++++++++++ .
+- .
+----------------------------------------------------------------------------------- .
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
+----- .
+------------------------------------------------------------------------------- .
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .
++++ .
+ .
+------------------------------------------ .
+-------------------------- .
+
+,
+&gt;,
+
+&lt;.
+&gt;&gt; +++++++++++++++++++++++++++++++++++++++++++ .
+&lt;.
+&gt; ++++++++++++++++++ .
+
+&lt;&lt; ------------------------------------------------
+&gt; ------------------------------------------------
+
+[-&lt;+&gt;]
+
+&lt; ++++++++++++++++++++++++++++++++++++++++++++++++ .
+</code></pre>
+<p>If the user enters "23", then the program outputs:</p>
+<pre><code>Digits to add: 23
+2+3=5
+</code></pre>
+<p>If the user enters "63", then the program outputs:</p>
+<pre><code>Digits to add: 63
+6+3=9
+</code></pre>
+<p>If the user enters "99", then the program outputs:</p>
+<pre><code>Digits to add: 99
+9+9=B
+</code></pre>
+<p>Perfection.</p>
+<h2>Motivation</h2>
+<p>Writing BF directly is quite hard, so to make it a little easier, I wanted to write code that finds/generates snippets of BF code to do an arbitrary computation.</p>
+<p>For example, that we wanted to update our calculator app so that it prints "9+9=18" instead of "9+9=B". To do that, we need to be able to compute things like 'is x &gt; 10?', 'x / 10', and 'x modulo 10' where x is one of the bytes in <code>memory</code>.</p>
+<h2>Where to Start</h2>
+<h3>Too many BF programs to check</h3>
+<p>At this point, I already knew the BF code <code>[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]</code> replaces <code>memory[0]</code> with <code>memory[0] * memory[1]</code> and sets <code>memory[1]</code> to 0. And that program is 40 instructions total, so to generate BF code that does something more complicated than multiplication, it probably needs to be able to find/generate code snippets that are around 40 instructions or more.</p>
+<p>Since we're just performing computations without taking performing input or output, there are 6 instructions available. Each <code>[</code> must be paired with a <code>]</code> instruction so the number of BF programs with exactly 40 instructions is <strong>less</strong> than 5^40 = 9,094,947,017,729,282,379,150,390,625... which would only take about 5^40 / (365.25 * 24 * 60 * 60 * 4,000,000,000 * 1,000,000,000) ~= 72 years if we can check each program in 1 clock cycle on a billion 4GHz CPU cores. If you include checking all the programs that are less than 40 instructions, it only adds about 18 more years, but if you check up to 41 instruction, it takes centuries. Lets just have some patience then.</p>
+<h3>Identical BF snippets and Registers</h3>
+<p>While there may be many BF programs, most of them are probably performing the same calculation. All the following snippets just set the current byte to 1 without modifying any other bytes: <code>[[-]]+</code>, <code>[--+]+</code>, <code>[-]--&lt;&gt;+++</code>, <code>[+]++-</code>.</p>
+<p>We also just want to compute simple things like <code>memory[0] * memory[1]</code> or <code>memory[0] / memory[1]</code> or <code>memory[0] &lt;= memory[1]</code>. All of these calculations take 2 bytes as input and have 1 byte as output. We might want to have more inputs or outputs but lets just stick with 2 inputs and 1 output for now.</p>
+<h4>Using registers</h4>
+<p>We can simplify our problem a bit by removing the <code>&gt;</code> and <code>&lt;</code> instructions and adding in an "index" or "register" that each instruction applies to. For example, instead of writing <code>[-]</code>, we could write <code>[0 -0 ]0</code> to say that the loop-start, decrement, and loop-end instructions all happen on <code>memory[0]</code>. This can help us skip bits of code that contains <code>&gt;&lt;</code> or <code>&lt;&gt;</code> <strong>and</strong> helps us just focus on BF snippets that access a limited amount of memory (which will be useful for other reasons later).</p>
+<p>Rewriting BF <code>[-&gt;+&lt;]</code> to RBF (Register BF), we have <code>[0 -0 +1 ]0</code>. Similarly, rewriting our BF for multiplication <code>[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]</code>, we get <code>[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1</code>. Note that when we use R registers, then the number of instructions is 4 * R.</p>
+<p>Now the total number of programs of length 40 instructions is dependent on the number of registers (i.e. bytes in memory) that we use. For multiplication, we needed 4 registers and we used 19 RBF instructions. To simplify again, we can pretend there's only 1 type of loop instruction to get a lower bound on the number of programs that are "similarly complex" to our multiplication program: (3 * 4) ^ 19 = 319,479,999,370,622,926,848. <strong>That's already 2.8 billion times less than our BF estimate, though it's still quite large.</strong></p>
+<h2>Simplifying to 2 inputs + 1 output isn't enough</h2>
+<p>So how many "unique" BF programs can there be that take 2 bytes as input and output 1 byte? There are 256^2 = 65,536 possible inputs and each of those inputs could have 256 different outputs <em>xor</em> the program can infinite loop. That's 257^(65,536) = ... a number with log(257, 10) * 256^2 ~= 157,938 digits.</p>
+<p>Well... ok.</p>
+<h3>What if bytes were smol?</h3>
+<p>Do we really need 256 values when we're looking for instructions? There's nothing about <code>[-&gt;+&lt;]</code> that <em>really</em> depends on the number of values each byte or "cell" can hold. The same thing is true for the BF multiplication code. If we ran it on a BF machine where each cell could only go up to 10 instead of 256, the code would work essentially the same as it does now.</p>
+<p>So how many unique BF programs can there be that take 2 cells as input and output 1 cell? If each cell can represent any whole number from 0 to M - 1: There are M^2 possible inputs and each of those inputs could have M different outputs <em>xor</em> infinite loop. That's (M + 1)^(M^2) total unique simple programs.</p>
+<table>
+<thead>
+<tr>
+<th>M</th>
+<th>(M + 1)^(M^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>81</td>
+</tr>
+<tr>
+<td>3</td>
+<td>262,144</td>
+</tr>
+<tr>
+<td>4</td>
+<td>152,587,890,625</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2.84303E+19</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2.65173E+30</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1.78406E+44</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1.17902E+61</td>
+</tr>
+<tr>
+<td>9</td>
+<td>1E+81</td>
+</tr>
+<tr>
+<td>10</td>
+<td>1.37806E+104</td>
+</tr>
+<tr>
+<td>11</td>
+<td>3.81005E+130</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2.55766E+160</td>
+</tr>
+<tr>
+<td>13</td>
+<td>4.96179E+193</td>
+</tr>
+<tr>
+<td>14</td>
+<td>3.26503E+230</td>
+</tr>
+<tr>
+<td>15</td>
+<td>8.45271E+270</td>
+</tr>
+</tbody>
+</table>
+<p>Now we're talking! There's only 1 potential issue: We might need more than just 2 registers. The RBF multiplication code used 4 registers though... it assumed registers 2 and 3 started at 0 and when the code was done running, registers 2 and 3 were back to 0. We'll come back to this later...</p>
+<h2>Initial Code</h2>
+<p>TODO: Write the initial code. Talk about optimizations, DFAs, path collapsing in loops, using registers that start and end at 0, etc...</p>
+<h2>Other Things You May Want to Learn About</h2>
+<p>Checkout <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> if you want to learn a little more about what numbers represent what (English) characters or <a href="https://en.wikipedia.org/wiki/UTF-8">Unicode and UTF-8</a> if you want to learn a lot more, including how to output emojis and non-English characters.</p>
+<p>You might also enjoy learning about Turing Machines, compilers, or Common LISP.</p>
+<h3>Compiling to BF</h3>
+<p>While I wouldn't want to write a complicated program in BF, I <em>did/do</em> enjoy <a href="https://github.com/mikelmcdaniel/simple-lisp2bf-v2/tree/master">writing a program (in Python) that takes non-BF code in and outputs BF code</a>.</p>
+<p>The following Python-like program can be compiled to BF.</p>
+<pre><code class="language-python3">def print_number(x):
+    if x &gt;= 100:
+        print(x / 100 + '0')
+    if x &gt;= 10:
+        print(x / 10 % 10 + '0')
+    print(x % 10 + '0')
+
+def is_digit(c):
+    '0' &lt;= c and c &lt;= '9'
+
+def read_num():
+    c = read()
+    result = 0
+    while is_digit(c):
+        result = result * 10 + (c - '0')
+        c = read()
+    result
+
+def start():
+    print(&quot;Enter equation to solve (e.g. '123 / 45'): &quot;)
+    a = read_num()
+    op_code = read()
+    read()
+    b = read_num()
+    print(&quot;\n&quot;)
+    if op_code == '+':
+        result = a + b
+    elif op_code == '-':
+        result = a - b
+    elif op_code == '*':
+        result = a * b
+    elif op_code == '/':
+        result = a / b
+    else:
+        print(&quot;Sorry! Only +, -, *, and / are supported operations but we got '&quot;, op_code, &quot;'.\n&quot;)
+        exit()
+    print_number(a)
+    print(&quot; &quot;, op_code, &quot; &quot;)
+    print_number(b)
+    print(&quot; = &quot;)
+    print_number(result)
+    print(&quot;\n&quot;)
+</code></pre>
+<p>If you run that BF program and type in something like "6 * 7", it outputs:</p>
+<pre><code>Enter equation to solve (e.g. '123 / 45'): 16 * 7
+16 * 7 = 112
+</code></pre>
+<p>I think it'd take too long to do a proper write up about the compiler and the compiler's code needs to be cleaned up, tested, and documented but it works!</p>
+
+</section>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="https://mikelmcdaniel.github.io/static/js/bootstrap_5.1.3_clean_blog.js"></script>
+</body>
+</html>
