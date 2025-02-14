@@ -214,16 +214,17 @@
 <h2>Where to Start</h2>
 <h3>Too many BF programs to check</h3>
 <p>At this point, I already knew the BF code <code>[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]</code> replaces <code>memory[0]</code> with <code>memory[0] * memory[1]</code> and sets <code>memory[1]</code> to 0. And that program is 40 instructions total, so to generate BF code that does something more complicated than multiplication, it probably needs to be able to find/generate code snippets that are around 40 instructions or more.</p>
-<p>Since we're just performing computations without taking performing input or output, there are 6 instructions available. Each <code>[</code> must be paired with a <code>]</code> instruction so the number of BF programs with exactly 40 instructions is <strong>less</strong> than 5^40 = 9,094,947,017,729,282,379,150,390,625... which would only take about 5^40 / (365.25 * 24 * 60 * 60 * 4,000,000,000 * 1,000,000,000) ~= 72 years if we can check each program in 1 clock cycle on a billion 4GHz CPU cores. If you include checking all the programs that are less than 40 instructions, it only adds about 18 more years, but if you check up to 41 instruction, it takes centuries. Lets just have some patience then.</p>
+<p>Since we're just performing computations without taking performing input or output, there are 6 instructions available. Each <code>[</code> must be paired with a <code>]</code> instruction so the number of BF programs with exactly 40 instructions is <strong>less</strong> than 5^40 = 9,094,947,017,729,282,379,150,390,625... which would only take about 5^40 / (365.25 * 24 * 60 * 60 * 4,000,000,000 * 1,000,000,000) ~= 72 years if we can check each program in 1 clock cycle on a billion 4GHz CPU cores. If you include checking all the programs that are less than 40 instructions, it only adds about 18 more years, but if you check up to 41 instruction, it takes centuries.</p>
 <h3>Identical BF snippets and Registers</h3>
 <p>While there may be many BF programs, most of them are probably performing the same calculation. All the following snippets just set the current byte to 1 without modifying any other bytes: <code>[[-]]+</code>, <code>[--+]+</code>, <code>[-]--&lt;&gt;+++</code>, <code>[+]++-</code>.</p>
 <p>We also just want to compute simple things like <code>memory[0] * memory[1]</code> or <code>memory[0] / memory[1]</code> or <code>memory[0] &lt;= memory[1]</code>. All of these calculations take 2 bytes as input and have 1 byte as output. We might want to have more inputs or outputs but lets just stick with 2 inputs and 1 output for now.</p>
+<p>At this point, there are many possible programs but also many duplicate programs.</p>
 <h4>Using registers</h4>
 <p>We can simplify our problem a bit by removing the <code>&gt;</code> and <code>&lt;</code> instructions and adding in an "index" or "register" that each instruction applies to. For example, instead of writing <code>[-]</code>, we could write <code>[0 -0 ]0</code> to say that the loop-start, decrement, and loop-end instructions all happen on <code>memory[0]</code>. This can help us skip bits of code that contains <code>&gt;&lt;</code> or <code>&lt;&gt;</code> <strong>and</strong> helps us just focus on BF snippets that access a limited amount of memory (which will be useful for other reasons later).</p>
 <p>Rewriting BF <code>[-&gt;+&lt;]</code> to RBF (Register BF), we have <code>[0 -0 +1 ]0</code>. Similarly, rewriting our BF for multiplication <code>[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]</code>, we get <code>[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1</code>. Note that when we use R registers, then the number of instructions is 4 * R.</p>
 <p>Now the total number of programs of length 40 instructions is dependent on the number of registers (i.e. bytes in memory) that we use. For multiplication, we needed 4 registers and we used 19 RBF instructions. To simplify again, we can pretend there's only 1 type of loop instruction to get a lower bound on the number of programs that are "similarly complex" to our multiplication program: (3 * 4) ^ 19 = 319,479,999,370,622,926,848. <strong>That's already 2.8 billion times less than our BF estimate, though it's still quite large.</strong></p>
-<h2>Simplifying to 2 inputs + 1 output isn't enough</h2>
-<p>So how many "unique" BF programs can there be that take 2 bytes as input and output 1 byte? There are 256^2 = 65,536 possible inputs and each of those inputs could have 256 different outputs <em>xor</em> the program can infinite loop. That's 257^(65,536) = ... a number with log(257, 10) * 256^2 ~= 157,938 digits.</p>
+<h3>Simplifying to 2 inputs + 1 output isn't enough</h3>
+<p>So how many "unique" BF programs can there be that take 2 bytes as input and output 1 byte? There are 256^2 = 65,536 possible inputs and each of those inputs could have 256 different outputs <em>xor</em> the program can infinite loop. That's (256 + 1)^(256^2) = ... a rather large number with log(257, 10) * 256^2 ~= 157,938 digits.</p>
 <p>Well... ok.</p>
 <h3>What if bytes were smol?</h3>
 <p>Do we really need 256 values when we're looking for instructions? There's nothing about <code>[-&gt;+&lt;]</code> that <em>really</em> depends on the number of values each byte or "cell" can hold. The same thing is true for the BF multiplication code. If we ran it on a BF machine where each cell could only go up to 10 instead of 256, the code would work essentially the same as it does now.</p>
@@ -295,7 +296,454 @@
 </tbody>
 </table>
 <p>Now we're talking! There's only 1 potential issue: We might need more than just 2 registers. The RBF multiplication code used 4 registers though... it assumed registers 2 and 3 started at 0 and when the code was done running, registers 2 and 3 were back to 0. We'll come back to this later...</p>
-<h2>Initial Code</h2>
+<h2>Initial Attempt</h2>
+<h3>Verifying when an RBF program works</h3>
+<p>First, let's make sure we can detect when a program does what we want...</p>
+<pre><code class="language-python3">import dataclasses
+import itertools
+from typing import Literal
+
+
+NUM_CELL_VALUES = 256
+NUM_REGISTERS = 2
+NUM_INPUT_REGISTERS = 2
+NUM_OUTPUT_REGISTERS = 1
+
+
+class RBFException(Exception):
+    pass
+
+
+class MismatchedBraces(RBFException):
+    pass
+
+
+class InvalidProgram(RBFException):
+    pass
+
+
+Instruction = tuple[Literal['+', '-', '[', ']'], int]
+
+
+def get_matching_braces_dict(instructions: list[Instruction]) -&gt; dict[int, int]:
+    matches = {}
+    left_braces = []
+    for ip, (op_code, register) in enumerate(instructions):
+        if op_code == '[':
+            left_braces.append((ip, register))
+        elif op_code == ']':
+            if not left_braces:
+                raise MismatchedBraces(f'Missing left brace for right brace at {ip}: {instructions}')
+            left_ip, left_register = left_braces.pop()
+            if left_register != register:
+                raise MismatchedBraces(
+                    f'Left brace register {left_register} at {left_ip} does not match right brace register {register} '
+                    f'at {ip}: {instructions}')
+            matches[ip] = left_ip
+            matches[left_ip] = ip
+    if left_braces:
+        raise MismatchedBraces(f'Missing right brace for left brace(s) at {left_braces}: {instructions}')
+    return matches
+
+
+@dataclasses.dataclass
+class RBFProgram:
+    instructions: list[Instruction]
+    matching_braces: dict[int, int]
+
+    def __init__(self, instructions: list[Instruction], matching_braces: dict[int, int]=None):
+        if matching_braces is None:
+            matching_braces = get_matching_braces_dict(instructions)
+        for op_code, register in instructions:
+            if op_code not in '+-[]' or register &lt; 0:
+                raise InvalidProgram(str(instructions))
+        self.instructions = instructions
+        self.matching_braces = matching_braces
+
+    def run(self, memory) -&gt; None:
+        '''Run this RBF program on the memory. This WILL modify the memory.'''
+        ip = 0  # instruction pointer
+        while ip &lt; len(self.instructions):  # Once we've reached the end of our instructions, we're done!
+            op_code, register = self.instructions[ip]
+            if op_code == '+':
+                memory[register] = (memory[register] + 1) % NUM_CELL_VALUES
+                ip += 1
+            elif op_code == '-':
+                memory[register] = (memory[register] - 1) % NUM_CELL_VALUES
+                ip += 1
+            elif op_code == '[':
+                if memory[register]:
+                    ip += 1
+                else:
+                    ip = self.matching_braces[ip] + 1
+            elif op_code == ']':
+                ip = self.matching_braces[ip]
+
+    @staticmethod
+    def from_rbf_str(rbf_str: str) -&gt; 'RBFProgram':
+        rbf_str = ''.join(c for c in rbf_str if c in '+-[]1234567890')
+        # For now, we only support up to 10 registers
+        instructions = [(op_code, int(register)) for op_code, register in zip(rbf_str[::2], rbf_str[1::2])]
+        return RBFProgram(instructions)
+
+
+# For now, we're trying to write a program that can find something &quot;as complex&quot; as multiplication, so we just check
+# that the program can multiply 2 cells.
+def program_works(program: RBFProgram) -&gt; bool:
+    for a, b in itertools.product(range(NUM_CELL_VALUES), repeat=NUM_INPUT_REGISTERS):
+        memory = [a, b, 0, 0]
+        program.run(memory)
+        if memory != [(a * b) % NUM_CELL_VALUES, 0, 0, 0]:
+            return False
+    return True
+
+
+def main():
+    multiplier = RBFProgram.from_rbf_str('[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1')
+    assert program_works(multiplier)
+    adder = RBFProgram.from_rbf_str('[1 -1 +0 ]1')
+    assert not program_works(adder)
+
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<p>This works. However, it takes over a minute to run on my laptop.</p>
+<h3>Speeding up how we interpret RBF</h3>
+<p>I find RBF code harder to read. Let's focus take a look at the (BF version) of our multiplication program to see what can be sped up.</p>
+<pre><code class="language-python3">class RBFProgram:
+    ...
+    def as_bf_str(self, starting_register: int=0) -&gt; str:
+        bf: list[str] = []
+        cur_register = starting_register
+        for op_code, next_register in self.instructions:
+            bf.append((next_register - cur_register) * '&gt;')
+            bf.append((cur_register - next_register) * '&lt;')
+            bf.append(op_code)
+            cur_register = next_register
+        return ''.join(bf)
+
+multiplier = RBFProgram.from_rbf_str('[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1')
+print(multiplier.as_bf_str(2))
+
+# Outputs:
+# &lt;&lt;[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]
+</code></pre>
+<h4>A new paradigm</h4>
+<p>There are a few patterns, we can recognize:
+- <code>[-]</code> Sets <code>memory[0]</code> to 0.
+- <code>[-&gt;&gt;+&lt;&lt;]</code> Adds <code>memory[0]</code> to <code>memory[2]</code> and sets <code>memory[0]</code> to 0
+- <code>[-&lt;+&gt;&gt;&gt;+&lt;&lt;]</code> Destructively adds one cell to two other cells</p>
+<p>If we generalize these a bit, we consider BF like <code>[-&gt;--&gt;+++&lt;&lt;]</code> (and its equivalent RBF) that don't just add one cell to another <em>but instead</em> add one cell times some constant to another; <code>memory[1] -= 2 * memory[0]</code>, <code>memory[2] += 3 * memory[0]</code>, <code>memory[0] = 0</code>.</p>
+<p>Instead of each <code>RBFProgram</code> being a single Python object where the instructions control everything, let's make <code>RBFProgram</code> that are specialized and delegate to each other. This will allow us to swap out pieces of the RBF program for more optimized versions.</p>
+<p>Here's the new version of <code>RBFProgram</code> before we apply any optimizations:</p>
+<pre><code class="language-python3"># Note that no longer need get_matching_braces_dict
+
+class RBFProgram:
+    @abstractmethod
+    def run(self, memory: list[int]) -&gt; None:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def instructions(self) -&gt; Iterator[Instruction]:
+        raise NotImplementedError()
+
+    def as_bf_str(self, starting_register: int=0) -&gt; str:
+        bf: list[str] = []
+        cur_register = starting_register
+        for op_code, next_register in self.instructions():
+            bf.append((next_register - cur_register) * '&gt;')
+            bf.append((cur_register - next_register) * '&lt;')
+            bf.append(op_code)
+            cur_register = next_register
+        return ''.join(bf)
+
+    @staticmethod
+    def from_rbf_str(rbf_str: str) -&gt; 'RBFProgram':
+        rbf_str = ''.join(c for c in rbf_str if c in '+-[]1234567890')
+        instructions = [(op_code, int(register)) for op_code, register in zip(rbf_str[::2], rbf_str[1::2])]
+
+        programs: list[list['RBFProgram']] = [[]]
+        for ip, (op_code, register) in enumerate(instructions):
+            if op_code == '-':
+                programs[-1].append(Increment(register, -1))
+            elif op_code == '+':
+                programs[-1].append(Increment(register, 1))
+            elif op_code == '[':
+                programs.append([])
+            elif op_code == ']':
+                if len(programs) &lt;= 1:
+                    raise MismatchedBraces(f'Missing left brace for right brace at {ip}: {instructions}')
+                inner_code = Progn.or_single_program(programs.pop())
+                programs[-1].append(Loop(register, inner_code))
+        if len(programs) != 1:
+            raise MismatchedBraces(f'Missing right brace for left brace(s): {instructions}')
+        return Progn.or_single_program(programs[0])
+
+
+
+class Increment(RBFProgram):
+    &quot;&quot;&quot;Increments a cell by ANY amount.&quot;&quot;&quot;
+    def __init__(self, register: int, amount: int):
+        self.register = register
+        self.amount = amount
+
+    def run(self, memory: list[int]) -&gt; None:
+        memory[self.register] = (memory[self.register] + self.amount) % NUM_CELL_VALUES
+
+    def instructions(self) -&gt; Iterator[Instruction]:
+        for _ in range(self.amount):
+            yield '+', self.register
+        for _ in range(-self.amount):
+            yield '-', self.register
+
+    def __repr__(self):
+        return f'Increment({self.register!r}, {self.amount!r})'
+
+
+class Loop(RBFProgram):
+    &quot;&quot;&quot;Loops until memory[self.register] != 0.&quot;&quot;&quot;
+    def __init__(self, register: int, inner_code: RBFProgram):
+        self.register = register
+        self.inner_code = inner_code
+
+    def run(self, memory: list[int]) -&gt; None:
+        while memory[self.register]:
+            self.inner_code.run(memory)
+
+    def instructions(self) -&gt; Iterator[Instruction]:
+        yield '[', self.register
+        yield from self.inner_code.instructions()
+        yield ']', self.register
+
+    def __repr__(self):
+        return f'Loop({self.register!r}, {self.inner_code!r})'
+
+
+class Progn(RBFProgram):
+    &quot;&quot;&quot;A series of RBFPrograms run in sequence.&quot;&quot;&quot;
+    def __init__(self, programs: list[RBFProgram]):
+        self.programs = programs
+
+    def run(self, memory: list[int]) -&gt; None:
+        for p in self.programs:
+            p.run(memory)
+
+    def instructions(self) -&gt; Iterator[Instruction]:
+        for p in self.programs:
+            yield from p.instructions()
+
+    @staticmethod
+    def or_single_program(programs: list[RBFProgram]) -&gt; RBFProgram:
+        if len(programs) == 1:
+            return programs[0]
+        return Progn(programs)
+
+    def __repr__(self):
+        return f'Progn({self.programs!r})'
+
+...
+
+def main():
+    adder = RBFProgram.from_rbf_str('[1 -1 +0 ]1')
+    print(adder.as_bf_str(), '--&gt;', repr(adder))
+    print()
+    multiplier = RBFProgram.from_rbf_str('[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1')
+    print(multiplier.as_bf_str(2), '--&gt;', repr(multiplier))
+    print()
+
+'''
+Outputs:
+&gt;[-&lt;+&gt;] --&gt; Loop(1, Progn([Increment(1, -1), Increment(0, 1)]))
+
+&lt;&lt;[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-] --&gt; Progn([Loop(0, Progn([Increment(0, -1), Increment(2, 1)])), Loop(2, Progn([Increment(2, -1), Loop(1, Progn([Increment(1, -1), Increment(0, 1), Increment(3, 1)])), Loop(3, Progn([Increment(3, -1), Increment(1, 1)]))])), Loop(1, Increment(1, -1))])
+'''
+</code></pre>
+<h4>DestructiveAdd</h4>
+<p>Now, we can detect <code>Loop</code>s that only contain <code>Increment</code>s and replace them with a new DestructiveAdd class:</p>
+<pre><code class="language-python3">class DestructiveAdd(RBFProgram):
+    &quot;&quot;&quot;An optimized version of [-], [-&gt;+&lt;], [+&gt;++&gt;---&lt;&lt;], etc.&quot;&quot;&quot;
+    def __init__(self, source_register: int, targets_and_multipliers: list[tuple[int, int]]=None):
+        if targets_and_multipliers is None:
+            targets_and_multipliers = []
+        self.source_register = source_register
+        self.targets_and_multipliers = targets_and_multipliers
+
+    def run(self, memory: list[int]) -&gt; None:
+        source_amount = memory[self.source_register]
+        for register, multiplier in self.targets_and_multipliers:
+            memory[register] = (memory[register] + multiplier * source_amount) % NUM_CELL_VALUES
+        memory[self.source_register] = 0
+
+    def instructions(self) -&gt; Iterator[Instruction]:
+        yield '[', self.source_register
+        yield '-', self.source_register
+        for register, multiplier in self.targets_and_multipliers:
+            for _ in range(multiplier):
+                yield '+', register
+            for _ in range(-multiplier):
+                yield '-', register
+        yield ']', self.source_register
+
+    def __repr__(self):
+        return f'DestructiveAdd({self.source_register!r}, {self.targets_and_multipliers!r})'
+
+
+def simplify_to_destructive_add(original_loop: Loop, increments: list[Increment]) -&gt; RBFProgram:
+    source_increments = [i for i in increments if i.register == original_loop.register]
+    source_amount = sum(i.amount for i in source_increments)
+    if source_amount % NUM_CELL_VALUES == 0:
+        raise InfiniteLoop()
+    if math.gcd(source_amount, NUM_CELL_VALUES) != 1:
+        # Anytime memory[source_register] is not a multiple of source_amount, this is an infinite loop!
+        # We can't optimize this... easily
+        return original_loop
+    if source_amount != -1 and source_amount != 1:
+        # TODO: Calculate the multiplicative inverse of source_amount modulo NUM_CELL_VALUES so we optimize!
+        return original_loop
+    multiplicative_inverse = -source_amount  # Only true if source_amount == -1 or 1
+    targets_and_amounts = collections.defaultdict(int)
+    for increment in increments:
+        if increment.register != original_loop.register:
+            targets_and_amounts[increment.register] += multiplicative_inverse * increment.amount
+            if targets_and_amounts[increment.register] == 0:
+                del targets_and_amounts[increment.register]
+    return DestructiveAdd(original_loop.register, sorted(targets_and_amounts.items()))
+
+
+def simplified_program(program: RBFProgram) -&gt; RBFProgram:
+    if isinstance(program, Progn):
+        inner_programs = [simplified_program(p) for p in program.programs]
+        if len(inner_programs) == 1:
+            return inner_programs[0]
+        if all(simplified is original for simplified, original in zip(inner_programs, program.programs)):
+            return program
+        else:
+            return Progn.or_single_program(inner_programs)
+    elif isinstance(program, Loop):
+        inner_code = simplified_program(program.inner_code)
+        if isinstance(inner_code, Increment):
+            return simplify_to_destructive_add(program, [inner_code])
+        elif isinstance(inner_code, Progn) and all(isinstance(p, Increment) for p in inner_code.programs):
+            return simplify_to_destructive_add(program, inner_code.programs)
+        elif inner_code is not program.inner_code:
+            return Loop(program.register, inner_code)
+    # Note: We can perform a lot more optimizations, but we'll start here for now.
+    return program
+
+...
+
+def main():
+    multiplier = RBFProgram.from_rbf_str('[0 -0 +2 ]0 [2 -2 [1 -1 +0 +3 ]1 [3 -3 +1 ]3 ]2 [1 -1 ]1')
+    print('Original multiplier:')
+    print(multiplier.as_bf_str(2))
+    print(repr(multiplier))
+    print()
+
+    print('Simplified multiplier:')
+    multiplier = simplified_program(multiplier)
+    print(multiplier.as_bf_str(2))
+    print(repr(multiplier))
+    print()
+
+    assert program_works(multiplier)
+
+    adder = RBFProgram.from_rbf_str('[1 -1 +0 ]1')
+    print('Original adder:')
+    print(adder.as_bf_str())
+    print(repr(adder))
+    print()
+
+    adder = simplified_program(adder)
+    print('Simplified adder:')
+    print(adder.as_bf_str())
+    print(repr(adder))
+    print()
+
+    assert not program_works(adder)
+
+'''
+Outputs:
+Original multiplier:
+&lt;&lt;[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]
+Progn([Loop(0, Progn([Increment(0, -1), Increment(2, 1)])), Loop(2, Progn([Increment(2, -1), Loop(1, Progn([Increment(1, -1), Increment(0, 1), Increment(3, 1)])), Loop(3, Progn([Increment(3, -1), Increment(1, 1)]))])), Loop(1, Increment(1, -1))])
+
+Simplified multiplier:
+&lt;&lt;[-&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;[-&lt;+&gt;&gt;&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]&lt;[-]
+Progn([DestructiveAdd(0, [(2, 1)]), Loop(2, Progn([Increment(2, -1), DestructiveAdd(1, [(0, 1), (3, 1)]), DestructiveAdd(3, [(1, 1)])])), DestructiveAdd(1, [])])
+
+Original adder:
+&gt;[-&lt;+&gt;]
+Loop(1, Progn([Increment(1, -1), Increment(0, 1)]))
+
+Simplified adder:
+&gt;[-&lt;+&gt;]
+DestructiveAdd(1, [(0, 1)])
+
+'''
+</code></pre>
+<p>Now the code runs much faster.</p>
+<h2>Detecting infinite loops</h2>
+<p>We know that when we generate code to evaluate, we will inevitably generate code loops infinitely. While some loops can be detected with static analysis, like the <code>raise InfiniteLoop()</code> in <code>simplify_to_destructive_add</code>, there will be infinite loops that we can only detect when we start running the program.</p>
+<p>Let's walk through 3 strategies.</p>
+<h3>1. Stop the program after N steps</h3>
+<p>Since we know the maximum number of possible values that the memory can take on, We can let each loop of the program run for up to that many steps. Any loop that runs beyond that many steps must be looping infinitely.</p>
+<p>For example: If <code>NUM_REGISTERS == 2</code> and <code>NUM_CELL_VALUES == 10</code>, then we know that any loop can loop at most <code>NUM_CELL_VALUES</code>^<code>NUM_REGISTERS</code> = 100 times <strong>unless</strong> its an infinite loop!</p>
+<pre><code class="language-python3">class Loop(RBFProgram):
+    ...
+
+    def run(self, memory: list[int]) -&gt; None:
+        max_iterations = NUM_CELL_VALUES**NUM_REGISTERS
+        num_iterations = 0
+        while memory[self.register]:
+            self.inner_code.run(memory)
+            num_iterations += 1
+            if num_iterations &gt; max_iterations:
+                raise InfiniteLoop()
+</code></pre>
+<p>Unfortunately this doesn't work when you have nested loops. If each loop is allowed to run <code>100</code> times and you have K nested loops, you quickly get to a billion steps for just one program.</p>
+<p>Another reason this approach doesn't work is that we need to detect infinite loops faster so we don't spend a lot of time running RBF with infinite loops in it.</p>
+<h3>2. Keep track of the memory you've seen before</h3>
+<p>The idea here is very similar to '1. Stop the program after N steps'. Instead of keeping track of how many times each loop has run, each loop keeps track of which "memories" its seen before.</p>
+<pre><code class="language-python3">
+class Loop(RBFProgram):
+    ...
+
+    def run(self, memory: list[int]) -&gt; None:
+        past_memories = set()
+        while memory[self.register]:
+            self.inner_code.run(memory)
+            cur_memory = tuple(memory)
+            if cur_memory in past_memories:
+                raise InfiniteLoop()
+            past_memories.add(cur_memory)
+</code></pre>
+<p>This will only run the loop <em>until</em> the memory ends up in a state we've seen before. The good news is we will detect infinite loops much sooner. The bad news is that it will use more memory and will run slower since it has to take snapshots of the memory and constantly check if we've seen that memory state before.</p>
+<h3>3. Fast and Slow</h3>
+<p>If you've ever heard of the "fast and slow pointers" solution to detecting loops and linked lists, then this approach will look very familiar to you.</p>
+<p>I think it's easiest to imagine 2 runners racing on a trail through a forest. The runners don't know if the trail loops back on itself. One runner is twice as fast as the other runner. The runners start running at the same time from the same spot. If there's no infinite loop in the trail, then the runners will never see each other... <strong>but</strong> if there is an infinite loop, then the fast runner will eventually see the slow runner again.</p>
+<pre><code class="language-python3">class Loop(RBFProgram):
+    ...
+
+    def run(self, memory: list[int]) -&gt; None:
+        fast_memory = memory
+        slow_memory = list(memory)  # Copy the memory
+
+        while fast_memory[self.register]:
+            self.inner_code.run(fast_memory)
+            if fast_memory == slow_memory:
+                raise InfiniteLoop()
+
+            self.inner_code.run(fast_memory)
+            # Note: Since fast_memory[self.register] has always been non-zero,
+            #        then slow_memory[self.register] has always been non-zero.
+            self.inner_code.run(slow_memory)
+            if fast_memory == slow_memory:
+                raise InfiniteLoop()
+</code></pre>
+<h3>Which is best?</h3>
+<p>Probably option 3 but... it depends.</p>
+<h1>TODO</h1>
 <p>TODO: Write the initial code. Talk about optimizations, DFAs, path collapsing in loops, using registers that start and end at 0, etc...</p>
 <h2>Other Things You May Want to Learn About</h2>
 <p>Checkout <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> if you want to learn a little more about what numbers represent what (English) characters or <a href="https://en.wikipedia.org/wiki/UTF-8">Unicode and UTF-8</a> if you want to learn a lot more, including how to output emojis and non-English characters.</p>
