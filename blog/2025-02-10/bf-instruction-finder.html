@@ -13,7 +13,7 @@
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <!-- Bootstrap core plus theme -->
   <link href="https://mikelmcdaniel.github.io/static/css/bootstrap_5.1.3_cutomized.css" rel="stylesheet" />
-  <title>UNFINISHED DRAFT BrainFuck Instruction Finder</title>
+  <title>BrainFuck Instruction Finder</title>
   <style>
     @media print {
       .do-not-print {
@@ -50,7 +50,7 @@
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="site-heading">
-          <h1>UNFINISHED DRAFT BrainFuck Instruction Finder</h1>
+          <h1>BrainFuck Instruction Finder</h1>
           <span class="subheading">Searching through trillions of code snippets in minutes</span>
         </div>
       </div>
@@ -60,7 +60,6 @@
 
 <section class="px-3">
   
-<h1>THIS IS AN UNFINISHED DRAFT... DO NOT READ IT YET ;)</h1>
 <p>This is a post about... writing code to generate BF code that can do any computation... and my goal is to make this post as short and understandable as possible, regardless of your background in math or computers. Some things will be oversimplified for the sake of making it easier to understand.</p>
 <p>If you've ever written BF code, then you know its hard to do anything but the most simple tasks with it. Its like having a machine that can assemble atoms together and using it to make an omelet. My idea of a good time.</p>
 <h2>What is BF?</h2>
@@ -299,7 +298,7 @@
 <h2>Initial Attempt</h2>
 <h3>Verifying when an RBF program works</h3>
 <p>First, let's make sure we can detect when a program does what we want...</p>
-<pre><code class="language-python3">import dataclasses
+<pre><code class="language-python">import dataclasses
 import itertools
 from typing import Literal
 
@@ -411,7 +410,7 @@ if __name__ == '__main__':
 <p>This works. However, it takes over a minute to run on my laptop.</p>
 <h3>Speeding up how we interpret RBF</h3>
 <p>I find RBF code harder to read. Let's focus take a look at the (BF version) of our multiplication program to see what can be sped up.</p>
-<pre><code class="language-python3">class RBFProgram:
+<pre><code class="language-python">class RBFProgram:
     ...
     def as_bf_str(self, starting_register: int=0) -&gt; str:
         bf: list[str] = []
@@ -437,7 +436,7 @@ print(multiplier.as_bf_str(2))
 <p>If we generalize these a bit, we consider BF like <code>[-&gt;--&gt;+++&lt;&lt;]</code> (and its equivalent RBF) that don't just add one cell to another <em>but instead</em> add one cell times some constant to another; <code>memory[1] -= 2 * memory[0]</code>, <code>memory[2] += 3 * memory[0]</code>, <code>memory[0] = 0</code>.</p>
 <p>Instead of each <code>RBFProgram</code> being a single Python object where the instructions control everything, let's make <code>RBFProgram</code> that are specialized and delegate to each other. This will allow us to swap out pieces of the RBF program for more optimized versions.</p>
 <p>Here's the new version of <code>RBFProgram</code> before we apply any optimizations:</p>
-<pre><code class="language-python3"># Note that no longer need get_matching_braces_dict
+<pre><code class="language-python"># Note that no longer need get_matching_braces_dict
 
 class RBFProgram:
     @abstractmethod
@@ -561,7 +560,7 @@ Outputs:
 </code></pre>
 <h4>DestructiveAdd</h4>
 <p>Now, we can detect <code>Loop</code>s that only contain <code>Increment</code>s and replace them with a new DestructiveAdd class:</p>
-<pre><code class="language-python3">class DestructiveAdd(RBFProgram):
+<pre><code class="language-python">class DestructiveAdd(RBFProgram):
     &quot;&quot;&quot;An optimized version of [-], [-&gt;+&lt;], [+&gt;++&gt;---&lt;&lt;], etc.&quot;&quot;&quot;
     def __init__(self, source_register: int, targets_and_multipliers: list[tuple[int, int]]=None):
         if targets_and_multipliers is None:
@@ -689,7 +688,7 @@ DestructiveAdd(1, [(0, 1)])
 <h3>1. Stop the program after N steps</h3>
 <p>Since we know the maximum number of possible values that the memory can take on, We can let each loop of the program run for up to that many steps. Any loop that runs beyond that many steps must be looping infinitely.</p>
 <p>For example: If <code>NUM_REGISTERS == 2</code> and <code>NUM_CELL_VALUES == 10</code>, then we know that any loop can loop at most <code>NUM_CELL_VALUES</code>^<code>NUM_REGISTERS</code> = 100 times <strong>unless</strong> its an infinite loop!</p>
-<pre><code class="language-python3">class Loop(RBFProgram):
+<pre><code class="language-python">class Loop(RBFProgram):
     ...
 
     def run(self, memory: list[int]) -&gt; None:
@@ -705,7 +704,7 @@ DestructiveAdd(1, [(0, 1)])
 <p>Another reason this approach doesn't work is that we need to detect infinite loops faster so we don't spend a lot of time running RBF with infinite loops in it.</p>
 <h3>2. Keep track of the memory you've seen before</h3>
 <p>The idea here is very similar to '1. Stop the program after N steps'. Instead of keeping track of how many times each loop has run, each loop keeps track of which "memories" its seen before.</p>
-<pre><code class="language-python3">
+<pre><code class="language-python">
 class Loop(RBFProgram):
     ...
 
@@ -722,7 +721,7 @@ class Loop(RBFProgram):
 <h3>3. Fast and Slow</h3>
 <p>If you've ever heard of the "fast and slow pointers" solution to detecting loops and linked lists, then this approach will look very familiar to you.</p>
 <p>I think it's easiest to imagine 2 runners racing on a trail through a forest. The runners don't know if the trail loops back on itself. One runner is twice as fast as the other runner. The runners start running at the same time from the same spot. If there's no infinite loop in the trail, then the runners will never see each other... <strong>but</strong> if there is an infinite loop, then the fast runner will eventually see the slow runner again.</p>
-<pre><code class="language-python3">class Loop(RBFProgram):
+<pre><code class="language-python">class Loop(RBFProgram):
     ...
 
     def run(self, memory: list[int]) -&gt; None:
@@ -734,6 +733,9 @@ class Loop(RBFProgram):
             if fast_memory == slow_memory:
                 raise InfiniteLoop()
 
+            if not fast_memory[self.register]:
+                break
+
             self.inner_code.run(fast_memory)
             # Note: Since fast_memory[self.register] has always been non-zero,
             #        then slow_memory[self.register] has always been non-zero.
@@ -743,15 +745,1112 @@ class Loop(RBFProgram):
 </code></pre>
 <h3>Which is best?</h3>
 <p>Probably option 3 but... it depends.</p>
-<h1>TODO</h1>
-<p>TODO: Write the initial code. Talk about optimizations, DFAs, path collapsing in loops, using registers that start and end at 0, etc...</p>
+<p>Let's say that K is the number of (nested) loops in the RBF and L is the length of the infinite loop <em>before</em> it starts repeating, then the memory and time big-O tradeoffs <em>probably</em> look something like this:</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Memory</th>
+<th>Runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Don't detect infinite loops</td>
+<td>O(1)</td>
+<td>O(infinity)</td>
+</tr>
+<tr>
+<td>Run N steps</td>
+<td>O(1)</td>
+<td>O((NUM_REGISTERS^NUM_CELL_VALUES)^K)</td>
+</tr>
+<tr>
+<td>Keep track of past memory states</td>
+<td>O(K * L)</td>
+<td>O(L^K)</td>
+</tr>
+<tr>
+<td>Fast and Slow</td>
+<td>O(K)</td>
+<td>O(L^K)</td>
+</tr>
+</tbody>
+</table>
+<p>Big-O is not the only thing that matters, so it's a good idea to try out different strategies, especially since options 2 and 3 are harder to distinguish!</p>
+<h2>Generating programs to check</h2>
+<h3>The simple way (doesn't work)</h3>
+<p>The simplest strategy would be to try building the programs up one instruction at a time. Something like this:</p>
+<pre><code class="language-python">...
+
+class MismatchedBraces(RBFException):
+    pass
+
+class MissingLeftBrace(MismatchedBraces):
+    pass
+
+class MissingRightBrace(MismatchedBraces):
+    pass
+
+...
+
+class RBFProgram:
+    ...
+
+    @staticmethod
+    def from_instructions(instructions: list[Instruction]) -&gt; 'RBFProgram':
+        programs: list[list['RBFProgram']] = [[]]
+        for ip, (op_code, register) in enumerate(instructions):
+            if op_code == '-':
+                programs[-1].append(Increment(register, -1))
+            elif op_code == '+':
+                programs[-1].append(Increment(register, 1))
+            elif op_code == '[':
+                programs.append([])
+            elif op_code == ']':
+                if len(programs) &lt;= 1:
+                    raise MissingLeftBrace(f'Missing left brace for right brace at {ip}: {instructions}')
+                inner_code = Progn.or_single_program(programs.pop())
+                programs[-1].append(Loop(register, inner_code))
+        if len(programs) != 1:
+            raise MissingRightBrace(f'Missing right brace for left brace(s): {instructions}')
+        return Progn.or_single_program(programs[0])
+
+    @staticmethod
+    def from_rbf_str(rbf_str: str) -&gt; 'RBFProgram':
+        rbf_str = ''.join(c for c in rbf_str if c in '+-[]1234567890')
+        instructions = [(op_code, int(register)) for op_code, register in zip(rbf_str[::2], rbf_str[1::2])]
+        return RBFProgram.from_instructions(instructions)
+
+...
+
+class Loop(RBFProgram):
+    ...
+
+    def run(self, memory: list[int]) -&gt; None:
+        fast_memory = memory
+        slow_memory = list(memory)  # Copy the memory
+
+        while fast_memory[self.register]:
+            self.inner_code.run(fast_memory)
+            if fast_memory == slow_memory:
+                raise InfiniteLoop()
+
+            if not fast_memory[self.register]:
+                break
+
+            self.inner_code.run(fast_memory)
+            # Note: Since fast_memory[self.register] has always been non-zero,
+            #        then slow_memory[self.register] has always been non-zero.
+            self.inner_code.run(slow_memory)
+            if fast_memory == slow_memory:
+                raise InfiniteLoop()
+
+...
+
+# For now, we're trying to write a program that can find something &quot;as complex&quot; as multiplication, so we just check
+# that the program can multiply 2 cells.
+def program_works(program: RBFProgram) -&gt; bool:
+    for a, b in itertools.product(range(NUM_CELL_VALUES), repeat=NUM_INPUT_REGISTERS):
+        memory = [a, b, 0, 0]
+        try:
+            program.run(memory)
+        except InfiniteLoop:
+            return False
+        if memory != [(a * b) % NUM_CELL_VALUES, 0, 0, 0]:
+            return False
+    return True
+
+
+def main():
+    instructions_that_do_nothing = []
+    q = collections.deque([instructions_that_do_nothing])
+    num_infinite_programs = 0
+    num_malformed_programs = 0
+    for i in itertools.count(1):
+        instructions = q.popleft()
+        if i &amp; (i - 1) == 0:  # if i is a power of 2.
+            print(f'Iteration/Number of programs processed: {i}')
+            print(f'Length of q (programs waiting to be processed): {len(q)}')
+            print(f'Number of instructions in current/longest program: {len(instructions)}')
+            print(f'Percent of programs that infinite loop: {100 * num_infinite_programs / (i + len(q)):.2f}%')
+            print(f'Percent of programs missing left brace: {100 * num_malformed_programs / (i + len(q)):.2f}%')
+            print()
+
+        try:
+            program = simplified_program(RBFProgram.from_instructions(instructions))
+        except MissingRightBrace:
+            pass  # We will eventually output programs with the matching right-brace
+        else:
+            if program_works(program):
+                print('Program found!: ')
+                print(program.as_bf_str())
+                print(repr(program))
+                return
+
+        for op_code in '-+[]':
+            for register in range(NUM_REGISTERS):
+                next_instructions = copy.copy(instructions)
+                next_instructions.append((op_code, register))
+
+                # Don't use space in the q if the program cannot ever work
+                try:
+                    simplified_program(RBFProgram.from_instructions(next_instructions))
+                except InfiniteLoop:
+                    num_infinite_programs += 1
+                    continue
+                except MissingLeftBrace:
+                    num_malformed_programs += 1
+                    continue
+                except MissingRightBrace:
+                    pass
+
+                q.append(next_instructions)
+
+</code></pre>
+<p>On my (old) laptop, this code used about 7.4GiB in 7 minutes and got about this far:</p>
+<pre><code>...
+
+Iteration/Number of programs processed: 2097152
+Length of q (programs waiting to be processed): 13364941
+Number of instructions in current/longest program: 8
+Percent of programs that infinite loop: 5.36%
+Percent of programs missing left brace: 3.15%
+
+Iteration/Number of programs processed: 4194304
+Length of q (programs waiting to be processed): 26948531
+Number of instructions in current/longest program: 8
+Percent of programs that infinite loop: 5.04%
+Percent of programs missing left brace: 2.70%
+</code></pre>
+<p>For my setup, memory is more constrained than compute time but before optimizing the memory usage directly, let's try to avoid processing duplicate programs. We know from earlier that lots of programs will modify <code>memory</code> in exactly the same way like <code>[[-]]+</code>, <code>[--+]+</code>, and <code>[+]++-</code>.</p>
+<p>One other thing... At this point, we have successfully written code that can find RBF/BF code that performs some operation. See what happens when we change <code>program_works</code> to go from looking for multiplication to looking for addition (by changing <code>*</code> to <code>+</code> in <code>if memory != [(a * b) % NUM_CELL_VALUES, 0, 0, 0]:</code>).</p>
+<pre><code>...
+
+Iteration/Number of programs processed: 1024
+Length of q (programs waiting to be processed): 5883
+Number of instructions in current/longest program: 4
+Percent of programs that infinite loop: 8.74%
+Percent of programs missing left brace: 9.76%
+
+Program found!:
+&gt;[-&lt;+&gt;]
+DestructiveAdd(1, [(0, 1)])
+</code></pre>
+<h3>Detecting duplicates</h3>
+<p>Unfortunately, there's no great way to detect all duplicates just by analyzing the RBF code directly but we can eliminate <em>some</em> duplicates by using <code>simplified_program</code> to canonical our programs and check for duplicates.</p>
+<pre><code class="language-python">def main():
+    instructions_that_do_nothing = []
+    seen_programs = set()
+    q = collections.deque([instructions_that_do_nothing])
+    num_infinite_programs = 0
+    num_malformed_programs = 0
+    num_duplicate_programs = 0
+    for i in itertools.count(1):
+        instructions = q.popleft()
+        if i &amp; (i - 1) == 0:  # if i is a power of 2.
+            print(f'Iteration/Number of programs processed: {i}')
+            print(f'Length of q (programs waiting to be processed): {len(q)}')
+            print(f'Number of instructions in current/longest program: {len(instructions)}')
+            print(f'Percent of programs that infinite loop: {100 * num_infinite_programs / (i + len(q)):.2f}%')
+            print(f'Percent of programs missing left brace: {100 * num_malformed_programs / (i + len(q)):.2f}%')
+            print(f'Percent of programs that are duplicate: {100 * num_duplicate_programs / (i + len(q)):.2f}%')
+            print()
+
+        try:
+            program = simplified_program(RBFProgram.from_instructions(instructions))
+        except MissingRightBrace:
+            pass  # We will eventually output programs with the matching right-brace
+        else:
+            # Since program is already a simplified_program, certain &quot;duplicate&quot; patterns will already be removed.
+            # For example, &quot;--+&quot; and &quot;-&quot; will both result in the same instructions.
+            program_key = tuple(program.instructions())
+            if program_key in seen_programs:
+                num_duplicate_programs += 1
+                continue
+            seen_programs.add(program_key)
+
+            if program_works(program):
+                print('Program found!: ')
+                print(program.as_bf_str())
+                print(repr(program))
+                return
+
+        for op_code in '-+[]':
+            for register in range(NUM_REGISTERS):
+                next_instructions = copy.copy(instructions)
+                next_instructions.append((op_code, register))
+
+                # Don't use space in the q if the program cannot ever work
+                try:
+                    simplified_program(RBFProgram.from_instructions(next_instructions))
+                except InfiniteLoop:
+                    num_infinite_programs += 1
+                    continue
+                except MissingLeftBrace:
+                    num_malformed_programs += 1
+                    continue
+                except MissingRightBrace:
+                    pass
+
+                q.append(next_instructions)
+</code></pre>
+<p>Six minutes and 8.7GiB of memory later, we see similar progress but at higher memory usage!</p>
+<pre><code>...
+
+Iteration/Number of programs processed: 2097152
+Length of q (programs waiting to be processed): 13170653
+Number of instructions in current/longest program: 8
+Percent of programs that infinite loop: 5.09%
+Percent of programs missing left brace: 1.43%
+Percent of programs that are duplicate: 0.42%
+
+Iteration/Number of programs processed: 4194304
+Length of q (programs waiting to be processed): 26685683
+Number of instructions in current/longest program: 8
+Percent of programs that infinite loop: 4.67%
+Percent of programs missing left brace: 1.01%
+Percent of programs that are duplicate: 0.37%
+</code></pre>
+<p>Perhaps the way that we are detecting duplicates is not thorough enough. Let's compare them directly!</p>
+<h4>Brute-force comparisons</h4>
+<pre><code class="language-python">class RBFProgram:
+    ...
+
+    def __hash__(self) -&gt; int:
+        some_results = []
+        # Note: We use % NUM_CELL_VALUES in case NUM_CELL_VALUES is very small
+        some_cell_values = [x % NUM_CELL_VALUES for x in range(-2, 3)]
+        for memory in itertools.product(some_cell_values, repeat=NUM_REGISTERS):
+            memory = list(memory)
+            try:
+                self.run(memory)
+            except InfiniteLoop:
+                memory = (None,)
+            some_results.append(tuple(memory))
+        return hash(tuple(some_results))
+
+    def __eq__(self, other: 'RBFProgram') -&gt; bool:
+        for memory in itertools.product(range(NUM_CELL_VALUES), repeat=NUM_REGISTERS):
+            memory = list(memory)
+            other_memory = list(memory)
+            try:
+                self.run(memory)
+            except InfiniteLoop:
+                memory = None
+            try:
+                other.run(other_memory)
+            except InfiniteLoop:
+                other_memory = None
+            if memory != other_memory:
+                return False
+        return True
+
+...
+
+def main():
+    ...
+    for i in itertools.count(1):
+      ...
+        try:
+            program = simplified_program(RBFProgram.from_instructions(instructions))
+        except MissingRightBrace:
+            pass  # We will eventually output programs with the matching right-brace
+        else:
+            # Since program is already a simplified_program, certain &quot;duplicate&quot; patterns will already be removed.
+            # For example, &quot;--+&quot; and &quot;-&quot; will both result in the same instructions.
+            if program in seen_programs:
+                num_duplicate_programs += 1
+                continue
+            seen_programs.add(program)
+
+            if program_works(program):
+                print('Program found!: ')
+                print(program.as_bf_str())
+                print(repr(program))
+                return
+    ...
+</code></pre>
+<p>After 6.5 minutes, it detected more duplicates and only used 1.8GiB of memory... because it was so incredibly slow that it didn't have the chance to do much useful work:</p>
+<pre><code>...
+Iteration/Number of programs processed: 2048
+Length of q (programs waiting to be processed): 11666
+Number of instructions in current/longest program: 5
+Percent of programs that infinite loop: 7.07%
+Percent of programs missing left brace: 1.09%
+Percent of programs that are duplicate: 1.41%
+
+Iteration/Number of programs processed: 4096
+Length of q (programs waiting to be processed): 23836
+Number of instructions in current/longest program: 5
+Percent of programs that infinite loop: 6.63%
+Percent of programs missing left brace: 0.72%
+Percent of programs that are duplicate: 1.24%
+</code></pre>
+<p>What if we set <code>NUM_CELL_VALUES = 5</code>? After 5 minutes and 7.7GiB:</p>
+<pre><code>...
+
+Iteration/Number of programs processed: 2097152
+Length of q (programs waiting to be processed): 13456769
+Number of instructions in current/longest program: 8
+Percent of programs that infinite loop: 4.28%
+Percent of programs missing left brace: 0.01%
+Percent of programs that are duplicate: 0.45%
+
+Iteration/Number of programs processed: 4194304
+Length of q (programs waiting to be processed): 27088903
+Number of instructions in current/longest program: 9
+Percent of programs that infinite loop: 4.11%
+Percent of programs missing left brace: 0.01%
+Percent of programs that are duplicate: 0.39%
+</code></pre>
+<p>That's progress, although it's not enough progress. Something fundamentally has to change.</p>
+<h2>The Final Solution</h2>
+<p>Even though, we greatly limited ourselves to just 2 registers and only 5 possible cell values, the amount of memory it takes to get up to RBF programs with <em>just</em> 9 instructions is... too much. We need to get to 19!</p>
+<p>Writing this post has taken more of my time than I'd like so I'm going to stop building up to the end goal and just JUMP to there!</p>
+<p>To really make this work, I tried everything above but ultimately needed to make these changes (in no particular order):</p>
+<ul>
+<li>Use a faster lower-memory language (C++)</li>
+<li>Change how programs are constructed from 1-instruction at a time to loops and concatenation</li>
+<li>The program we're searching for (e.g. multiplication) is a concatenation of 2 smaller programs</li>
+<li>Filter out only "start" programs that lead to distinct memory states for input memory states that should have different outputs</li>
+<li>Filter out only "end" programs that have the necessary output memory states</li>
+<li>Keep NUM_CELL_VALUES low</li>
+<li>Change how programs are represented to be lookup tables from starting memory state to ending state</li>
+<li>Each possible memory state is converted to an integer type (and infinite loops are represented as the number 0)</li>
+<li>"Rewrite" programs that always had a register ending at 0 as a way to allow some programs to use more registers than were being emulated</li>
+<li>Filter out programs that infinite loop under <strong>any</strong> memory input</li>
+</ul>
+<p>All of these changes together look like this:</p>
+<pre><code class="language-c++">#include &lt;algorithm&gt;
+#include &lt;bitset&gt;
+#include &lt;cassert&gt;
+#include &lt;cmath&gt;
+#include &lt;cstdint&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cstring&gt;
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;memory&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;string_view&gt;
+#include &lt;unordered_set&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+constexpr int powi(int b, int p) {
+  int result = 1;
+  for (int i = 0; i &lt; p; ++i) {
+    result *= b;
+  }
+  return result;
+}
+
+// Note: Removing programs that infinite loop (under at least 1 input), usually make the search faster *but*
+// it can make it take longer and/or not find the *shortest* RBF program that works.
+constexpr bool REMOVE_PROGRAMS_THAT_EVER_INFINITE_LOOP = true;
+constexpr bool IGNORE_IRRELEVANT_START_PROGRAM_STATES = true;
+constexpr bool IGNORE_IRRELEVANT_END_PROGRAM_STATES = true;
+
+
+constexpr int NUM_CELL_VALUES = 5;
+constexpr int NUM_REGISTERS = 3;  // Does not include register rewrites :)
+constexpr int NUM_TOTAL_STATES = powi(NUM_CELL_VALUES, NUM_REGISTERS) + 1;
+constexpr int NUM_INPUT_REGISTERS = 2;
+constexpr int NUM_OUTPUT_REGISTERS = 1;
+
+
+typedef uint8_t state_t;  // Big enough to hold 0 to NUM_TOTAL_STATES (inclusive)
+typedef uint8_t output_state_id_t;  // big enough to hold 0 to the number of unique output states (exclusive)
+typedef uint8_t cell_t;  // Big enough to hold 0 to NUM_CELL_VALUES (inclusive)
+
+
+int memory_to_state(const cell_t* memory) {
+  state_t state = 0;
+  for (int i = 0; i &lt; NUM_REGISTERS; ++i) {
+    state *= NUM_CELL_VALUES;
+    state += memory[i];
+  }
+  return state + 1;
+}
+
+
+inline bool state_is_infinite_loop(const state_t state) {
+  return !state;
+}
+
+
+// Fill in memory and return true iff state is valid/not an infinite loop state.
+bool state_to_memory(state_t state, cell_t* memory) {
+  if (state_is_infinite_loop(state)) {
+    return false;
+  }
+  --state;
+  for (int i = NUM_REGISTERS - 1; i &gt;= 0; --i) {
+    memory[i] = state % NUM_CELL_VALUES;
+    state /= NUM_CELL_VALUES;
+  }
+  return true;
+}
+
+struct StateToMemory {
+  cell_t memories[NUM_REGISTERS * NUM_TOTAL_STATES];
+
+  StateToMemory() {
+    for (state_t state = 0; state &lt; NUM_TOTAL_STATES; ++state) {
+      state_to_memory(state, &amp;memories[state * NUM_REGISTERS]);
+    }
+  }
+  cell_t const* get(state_t state) {
+    return &amp;memories[state * NUM_REGISTERS];
+  }
+  cell_t get(state_t state, int index) {
+    return memories[state * NUM_REGISTERS + index];
+  }
+} state_to_memory_cache;
+
+
+struct StateToDesiredOutputs {
+  cell_t desired_outputs[NUM_OUTPUT_REGISTERS * NUM_TOTAL_STATES];
+  output_state_id_t output_state_ids[NUM_TOTAL_STATES];
+  int num_unique_outputs;
+
+  StateToDesiredOutputs() {
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      const auto x = state_to_memory_cache.get(state, 0);
+      const auto y = state_to_memory_cache.get(state, 1);
+      // const auto z = state_to_memory_cache.get(state, 2);
+
+      // Below are examples.
+      // DON'T FORGET TO UPDATE NUM_INPUT_REGISTERS and NUM_OUTPUT_REGISTERS!
+      desired_outputs[state * NUM_OUTPUT_REGISTERS] = (x * y) % NUM_CELL_VALUES;
+
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = (x * y) / NUM_CELL_VALUES % NUM_CELL_VALUES;
+
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = (x + y) / NUM_CELL_VALUES % NUM_CELL_VALUES;
+
+      // '&lt;[-&lt;-&gt;&gt;+&lt;]&gt;[-&lt;-&gt;]&lt;&lt;&lt;[&gt;[-&gt;-&lt;]&lt;[-]]&gt;&gt;[-&lt;&lt;-&gt;&gt;]&lt;[-]'
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = x ? y : z;
+
+      // '&lt;[-&lt;[&gt;&gt;+&lt;&lt;[-&gt;&gt;-&lt;&lt;]]&gt;&gt;[-&lt;&lt;-&gt;&gt;]&lt;]&gt;+&lt;+&gt;[-&lt;&lt;[-&gt;&gt;-&lt;&lt;]&gt;[-&lt;+&gt;]&gt;]&lt;'
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = (x &lt;= y) % NUM_CELL_VALUES;
+
+      // So far, have not found this one!
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = (cell_t)sqrtl(x) % NUM_CELL_VALUES;
+
+      // '&lt;[-&gt;+&lt;]-&gt;[[&gt;-&lt;---[&gt;-&lt;[-&gt;-&lt;]]]&gt;[+&lt;+&gt;[+[-&gt;-&lt;]]&gt;[-&lt;-&gt;]&lt;]&lt;&lt;+&gt;]'
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = (cell_t)log2l(x) % NUM_CELL_VALUES;
+
+      // '&lt;[&gt;-&lt;---[&gt;-&lt;[-&gt;-&lt;]]]&gt;[+&lt;+&gt;[+[-&gt;-&lt;]]&gt;[-&lt;-&gt;]&lt;]'
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = x / 2 % NUM_CELL_VALUES;
+
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = x / 3 % NUM_CELL_VALUES;
+
+      // int result = x * NUM_CELL_VALUES + y + NUM_CELL_VALUES*NUM_CELL_VALUES - 1;
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = result / NUM_CELL_VALUES % NUM_CELL_VALUES;
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS + 1] = result % NUM_CELL_VALUES;
+
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS] = x;
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS + 1] = y;
+      // desired_outputs[state * NUM_OUTPUT_REGISTERS + 2] = (x || y) ? 1 : 0;
+    }
+
+    output_state_id_t canonical_output_state_ids[NUM_TOTAL_STATES];
+    num_unique_outputs = 0;
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      canonical_output_state_ids[state] = -1;
+    }
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      cell_t memory[NUM_REGISTERS];
+      set_memory(state, memory);
+      state_t canonical_state = memory_to_state(memory);
+      if (canonical_output_state_ids[canonical_state] == (output_state_id_t)-1) {
+        canonical_output_state_ids[canonical_state] = num_unique_outputs;
+        ++num_unique_outputs;
+      }
+      output_state_ids[state] = canonical_output_state_ids[canonical_state];
+    }
+  }
+
+  output_state_id_t get_id(state_t state) const {
+    return output_state_ids[state];
+  }
+
+  cell_t get(state_t state, int index) const {
+    return desired_outputs[state * NUM_OUTPUT_REGISTERS + index];
+  }
+
+  void set_memory(state_t state, cell_t* memory) const {
+    for (int i = 0; i &lt; NUM_OUTPUT_REGISTERS; ++i) {
+      memory[i] = get(state, i);
+    }
+    for (int i = NUM_OUTPUT_REGISTERS; i &lt; NUM_REGISTERS; ++i) {
+      memory[i] = 0;
+    }
+  }
+
+  bool matches(state_t state, const cell_t* memory) const {
+    for (int i = 0; i &lt; NUM_OUTPUT_REGISTERS; ++i) {
+      if (memory[i] != get(state, i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+} state_to_desired_output_cache;
+
+
+struct Program {
+  string rbf;
+  state_t states[NUM_TOTAL_STATES];  // 0 means infinite loop
+
+  Program(const string rbf) : rbf(rbf) {
+    memset(states, 0, sizeof(states));
+  }
+  Program() {
+    memset(states, 0, sizeof(states));
+  }
+
+  Program(const Program&amp; other) = default;
+  Program(Program&amp;&amp; other) = default;
+
+  string as_bf_str(int starting_register=0) const {
+    string bf;
+    int cur_register = starting_register;
+    for (int i = 0; i &lt; rbf.size() - 1; i += 2) {
+      int next_register = rbf[i + 1] - '0';
+      if (next_register &gt; cur_register) {
+        bf.resize(bf.size() + next_register - cur_register, '&gt;');
+      } else {
+        bf.resize(bf.size() + cur_register - next_register, '&lt;');
+      }
+      bf.push_back(rbf[i]);
+      cur_register = next_register;
+    }
+    return bf;
+  }
+
+  // Return true if there's at least 1 input which does not infinite loop *AND* updates the state
+  bool is_nontrivial_program() const {
+    if (REMOVE_PROGRAMS_THAT_EVER_INFINITE_LOOP) {
+      // Note: The loop below filter programs that infinite loop on any input (not just all inputs).
+      // This filtering may be too aggressive
+      for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+        if (states[state] == 0) {
+          return false;
+        }
+      }
+    }
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      if (states[state] &amp;&amp; states[state] != state) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  int next_register_available_ge(int minimum_register) const {
+    set&lt;int&gt; registers_used;
+    for (int i = 1; i &lt; rbf.size(); i += 2) {
+      int r = rbf[i] - '0';
+      registers_used.insert(r);
+    }
+    for (int r = minimum_register; ; ++r) {
+      if (registers_used.find(r) == registers_used.end()) {
+        return r;
+      }
+    }
+  }
+
+  int next_out_of_bounds_register_available() const {
+    return next_register_available_ge(NUM_REGISTERS);
+  }
+
+  static Program noop() {
+    Program result;
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      result.states[state] = state;
+    }
+    return result;
+  }
+
+  static Program increment(int index) {
+    string rbf = &quot;+0&quot;;
+    rbf[1] += index;
+    Program result(rbf);
+    // Programs result;
+
+    cell_t memory[NUM_REGISTERS];
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      state_to_memory(state, memory);
+      ++memory[index];
+      memory[index] %= NUM_CELL_VALUES;
+      result.states[state] = memory_to_state(memory);
+    }
+
+    return result;
+  }
+
+  static Program decrement(int index) {
+    string rbf = &quot;-0&quot;;
+    rbf[1] += index;
+    Program result(rbf);
+    cell_t memory[NUM_REGISTERS];
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      state_to_memory(state, memory);
+      memory[index] += NUM_CELL_VALUES - 1;  // Try to avoid negative modulo below. Oh Python, how I miss you.
+      memory[index] %= NUM_CELL_VALUES;
+      result.states[state] = memory_to_state(memory);
+    }
+
+    return result;
+  }
+
+  static Program loop(int index, const Program&amp; inner_code) {
+    string rbf;
+    rbf.reserve(inner_code.rbf.size() + 4);
+    rbf.append(&quot;[0&quot;);
+    rbf[1] += index;
+    rbf.append(inner_code.rbf);
+    rbf.append(&quot;]0&quot;);
+    rbf[rbf.size() - 1] += index;
+    Program result(rbf);
+    bitset&lt;NUM_TOTAL_STATES&gt; seen_states;
+
+    // Phase 1: Set result.states to be 1 iteration of the loop (or 0 if the loop does not run)
+    for (state_t start_state = 1; start_state &lt; NUM_TOTAL_STATES; ++start_state) {
+      result.states[start_state] = state_to_memory_cache.get(start_state, index) == 0
+          ? start_state
+          : inner_code.states[start_state];
+    }
+
+    for (state_t start_state = 1; start_state &lt; NUM_TOTAL_STATES; ++start_state) {
+      state_t seen_array[NUM_TOTAL_STATES];
+      int num_seen = 0;
+      seen_states.reset();
+      state_t state = result.states[start_state];
+      while(state) {
+        if (seen_states[state]) {
+          state = 0;  // infinite loop detected
+          break;
+        }
+
+        if (state_to_memory_cache.get(state, index) == 0) {
+          break;  // We finished the loop!
+        }
+
+        seen_states[state] = true;
+        seen_array[num_seen] = state;
+        ++num_seen;
+        state = result.states[state];
+      }
+      result.states[start_state] = state;
+      for (int i = 0; i &lt; num_seen; ++i) {
+        result.states[seen_array[i]] = state;
+      }
+    }
+
+    return result;
+  }
+
+  static Program concat(const Program&amp; a, const Program&amp; b) {
+    Program result;
+    result.rbf.reserve(a.rbf.size() + b.rbf.size());
+    result.rbf.append(a.rbf);
+    result.rbf.append(b.rbf);
+
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      result.states[state] = b.states[a.states[state]];
+    }
+    return result;
+  }
+
+  // Return true iff every state where memory[index] == 0 ends with memory[index] == 0.
+  // This is useful because it means this program can take advantage of a known zeroed out cell and leave that cell
+  // in the same state.
+  bool cell_ends_at_0_when_starting_at_0(int index) const {
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      if (state_to_memory_cache.get(state, index) == 0) {  // TODO: Precompute which states start with memory[index] == 0
+        state_t end_state = states[state];
+        if (end_state == 0 || state_to_memory_cache.get(end_state, index) != 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // Assuming p.cell_starts_and_ends_at_0(old_index), rewrite p so that old_index is now an out-of-bounds new_index, allowing
+  // old_index to be used for other computations
+  static Program with_0_register_rewritten(const Program&amp; p, int old_index, int new_index) {
+    assert(p.cell_ends_at_0_when_starting_at_0(old_index));
+    assert(new_index &gt;= NUM_REGISTERS);
+    string rbf(p.rbf);
+    for (int i = 1; i &lt; rbf.length(); i += 2) {
+      if (rbf[i] - '0' == old_index) {
+        rbf[i] = '0' + new_index;
+      }
+    }
+    Program result(rbf);
+    cell_t memory[NUM_REGISTERS];
+    for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+      state_to_memory(state, memory);
+      memory[old_index] = 0;
+      state_t effective_state = memory_to_state(memory);
+      state_t end_state = p.states[effective_state];
+      state_to_memory(end_state, memory);
+      memory[old_index] = state_to_memory_cache.get(state, old_index);
+      result.states[state] = memory_to_state(memory);
+    }
+    return result;
+  }
+
+  bool operator!=(const Program&amp; other) const {
+    return memcmp(states, other.states, sizeof(states));
+  }
+
+  bool operator==(const Program&amp; other) const {
+    return memcmp(states, other.states, sizeof(states)) == 0;
+  }
+
+  bool operator&lt;(const Program&amp; other) const {
+    return memcmp(states, other.states, sizeof(states)) &lt; 0;
+  }
+};
+
+template&lt;&gt;
+struct std::hash&lt;Program&gt;
+{
+  std::size_t operator()(const Program&amp; s) const noexcept
+  {
+      return std::hash&lt;string_view&gt;{}(
+        string_view((char*)&amp;s.states, sizeof(s.states)));
+  }
+};
+
+
+typedef unordered_set&lt;Program&gt; SetOfPrograms;
+
+
+vector&lt;SetOfPrograms&gt; UNIQ_PROGRAM_CACHE;
+
+
+bool program_in_unique_program_cache(const Program&amp; p) {
+  for (const SetOfPrograms&amp; programs : UNIQ_PROGRAM_CACHE) {
+    if (programs.find(p) != programs.end()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+const SetOfPrograms&amp; unique_programs_of_length(int n) {
+  if (UNIQ_PROGRAM_CACHE.size() &gt; n) {
+    return UNIQ_PROGRAM_CACHE[n];
+  }
+  unique_programs_of_length(n - 1); // prefill cache of smaller programs
+  UNIQ_PROGRAM_CACHE.resize(n + 1);
+  SetOfPrograms&amp; result = UNIQ_PROGRAM_CACHE[n];
+  // Try all combinations of smaller programs
+  for (int a_size = 1; a_size &lt; n; ++a_size) {
+    int b_size = n - a_size;
+    for (const Program&amp; a : UNIQ_PROGRAM_CACHE[a_size]) {
+      for (const Program&amp; b : UNIQ_PROGRAM_CACHE[b_size]) {
+        const Program new_program = Program::concat(a, b);
+        if (new_program.is_nontrivial_program() &amp;&amp; !program_in_unique_program_cache(new_program)) {
+          result.insert(move(new_program));
+        }
+      }
+    }
+  }
+  // Try all loops of size n-1 programs
+  for (const Program&amp; inner_code : UNIQ_PROGRAM_CACHE[n - 1]) {
+    for (int r = 0; r &lt; NUM_REGISTERS; ++r) {
+      Program new_program = Program::loop(r, inner_code);
+      if (new_program.is_nontrivial_program() &amp;&amp; !program_in_unique_program_cache(new_program)) {
+        result.insert(move(new_program));
+      }
+    }
+  }
+  // Try rewrites when possible! BF Programs like [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;] essentially
+  // just use register 2 as temporary storage in order to copy register 0 to register 1.
+  for (const Program&amp; p : UNIQ_PROGRAM_CACHE[n - 1]) {
+    for (int r = 0; r &lt; NUM_REGISTERS; ++r) {
+      if (p.cell_ends_at_0_when_starting_at_0(r)) {
+        int new_register = p.next_out_of_bounds_register_available();
+        Program new_program = Program::with_0_register_rewritten(p, r, new_register);
+        if (new_program.is_nontrivial_program() &amp;&amp; !program_in_unique_program_cache(new_program)) {
+          result.insert(move(new_program));
+        }
+      }
+    }
+  }
+  return result;
+}
+
+
+vector&lt;state_t&gt; get_valid_start_states() {
+  vector&lt;state_t&gt; valid_start_states;
+  for (state_t state = 1; state &lt; NUM_TOTAL_STATES; ++state) {
+    const cell_t* memory = state_to_memory_cache.get(state);
+    bool valid_state = true;
+    for (int i = NUM_INPUT_REGISTERS; i &lt; NUM_REGISTERS; ++i) {
+      if (memory[i] != 0) {
+        valid_state = false;
+        break;
+      }
+    }
+    if (valid_state) {
+      valid_start_states.push_back(state);
+    }
+  }
+  return valid_start_states;
+}
+
+
+map&lt;output_state_id_t, vector&lt;state_t&gt;&gt; get_output_state_ids(const vector&lt;state_t&gt;&amp; valid_start_states) {
+  map&lt;output_state_id_t, vector&lt;state_t&gt;&gt; output_state_ids;
+  for (state_t state : valid_start_states) {
+    output_state_ids[state_to_desired_output_cache.get_id(state)].push_back(state);
+  }
+  return output_state_ids;
+}
+
+
+SetOfPrograms get_start_program_candidates(
+    const vector&lt;state_t&gt;&amp; valid_start_states,
+    const map&lt;output_state_id_t, vector&lt;state_t&gt;&gt;&amp; output_state_ids) {
+  SetOfPrograms start_programs;
+  for (const SetOfPrograms&amp; some_programs : UNIQ_PROGRAM_CACHE) {
+    for (const Program&amp; a : some_programs) {
+      // Skip processing &quot;a&quot; programs that cannot possibly give the right answer
+      bool a_is_valid = true;
+      bitset&lt;NUM_TOTAL_STATES&gt; all_intermediate_states;
+      for (const auto&amp; output_group : output_state_ids) {
+        bitset&lt;NUM_TOTAL_STATES&gt; group_intermidiate_states;
+        for (const state_t start_state : output_group.second) {
+          state_t state = a.states[start_state];
+          if (all_intermediate_states[state] || state == 0) {
+            // We've detected that 2 different starting states that should have different outputs,
+            // have the same intermediate state (so it is not possible for them to have different outputs)
+            a_is_valid = false;
+            break;
+          }
+          group_intermidiate_states[state] = 1;
+        }
+        if (!a_is_valid) {
+          break;
+        }
+        all_intermediate_states |= group_intermidiate_states;
+      }
+      if (a_is_valid) {
+        assert(all_intermediate_states.count() &gt;= output_state_ids.size());
+        if (IGNORE_IRRELEVANT_START_PROGRAM_STATES) {
+          Program rewritten_a(a);
+          for (state_t s = 1; s &lt; NUM_TOTAL_STATES; ++s) {
+            if (find(valid_start_states.begin(), valid_start_states.end(), s) == valid_start_states.end()) {
+              rewritten_a.states[s] = 0;
+            }
+          }
+          start_programs.insert(rewritten_a);
+        } else {
+          start_programs.insert(a);
+        }
+      }
+    }
+  }
+  return start_programs;
+}
+
+
+SetOfPrograms get_end_program_candidates(
+    const vector&lt;state_t&gt;&amp; valid_start_states,
+    const map&lt;output_state_id_t, vector&lt;state_t&gt;&gt;&amp; output_state_ids) {
+  SetOfPrograms end_program_candidates;
+  bitset&lt;NUM_CELL_VALUES * NUM_OUTPUT_REGISTERS&gt; necessary_values;
+  for (const auto&amp; kv : output_state_ids) {
+    necessary_values[kv.first] = 1;
+  }
+  for (const SetOfPrograms&amp; some_programs : UNIQ_PROGRAM_CACHE) {
+    for (const Program&amp; b : some_programs) {
+      bitset&lt;NUM_CELL_VALUES * NUM_OUTPUT_REGISTERS&gt; missing_values(necessary_values);
+      // Check if b is a (non strict) superset of end states needed
+      for (state_t start_state = 1; start_state &lt; NUM_TOTAL_STATES; ++start_state) {
+        missing_values[state_to_desired_output_cache.get_id(b.states[start_state])] = 0;
+      }
+      if (missing_values.none()) {
+        if (IGNORE_IRRELEVANT_END_PROGRAM_STATES) {
+          Program rewritten_b(b);
+          for (state_t s = 1; s &lt; NUM_TOTAL_STATES; ++s) {
+            state_t es = rewritten_b.states[s];
+            cell_t memory[NUM_REGISTERS];
+            state_to_memory(es, memory);
+            for (int i = NUM_OUTPUT_REGISTERS; i &lt; NUM_REGISTERS; ++i) {
+              memory[i] = 0;
+            }
+            rewritten_b.states[s] = memory_to_state(memory);
+          }
+          end_program_candidates.insert(rewritten_b);
+        } else {
+          end_program_candidates.insert(b);
+        }
+      }
+    }
+  }
+  return end_program_candidates;
+}
+
+size_t uniq_program_cache_size() {
+  size_t result = 0;
+  for (SetOfPrograms ps : UNIQ_PROGRAM_CACHE) {
+    result += ps.size();
+  }
+  return result;
+}
+
+
+// Checks all 2-grams of programs in UNIQ_PROGRAM_CACHE to see if any of them are equivalent to doing a multiplication!
+void check_programs() {
+  vector&lt;state_t&gt; valid_start_states = get_valid_start_states();
+  map&lt;output_state_id_t, vector&lt;state_t&gt;&gt; output_state_ids = get_output_state_ids(valid_start_states);
+  SetOfPrograms start_programs = get_start_program_candidates(valid_start_states, output_state_ids);
+  SetOfPrograms end_programs = get_end_program_candidates(valid_start_states, output_state_ids);
+
+  cout &lt;&lt; start_programs.size() &lt;&lt; &quot; Programs are valid start Programs.\n&quot;;
+  cout &lt;&lt; end_programs.size() &lt;&lt; &quot; Programs are valid end Programs.\n&quot;;
+  size_t checking_combos = start_programs.size() * end_programs.size();
+  double total_combos = (double)uniq_program_cache_size() * uniq_program_cache_size();
+  cout &lt;&lt; &quot;Checking &quot; &lt;&lt; checking_combos &lt;&lt; &quot; combinations (&quot;
+    &lt;&lt; 100.0 * checking_combos / total_combos &lt;&lt; &quot;% of &quot; &lt;&lt; total_combos &lt;&lt; &quot; possible combinations).\n&quot;;
+
+  // Checks every concatenation of a start_program_candidate with a end_program_candidate
+  for (const Program&amp; a : start_programs) {
+    for (const Program&amp; b : end_programs) {
+      const Program p = Program::concat(a, b);
+      bool program_works = true;
+      for (state_t start_state : valid_start_states) {
+        state_t state = p.states[start_state];
+        const cell_t* memory = state_to_memory_cache.get(state);
+        if (state == 0 || !state_to_desired_output_cache.matches(start_state, memory)) {
+          program_works = false;
+          break;
+        }
+      }
+      if (program_works) {
+        for (state_t start_state : valid_start_states) {
+          const cell_t* start_memory = state_to_memory_cache.get(start_state);
+          state_t state = p.states[start_state];
+          const cell_t* memory = state_to_memory_cache.get(state);
+          for (int i = 0; i &lt; NUM_REGISTERS; ++i) {
+            cout &lt;&lt; (int)start_memory[i] &lt;&lt; ' ';
+          }
+          cout &lt;&lt; &quot; --&gt;  &quot;;
+          if (IGNORE_IRRELEVANT_END_PROGRAM_STATES) {
+            for (int i = 0; i &lt; NUM_OUTPUT_REGISTERS; ++i) {
+              cout &lt;&lt; (int)memory[i] &lt;&lt; ' ';
+            }
+            for (int i = NUM_OUTPUT_REGISTERS; i &lt; NUM_REGISTERS; ++i) {
+              cout &lt;&lt; &quot;? &quot;;
+            }
+          } else {
+            for (int i = 0; i &lt; NUM_REGISTERS; ++i) {
+              cout &lt;&lt; (int)memory[i] &lt;&lt; ' ';
+            }
+          }
+          cout &lt;&lt; endl;
+        }
+        cout
+            &lt;&lt; &quot;RBF: &quot; &lt;&lt; p.rbf &lt;&lt; endl
+            &lt;&lt; &quot;BF: &quot; &lt;&lt; p.as_bf_str() &lt;&lt; endl
+            &lt;&lt; &quot;BF (starting at register &quot; &lt;&lt; NUM_INPUT_REGISTERS &lt;&lt; &quot;): &quot;  &lt;&lt; p.as_bf_str(NUM_INPUT_REGISTERS) &lt;&lt; endl;
+        exit(0);
+      }
+    }
+  }
+  cout &lt;&lt; &quot;Could not find desired program... (yet).\n&quot;;
+}
+
+
+int main(int argc, const char* argv[]) {
+  assert(1L &lt;&lt; (8 * sizeof(state_t)) &gt;= NUM_TOTAL_STATES);
+
+  // Fill first 2 layers of UNIQ_PROGRAM_CACHE
+  assert(UNIQ_PROGRAM_CACHE.empty());
+  UNIQ_PROGRAM_CACHE.resize(2);
+  UNIQ_PROGRAM_CACHE[0].insert(Program::noop());
+  for (int i = 0; i &lt; NUM_REGISTERS; ++i) {
+    UNIQ_PROGRAM_CACHE[1].insert(Program::decrement(i));
+    UNIQ_PROGRAM_CACHE[1].insert(Program::increment(i));
+  }
+
+  for (int i = 0; ; ++i) {
+    const auto&amp; programs = unique_programs_of_length(i);
+    cout &lt;&lt; &quot;Found &quot; &lt;&lt; programs.size() &lt;&lt; &quot; unique RBF programs with &quot; &lt;&lt; i &lt;&lt; &quot; loops/increments.&quot; &lt;&lt; endl;
+
+    if (i &gt;= 10) {
+      check_programs();
+    }
+  }
+
+  return 0;
+}
+</code></pre>
+<p>After ~31 seconds and &lt;1GiB, outputs:</p>
+<pre><code>Found 1 unique RBF programs with 0 loops/increments.
+Found 6 unique RBF programs with 1 loops/increments.
+Found 21 unique RBF programs with 2 loops/increments.
+Found 62 unique RBF programs with 3 loops/increments.
+Found 207 unique RBF programs with 4 loops/increments.
+Found 870 unique RBF programs with 5 loops/increments.
+Found 3774 unique RBF programs with 6 loops/increments.
+Found 16431 unique RBF programs with 7 loops/increments.
+Found 73824 unique RBF programs with 8 loops/increments.
+Found 344618 unique RBF programs with 9 loops/increments.
+Found 1641549 unique RBF programs with 10 loops/increments.
+55543 Programs are valid start Programs.
+76522 Programs are valid end Programs.
+Checking 4250261446 combinations (0.0981115% of 4.33207e+12 possible combinations).
+0 0 0  --&gt;  0 ? ?
+0 1 0  --&gt;  0 ? ?
+0 2 0  --&gt;  0 ? ?
+0 3 0  --&gt;  0 ? ?
+0 4 0  --&gt;  0 ? ?
+1 0 0  --&gt;  0 ? ?
+1 1 0  --&gt;  1 ? ?
+1 2 0  --&gt;  2 ? ?
+1 3 0  --&gt;  3 ? ?
+1 4 0  --&gt;  4 ? ?
+2 0 0  --&gt;  0 ? ?
+2 1 0  --&gt;  2 ? ?
+2 2 0  --&gt;  4 ? ?
+2 3 0  --&gt;  1 ? ?
+2 4 0  --&gt;  3 ? ?
+3 0 0  --&gt;  0 ? ?
+3 1 0  --&gt;  3 ? ?
+3 2 0  --&gt;  1 ? ?
+3 3 0  --&gt;  4 ? ?
+3 4 0  --&gt;  2 ? ?
+4 0 0  --&gt;  0 ? ?
+4 1 0  --&gt;  4 ? ?
+4 2 0  --&gt;  3 ? ?
+4 3 0  --&gt;  2 ? ?
+4 4 0  --&gt;  1 ? ?
+RBF: [0[1-0[1+2+1]1]1[0-1-0]0]0-1[2-2[1-3+1-0]1[3-3+1]3]2
+BF: [&gt;[&lt;-&gt;[&gt;+&lt;+]]&lt;[&gt;-&lt;-]]&gt;-&gt;[-&lt;[&gt;&gt;-&lt;&lt;+&lt;-&gt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]
+BF (starting at register 2): &lt;&lt;[&gt;[&lt;-&gt;[&gt;+&lt;+]]&lt;[&gt;-&lt;-]]&gt;-&gt;[-&lt;[&gt;&gt;-&lt;&lt;+&lt;-&gt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]
+</code></pre>
+<p>Woohoo! It works. The original goal was to be able to search up through programs that were at least as "complex" as the multiplication BF from the beginning. We determined that's roughly 41 BF instructions, 19 RBF instructions, or 4 loops and 11 increments. On my 16GiB laptop, this program can find all the RBF programs with up to 10 loops/increments and then search through all 2-gram concatenations of those programs within a minute <strong>and</strong> all RBF programs up to 11 loops/increments before it runs out of memory! From unimaginably large numbers of possible BF programs to search through to trillions of RBF programs all the way done to the millions that a single laptop can handle.</p>
+<p>If you look at the <code>StateToDesiredOutputs</code> class above, you can see lots of examples of other functions that we can find RBF (and BF) code for as well as some that I couldn't.</p>
 <h2>Other Things You May Want to Learn About</h2>
 <p>Checkout <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> if you want to learn a little more about what numbers represent what (English) characters or <a href="https://en.wikipedia.org/wiki/UTF-8">Unicode and UTF-8</a> if you want to learn a lot more, including how to output emojis and non-English characters.</p>
 <p>You might also enjoy learning about Turing Machines, compilers, or Common LISP.</p>
 <h3>Compiling to BF</h3>
 <p>While I wouldn't want to write a complicated program in BF, I <em>did/do</em> enjoy <a href="https://github.com/mikelmcdaniel/simple-lisp2bf-v2/tree/master">writing a program (in Python) that takes non-BF code in and outputs BF code</a>.</p>
 <p>The following Python-like program can be compiled to BF.</p>
-<pre><code class="language-python3">def print_number(x):
+<pre><code class="language-python">def print_number(x):
     if x &gt;= 100:
         print(x / 100 + '0')
     if x &gt;= 10:
