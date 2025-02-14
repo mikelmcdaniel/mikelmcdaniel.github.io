@@ -60,8 +60,8 @@
 
 <section class="px-3">
   
-<p>This is a post about... writing code to generate BF code that can do any computation... and my goal is to make this post as short and understandable as possible, regardless of your background in math or computers. Some things will be oversimplified for the sake of making it easier to understand.</p>
-<p>If you've ever written BF code, then you know its hard to do anything but the most simple tasks with it. Its like having a machine that can assemble atoms together and using it to make an omelet. My idea of a good time.</p>
+<p>This is a post about... writing code to generate BF code that can do any computation. If you're not familiar with BF, this post will explain everything you need. However, I do assume that you're familiar with Python, C++, and have some general programming background.</p>
+<p>The main challenge with is that the number of possible BF programs that are as "complex" as BF code that can multiply 2 bytes is a HUGE number... easily more than 20 digits.</p>
 <h2>What is BF?</h2>
 <p>First and foremost, its a way for me to avoid saying BrainFuck because I need you to know that I'm a serious professional and adult who doesn't say F*** too much. I'll refer to it as BF from now on.</p>
 <p>If you're already familiar with BF, you can safely skip this section.</p>
@@ -1842,7 +1842,7 @@ RBF: [0[1-0[1+2+1]1]1[0-1-0]0]0-1[2-2[1-3+1-0]1[3-3+1]3]2
 BF: [&gt;[&lt;-&gt;[&gt;+&lt;+]]&lt;[&gt;-&lt;-]]&gt;-&gt;[-&lt;[&gt;&gt;-&lt;&lt;+&lt;-&gt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]
 BF (starting at register 2): &lt;&lt;[&gt;[&lt;-&gt;[&gt;+&lt;+]]&lt;[&gt;-&lt;-]]&gt;-&gt;[-&lt;[&gt;&gt;-&lt;&lt;+&lt;-&gt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;]
 </code></pre>
-<p>Woohoo! It works. The original goal was to be able to search up through programs that were at least as "complex" as the multiplication BF from the beginning. We determined that's roughly 41 BF instructions, 19 RBF instructions, or 4 loops and 11 increments. On my 16GiB laptop, this program can find all the RBF programs with up to 10 loops/increments and then search through all 2-gram concatenations of those programs within a minute <strong>and</strong> all RBF programs up to 11 loops/increments before it runs out of memory! From unimaginably large numbers of possible BF programs to search through to trillions of RBF programs all the way done to the millions that a single laptop can handle.</p>
+<p>Woohoo! It works. The original goal was to be able to search up through programs that were at least as "complex" as the multiplication BF from the beginning. We determined that's roughly 40 BF instructions, 19 RBF instructions, or 4 loops and 11 increments. On my 16GiB laptop, this program can find all the RBF programs with up to 10 loops/increments and then search through all 2-gram concatenations of those programs within a minute <strong>and</strong> all RBF programs up to 11 loops/increments before it runs out of memory! From unimaginably large numbers of possible BF programs to search through to trillions of RBF programs all the way done to the millions that a single laptop can handle.</p>
 <p>If you look at the <code>StateToDesiredOutputs</code> class above, you can see lots of examples of other functions that we can find RBF (and BF) code for as well as some that I couldn't.</p>
 <h2>Other Things You May Want to Learn About</h2>
 <p>Checkout <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> if you want to learn a little more about what numbers represent what (English) characters or <a href="https://en.wikipedia.org/wiki/UTF-8">Unicode and UTF-8</a> if you want to learn a lot more, including how to output emojis and non-English characters.</p>
