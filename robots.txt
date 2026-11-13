@@ -1,0 +1,5 @@
+User-agent: *
+
+Disallow: /
+
+Sitemap: https://mikelmcdaniel.com/sitemap.xml
